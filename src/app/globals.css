@@ -1,3 +1,82 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 1.05rem;
+  }
+}
+
+.mdx-content {
+  @apply prose max-w-none;
+}
+
+/* Add this new class */
+.content-wrapper {
+  @apply w-full md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto px-4;
+}
+
+@layer base {
+  body {
+    @apply transition-colors duration-200;
+  }
+  html {
+    @apply transition-colors duration-200;
+  }
+}
+
+@layer components {
+  a {
+    @apply text-[#0084ff] hover:text-[#e97319];
+  }
+
+  .dark a:not(.header a) {
+    @apply text-[#F7C217] hover:text-[#e97319];
+  }
+
+  .header a {
+    @apply text-inherit hover:text-[#e97319];
+  }
+
+  .header a, .blog-link, .work-link {
+    @apply hover:no-underline;
+  }
+}
+
+.prose {
+  @apply max-w-none;
+}
+
+.prose h1 {
+  @apply text-2xl font-bold mb-4;
+}
+
+.prose h2 {
+  @apply text-xl font-bold mb-3;
+}
+
+.prose p {
+  @apply mb-4;
+}
+
+.prose a {
+  @apply text-[#0084ff] hover:text-[#e97319];
+}
+
+.prose ul, .prose ol {
+  @apply list-disc pl-5 mb-6 space-y-2;
+}
+
+:root {
+  --initial-color-mode: 'light';
+}
+
+[data-theme='dark'] {
+  --initial-color-mode: 'dark';
+}
+
+html.dark {
+  background-color: #171717;
+  color: white;
+}

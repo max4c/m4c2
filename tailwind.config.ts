@@ -8,13 +8,23 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      maxWidth: {
+        'content': '896px', // This matches max-w-4xl
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '896px', // This ensures prose content also respects the new width
+          },
+        },
+      },
+      fontSize: {
+        base: '1.05rem',
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
+  darkMode: 'class',
 };
+
 export default config;
