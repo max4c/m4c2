@@ -43,7 +43,7 @@ body {
 
 @layer components {
   a {
-    @apply text-[#0084ff] hover:text-[#e97319];
+    @apply text-[#0957D0] hover:text-[#e97319];
   }
 
   .dark a:not(.header a) {
