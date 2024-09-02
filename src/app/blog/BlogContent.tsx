@@ -30,7 +30,7 @@ export default function BlogContent({ blogPosts, ongoingPosts }: BlogContentProp
       {blogPosts.map(([monthYear, posts]) => (
         <div key={monthYear}>
           <h2 className="text-xl font-semibold mt-6 mb-2">
-            <span className="text-lg">{formatDate(monthYear)}</span>
+            <span className="text-base">{formatDate(monthYear)}</span>
           </h2>
           <ul className="mb-8 space-y-2">
             {posts.map((post) => (

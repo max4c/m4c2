@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 23, 23, 23;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
 @layer base {
   html {
     font-size: 1.05rem;
@@ -66,14 +81,6 @@
 
 .prose ul, .prose ol {
   @apply list-disc pl-5 mb-6 space-y-2;
-}
-
-:root {
-  --initial-color-mode: 'light';
-}
-
-[data-theme='dark'] {
-  --initial-color-mode: 'dark';
 }
 
 html.dark {
