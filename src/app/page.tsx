@@ -61,7 +61,7 @@ export default function Home() {
           <div key={post.slug} className="w-full">
             <Link 
               href={`/blog/${post.slug}`} 
-              className="hover:text-[#e97319] block w-full p-2 border border-gray-300 dark:border-gray-700 text-center transition-colors duration-200"
+              className="hover:text-[#e97319] block w-full p-2 border border-gray-300 dark:border-gray-700 text-center transition-colors duration-200 rounded-lg"
             >
               {post.title}
             </Link>

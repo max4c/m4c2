@@ -26,7 +26,7 @@ export default function Header() {
             alt="Artistic header image" 
             width={1200} 
             height={300} 
-            className="w-full object-cover aspect-[4/1] object-top cursor-pointer"
+            className="w-full object-cover aspect-[4/1] object-top cursor-pointer rounded-lg"
           />
         </Link>
         <nav className="flex justify-center items-center my-2">
