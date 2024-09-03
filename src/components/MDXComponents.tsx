@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Iframe from './Iframe';
+import LatexEquation from './LatexEquation';
 
 export const H1 = ({ children }: { children: React.ReactNode }) => (
   <h1 className="text-3xl font-bold mb-4">{children}</h1>
@@ -23,4 +24,4 @@ export const A = ({ href, children }: { href: string; children: React.ReactNode 
   </Link>
 );
 
-export { Iframe };
+export { Iframe, LatexEquation };
