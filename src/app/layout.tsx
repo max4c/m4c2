@@ -23,8 +23,10 @@ export default function RootLayout({
         <ThemeWrapper>
           <div className="flex-grow mx-auto px-4 min-h-screen dark:bg-[#171717] dark:text-white">
             <Header />
-            <main className="content-wrapper">
-              {children}
+            <main className="w-full">
+              <div className="content-wrapper">
+                {children}
+              </div>
             </main>
           </div>
           <Footer />

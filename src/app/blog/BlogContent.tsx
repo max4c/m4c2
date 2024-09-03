@@ -9,7 +9,7 @@ type BlogContentProps = {
 
 const BlogContent: React.FC<BlogContentProps> = ({ blogPosts }) => {
   return (
-    <div className="text-base">
+    <div className="w-full">
       <h1 className="text-2xl font-bold mb-4">Blog Posts</h1>
       
       {blogPosts.map(([monthYear, posts]) => (

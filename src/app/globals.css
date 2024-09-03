@@ -29,7 +29,12 @@ body {
 
 /* Add this new class */
 .content-wrapper {
-  @apply w-full md:w-3/4 lg:w-2/3 xl:w-1/2 mx-auto px-4;
+  @apply w-full max-w-[630px] mx-auto px-4;
+}
+
+/* Add this to ensure consistent width across all pages */
+main {
+  @apply w-full;
 }
 
 @layer base {

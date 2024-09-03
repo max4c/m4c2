@@ -64,10 +64,6 @@ export default function BlogPage() {
   console.log('Grouped posts:', groupedBlogPosts);
 
   return (
-    <div className="w-full">
-      <div className="">
-        <BlogContent blogPosts={groupedBlogPosts} />
-      </div>
-    </div>
+    <BlogContent blogPosts={groupedBlogPosts} />
   );
 }

@@ -18,7 +18,7 @@ export default function Header() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <div className="text-inherit header">
+    <div className="text-inherit header w-full">
       <header className="content-wrapper">
         <Link href="/" className="text-inherit hover:text-gray-300">
           <Image 
