@@ -1,6 +1,6 @@
 export default function Work() {
   return (
-    <>
+    <div className="w-full">
       <h1 className="text-2xl font-bold mb-4">Work Experience</h1>
       <p className="mb-4">For my career, I follow the advice of Charlie Munger:</p>
       <p className="mb-4">&quot;You want to deliver to the world what you would buy if you were on the other end.&quot;</p>
@@ -40,6 +40,6 @@ export default function Work() {
       <p className="mb-4">Interested in working with me?</p>
       <p>Reach out at hello[at]maxforsey[dot]com</p>
       <br></br>
-    </>
+    </div>
   );
 }

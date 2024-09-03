@@ -13,6 +13,7 @@
     "@mdx-js/react": "^3.0.1",
     "@next/mdx": "^14.2.7",
     "@tailwindcss/typography": "^0.5.15",
+    "date-fns": "^3.6.0",
     "gray-matter": "^4.0.3",
     "next": "14.2.4",
     "next-mdx-remote": "^5.0.0",

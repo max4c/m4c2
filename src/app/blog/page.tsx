@@ -2,10 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import BlogContent from './BlogContent';
+import { format, addMonths } from 'date-fns';
 
 const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
 
-type Post = {
+export type Post = {
   slug: string;
   title: string;
   type: string;
@@ -15,14 +16,18 @@ type Post = {
 function groupPostsByMonthYear(posts: Post[]) {
   const grouped: { [key: string]: Post[] } = {};
   posts.forEach(post => {
-    const date = post.date;
-    const key = `${date.getFullYear()}-${(date.getMonth()).toString().padStart(2, '0')}`;
-    if (!grouped[key]) {
-      grouped[key] = [];
+    if (post.date instanceof Date && !isNaN(post.date.getTime())) {
+      const advancedDate = addMonths(post.date, 1);
+      const key = format(advancedDate, 'MMMM yyyy');
+      if (!grouped[key]) {
+        grouped[key] = [];
+      }
+      grouped[key].push(post);
+    } else {
+      console.error(`Invalid date for post: ${post.slug}`);
     }
-    grouped[key].push(post);
   });
-  return Object.entries(grouped).sort((a, b) => b[0].localeCompare(a[0]));
+  return Object.entries(grouped).sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime());
 }
 
 export default function BlogPage() {
@@ -34,19 +39,35 @@ export default function BlogPage() {
     const filePath = path.join(blogDir, filename);
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data } = matter(fileContents);
+    let date = new Date(0);
+    if (data.date) {
+      // Convert the date string to a Date object
+      date = new Date(data.date);
+      // If the date is invalid, log an error
+      if (isNaN(date.getTime())) {
+        console.error(`Invalid date for ${filename}: ${data.date}`);
+        date = new Date(0);
+      }
+    }
     return {
       slug,
       title: data.title || slug,
-      type: ongoingPages.includes(slug) ? 'ongoing' : 'post',
-      date: data.date ? new Date(data.date) : new Date(0) // Default to epoch if no date
+      date,
+      type: data.type || 'post'
     };
-  });
+  }).filter(post => post.type === 'post' && !isNaN(post.date.getTime()));
 
   const sortedPosts = posts.sort((a, b) => b.date.getTime() - a.date.getTime());
-  const ongoingPosts = sortedPosts.filter(post => post.type === 'ongoing');
-  const blogPosts = sortedPosts.filter(post => post.type === 'post');
+  const groupedBlogPosts = groupPostsByMonthYear(sortedPosts);
 
-  const groupedBlogPosts = groupPostsByMonthYear(blogPosts);
+  console.log('Parsed posts:', posts);
+  console.log('Grouped posts:', groupedBlogPosts);
 
-  return <BlogContent blogPosts={groupedBlogPosts} ongoingPosts={ongoingPosts} />;
+  return (
+    <div className="w-full">
+      <div className="">
+        <BlogContent blogPosts={groupedBlogPosts} />
+      </div>
+    </div>
+  );
 }

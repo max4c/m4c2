@@ -87,3 +87,19 @@ html.dark {
   background-color: #171717;
   color: white;
 }
+
+/* Add these styles at the end of the file */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
