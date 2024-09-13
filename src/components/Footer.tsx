@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from '../context/ThemeContext';
 
 const Footer = () => {
@@ -17,7 +18,7 @@ const Footer = () => {
             <Link href="/blog" className="hover:text-[#e97319]">Blog</Link>
             <Link href="/work" className="hover:text-[#e97319]">Work</Link>
             <button onClick={toggleTheme} className="focus:outline-none">
-              <img src="/toggle-mode.png" alt="Toggle theme" width={20} height={20} />
+              <Image src="/toggle-mode.png" alt="Toggle theme" width={20} height={20} />
             </button>
           </nav>
           <div className="flex space-x-4 items-center">
