@@ -30,7 +30,7 @@ export default function Work() {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Projects</h2>
       <ul className="list-disc pl-5 mb-6">
-        <li><a href="https://github.com/max4c/m4c2" className="hover:text-[#e97319] work-link">maxforsey.com</a> (Ongoing): This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS!</li>
+        <li><a href="https://github.com/max4c/m4c2" className="hover:text-[#e97319] work-link">maxforsey.com</a> (Ongoing): This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS!</li>
       </ul>
       <ul className="list-disc pl-5 mb-6">
         <li><a href="https://github.com/max4c/freshsesh" className="hover:text-[#e97319] work-link">FreshSesh AI</a> (March 2024): a macOS menu bar tool that summarizes recent git commits using a local LLM. 
