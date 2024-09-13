@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import BlogContent from './BlogContent';
-import { format, addMonths } from 'date-fns';
+import { format, parseISO, startOfMonth } from 'date-fns';
 
 const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
 
@@ -17,8 +17,9 @@ function groupPostsByMonthYear(posts: Post[]) {
   const grouped: { [key: string]: Post[] } = {};
   posts.forEach(post => {
     if (post.date instanceof Date && !isNaN(post.date.getTime())) {
-      const advancedDate = addMonths(post.date, 1);
-      const key = format(advancedDate, 'MMMM yyyy');
+      // Use startOfMonth to ensure consistent grouping
+      const monthStart = startOfMonth(post.date);
+      const key = format(monthStart, 'MMMM yyyy');
       if (!grouped[key]) {
         grouped[key] = [];
       }
@@ -27,7 +28,13 @@ function groupPostsByMonthYear(posts: Post[]) {
       console.error(`Invalid date for post: ${post.slug}`);
     }
   });
-  return Object.entries(grouped).sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime());
+  // Sort posts within each month
+  Object.values(grouped).forEach(monthPosts => {
+    monthPosts.sort((a, b) => b.date.getTime() - a.date.getTime());
+  });
+  return Object.entries(grouped).sort((a, b) => 
+    parseISO(b[0]).getTime() - parseISO(a[0]).getTime()
+  );
 }
 
 export default function BlogPage() {

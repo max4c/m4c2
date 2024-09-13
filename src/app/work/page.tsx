@@ -11,7 +11,11 @@ export default function Work() {
             <li>I research sparse autoencoders, interpretability, and hallucinations in the context of AI safety.</li>
           </ul>
         </li>
-        <li><a href="https://getcartwheel.com/home" className="hover:text-[#e97319] work-link">Cartwheel</a> (June 2024-Present): Data Labeler</li>
+        <li><a href="https://getcartwheel.com/home" className="hover:text-[#e97319] work-link">Cartwheel</a> (June 2024-September 2024): Data Labeler
+          <ul className="list-disc pl-5 mt-1">
+            <li>Gained interesting insights into the training of foundation models with specialized datasets. Motion data is fascinating!</li>
+          </ul>
+        </li>
         <li><a href="https://www.gosameday.com" className="hover:text-[#e97319] work-link">Sameday</a> (May 2022-Oct 2023): Cofounder & CTO
           <ul className="list-disc pl-5 mt-1">
             <li>Engineered an AI phone agent that handled 4000+ calls monthly and successfully went through YCombinator and AI grant.</li>
@@ -26,7 +30,12 @@ export default function Work() {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Projects</h2>
       <ul className="list-disc pl-5 mb-6">
-        <li><a href="https://github.com/max4c/freshsesh" className="hover:text-[#e97319] work-link">FreshSesh AI</a> (March 2024): a tool that summarizes recent git commits using a local LLM</li>
+        <li><a href="https://github.com/max4c/m4c2" className="hover:text-[#e97319] work-link">maxforsey.com</a> (Ongoing): This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS!</li>
+      </ul>
+      <ul className="list-disc pl-5 mb-6">
+        <li><a href="https://github.com/max4c/freshsesh" className="hover:text-[#e97319] work-link">FreshSesh AI</a> (March 2024): a macOS menu bar tool that summarizes recent git commits using a local LLM. 
+        It also won <a href="https://www.linkedin.com/posts/max-forsey_byu-acm-yhack-activity-7173389362913533952-YpAS?utm_source=share&utm_medium=member_desktop" className="hover:text-[#e97319] work-link">Best 1 Person Team</a> 
+        at BYU's YHack hackathon.</li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Skills</h2>
