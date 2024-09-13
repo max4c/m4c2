@@ -14,6 +14,7 @@ export default function Document() {
             })();
           `
         }} />
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="891a893f-2148-474a-83d2-13554d03f007"></script>
       </Head>
       <body>
         <Main />
