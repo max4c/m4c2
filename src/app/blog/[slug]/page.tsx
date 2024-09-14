@@ -4,7 +4,6 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import MDXContent from '@/components/MDXContent';
 import * as MDXComponents from '@/components/MDXComponents';
 import matter from 'gray-matter';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { format, addMonths } from 'date-fns';
 
 function calculateReadTime(content: string): number {
@@ -35,7 +34,6 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 
   return (
     <>
-      <Breadcrumbs currentPage={title} />
       <div className="mb-4">
         <h1 className="text-3xl font-bold">{title}</h1>
         <p className="text-sm text-gray-500">

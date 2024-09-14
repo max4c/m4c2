@@ -9,12 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       maxWidth: {
-        'content': '896px', // This matches max-w-4xl
+        'content': '650px', // This matches max-w-4xl
       },
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: '896px', // This ensures prose content also respects the new width
+            maxWidth: '650px', // This ensures prose content also respects the new width
           },
         },
       },

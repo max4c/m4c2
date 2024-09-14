@@ -29,7 +29,7 @@ body {
 
 /* Add this new class */
 .content-wrapper {
-  @apply w-full max-w-[630px] mx-auto px-4;
+  @apply w-full max-w-[650px] mx-auto px-4;
 }
 
 /* Add this to ensure consistent width across all pages */
