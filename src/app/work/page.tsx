@@ -34,8 +34,7 @@ export default function Work() {
       </ul>
       <ul className="list-disc pl-5 mb-6">
         <li><a href="https://github.com/max4c/freshsesh" className="hover:text-[#e97319] work-link">FreshSesh AI</a> (March 2024): a macOS menu bar tool that summarizes recent git commits using a local LLM. 
-        It also won <a href="https://www.linkedin.com/posts/max-forsey_byu-acm-yhack-activity-7173389362913533952-YpAS?utm_source=share&utm_medium=member_desktop" className="hover:text-[#e97319] work-link">Best 1 Person Team</a> 
-        at BYU&apos;s YHack hackathon.</li>
+        It also won <a href="https://www.linkedin.com/posts/max-forsey_byu-acm-yhack-activity-7173389362913533952-YpAS?utm_source=share&utm_medium=member_desktop" className="hover:text-[#e97319] work-link">Best 1 Person Team</a> at BYU&apos;s YHack hackathon.</li>
       </ul>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Skills</h2>
