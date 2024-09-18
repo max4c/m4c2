@@ -2,6 +2,7 @@ import Link from 'next/link';
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import SocialIcons from '@/components/SocialIcons';
 
 const ongoingPages = ['books', 'longevity', 'tools', 'films', 'music', 'quotes'];
 
@@ -46,14 +47,10 @@ export default function Home() {
         Email me at hello[at]maxforsey[dot]com
       </p>
 
-      <h6 className="text-lg font-semibold mt-6 mb-2">Elsewhere</h6>
-      <p>
-        <a href="https://github.com/max4c" className="mr-4">GitHub</a>
-        <a href="https://www.linkedin.com/in/max-forsey" className="mr-4">LinkedIn</a>
-        <a href="https://www.youtube.com/channel/UCbxSpKpe9q0dZkJ1jkHWdEg">Youtube</a>
-      </p>
+      <h6 className="text-xl font-semibold mt-6 mb-2">Elsewhere</h6>
+      <SocialIcons />
 
-      <hr className="border-black dark:border-white my-8" />
+      <hr className="border-black dark:border-white my-4" />
 
     
       <div className="grid grid-cols-3 gap-4 w-full mb-8">
