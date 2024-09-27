@@ -1,6 +1,6 @@
 export default function Work() {
   return (
-    <div className="w-full">
+    <div className="content-wrapper">
       <h1 className="text-3xl font-bold mb-2">Work Experience</h1>
       <p className="mb-4">For my career, I follow the advice of Charlie Munger:</p>
       <p className="mb-4">&quot;You want to deliver to the world what you would buy if you were on the other end.&quot;</p>

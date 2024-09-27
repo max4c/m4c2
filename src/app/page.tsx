@@ -1,30 +1,12 @@
 import Link from 'next/link';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
 import SocialIcons from '@/components/SocialIcons';
 
-const ongoingPages = ['books', 'longevity', 'tools', 'films', 'music', 'quotes'];
-
 export default function Home() {
-    
-  const blogDir = path.join(process.cwd(), 'src/app/blog');
-  const ongoingPosts = ongoingPages.map(slug => {
-    const filePath = path.join(blogDir, `${slug}.mdx`);
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const { data } = matter(fileContents);
-    return {
-      slug,
-      title: data.title || slug.charAt(0).toUpperCase() + slug.slice(1)
-    };
-  });
-
   return (
-    <div className="w-full">
-      <h2 className="text-3xl font-bold mb-2">Max Forsey: Undergrad AI Researcher </h2>
-      
+    <div className="content-wrapper">
+      <h1 className="text-3xl font-bold mb-2">Undergrad AI Researcher</h1>
       <p className="mb-4">
-        Hey! I&apos;m a junior at Brigham Young University studying computer science
+        Hey! I'm a junior at Brigham Young University studying computer science
         with an emphasis in machine learning.
       </p>
 
@@ -32,16 +14,16 @@ export default function Home() {
         Currently, I am doing AI research in the <a href="https://github.com/BYU-PCCL">PCC Lab</a> focusing on mechanistic
         interpretability. Previously, I cofounded
         <a href="https://www.gosameday.com"> Sameday AI</a>, participating in Y
-        Combinator&apos;s W23 batch and AI Grant&apos;s batch 1.
+        Combinator's W23 batch and AI Grant's batch 1.
       </p>
 
       <p className="mb-4">
-        At BYU, I&apos;m a VP of the <a href="https://aia.byu.edu">AI Association</a>, which helps provide students from
+        At BYU, I'm a VP of the <a href="https://aia.byu.edu">AI Association</a>, which helps provide students from
         diverse academic backgrounds with practical AI experience.
       </p>
 
       <p className="mb-4">
-        I&apos;m always looking out for interesting projects, people, and ideas.
+        I'm always looking out for interesting projects, people, and ideas.
       </p>
       <p className="mb-4">
         Email me at hello[at]maxforsey[dot]com
@@ -50,22 +32,6 @@ export default function Home() {
       <h6 className="text-xl font-semibold mt-6 mb-2">Elsewhere</h6>
       <SocialIcons />
 
-      <hr className="border-black dark:border-white my-4" />
-
-    
-      <div className="grid grid-cols-3 gap-4 w-full mb-8">
-        {ongoingPosts.map((post) => (
-          <div key={post.slug} className="w-full">
-            <Link 
-              href={`/blog/${post.slug}`} 
-              className="hover:text-[#e97319] block w-full p-2 border border-gray-300 dark:border-gray-700 text-center transition-colors duration-200 rounded-lg"
-            >
-              {post.title}
-            </Link>
-          </div>
-        ))}
-      </div>
-      <br />
     </div>
   );
 }

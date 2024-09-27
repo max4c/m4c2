@@ -1,46 +1,112 @@
 "use client";
 
+import React, { useState } from 'react';
 import Image from "next/image";
 import Link from 'next/link';
 import { useTheme } from '@/context/ThemeContext';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
 
 export default function Header() {
-  const { isDarkMode, toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme();
   const pathname = usePathname();
-  const [imageSrc, setImageSrc] = useState("/light-header.png");
-
-  useEffect(() => {
-    setImageSrc(isDarkMode ? "/dark-header.png" : "/light-header.png");
-  }, [isDarkMode]);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
-    <div className="text-inherit header w-full">
-      <header className="content-wrapper">
-        <Link href="/" className="text-inherit hover:text-gray-300">
-          <Image 
-            src={imageSrc}
-            alt="Artistic header image" 
-            width={1200} 
-            height={300} 
-            className="w-full object-cover aspect-[4/1] object-top cursor-pointer rounded-lg"
-          />
-        </Link>
-        <nav className="flex justify-center items-center my-2">
-          <div className="flex flex-wrap justify-center items-center space-x-4 sm:space-x-20">
-            <Link href="/" className={`px-2 py-1 rounded-md hover:text-[#e97319] ${isActive('/') ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>Home</Link>
-            <Link href="/blog" className={`px-2 py-1 rounded-md hover:text-[#e97319] ${isActive('/blog') ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>Blog</Link>
-            <Link href="/work" className={`px-2 py-1 rounded-md hover:text-[#e97319] ${isActive('/work') ? 'bg-gray-200 dark:bg-gray-700' : ''}`}>Work</Link>
-            <button onClick={toggleTheme} className="focus:outline-none">
-              <Image src="/toggle-mode.png" alt="Toggle theme" width={35} height={35} />
+    <header className={`w-full mt-4 mb-4 pt-6 pb-3 px-6 rounded-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out ${isMenuOpen ? 'pb-6' : ''}`}>
+      <div className="max-w-7xl mx-auto flex flex-col">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Image 
+              src="/DigitalProfile_tiny.png"
+              alt="Digital Profile Logo" 
+              width={32} 
+              height={32}
+              className="rounded-full cursor-pointer"
+              onClick={() => setShowOverlay(true)}
+            />
+            <Link href="/">
+              <span className="text-xl font-bold text-gray-800 dark:text-white cursor-pointer">
+                Max Forsey
+              </span>
+            </Link>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link href="/" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/') ? 'font-semibold' : ''}`}>Home</Link>
+            <Link href="/about" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/about') ? 'font-semibold' : ''}`}>About</Link>
+            <Link href="/blog" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/blog') ? 'font-semibold' : ''}`}>Blog</Link>
+            <Link href="/work" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/work') ? 'font-semibold' : ''}`}>Work</Link>
+          </nav>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            className="md:hidden focus:outline-none transition-transform duration-300 ease-in-out"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <svg 
+              className="w-6 h-6 text-gray-600 dark:text-gray-300 transition-transform duration-300 ease-in-out" 
+              fill="none" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth="2" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                className={`transition-opacity duration-300 ease-in-out ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+              <path 
+                className={`transition-opacity duration-300 ease-in-out ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          {/* Theme Toggle Button */}
+          <button onClick={toggleTheme} className="hidden md:block focus:outline-none">
+            <Image src="/toggle-mode.png" alt="Toggle theme" width={32} height={32} />
+          </button>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden mt-4">
+            <nav className="flex flex-col space-y-2">
+              <Link href="/" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Home</Link>
+              <Link href="/about" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/about') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>About</Link>
+              <Link href="/blog" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/blog') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Blog</Link>
+              <Link href="/work" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/work') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Work</Link>
+            </nav>
+            <button onClick={toggleTheme} className="mt-2 focus:outline-none">
+              <Image src="/toggle-mode.png" alt="Toggle theme" width={32} height={32} />
             </button>
           </div>
-        </nav>
-        <hr className="border-black dark:border-white my-2" />
-      </header>
-    </div>
+        )}
+      </div>
+
+      {showOverlay && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowOverlay(false)}>
+          <div className="bg-white p-4 rounded-lg">
+            <Image 
+              src="/DigitalProfile_tiny.png"
+              alt="Digital Profile Logo" 
+              width={300} 
+              height={300}
+              className="rounded-lg"
+            />
+            <p className="pt-3 text-xl text-center font-semibold text-gray-800">Thanks for stopping by!</p>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

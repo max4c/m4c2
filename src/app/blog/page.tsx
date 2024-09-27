@@ -71,6 +71,10 @@ export default function BlogPage() {
   console.log('Grouped posts:', groupedBlogPosts);
 
   return (
-    <BlogContent blogPosts={groupedBlogPosts} />
+     <div className="w-full">
+      <h1 className="text-3xl font-bold mb-2">Blog Posts</h1>
+      <p className="mb-4">I tend to write about machine learning, longevity, philosophy, and productivity</p>
+      <BlogContent blogPosts={groupedBlogPosts} />
+    </div>
   );
 }
