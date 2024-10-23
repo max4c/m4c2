@@ -4,7 +4,7 @@ import SocialIcons from '@/components/SocialIcons';
 export default function Home() {
   return (
     <div className="content-wrapper">
-      <h1 className="text-3xl font-bold mb-2">Undergrad AI Researcher</h1>
+    <h1 className="text-2xl font-bold mb-2">Undergrad AI Researcher</h1>
       <p className="mb-4">
         Hey! I&apos;m a junior at Brigham Young University studying computer science
         with an emphasis in machine learning.

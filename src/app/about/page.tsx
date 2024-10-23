@@ -19,7 +19,7 @@ export default function About() {
 
   return (
     <div className="content-wrapper">
-      <h1 className="text-3xl font-bold mb-4">About</h1>
+      <h1 className="text-2xl font-bold mb-4">About</h1>
       
       <p className="mb-4">
         Explore these ongoing pages to get a sense of who I am and what I value.

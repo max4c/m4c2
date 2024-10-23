@@ -35,10 +35,10 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   return (
     <>
       <div className="mb-4">
-        <h1 className="text-3xl font-bold">{title}</h1>
+        <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-sm text-gray-500">
           {formattedDate && location ? `${formattedDate}, ${location} • ` : ''}
-          {readTime} min read
+          {data.type !== 'ongoing' && (formattedDate && location ? ` ${readTime} min read` : `${readTime} min read`)}
         </p>
       </div>
       <MDXContent>
