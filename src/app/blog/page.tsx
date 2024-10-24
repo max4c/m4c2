@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import BlogContent from './BlogContent';
 import { format, parseISO, startOfMonth } from 'date-fns';
+import Link from 'next/link';
 
 const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
 
@@ -71,9 +72,15 @@ export default function BlogPage() {
   console.log('Grouped posts:', groupedBlogPosts);
 
   return (
-     <div className="w-full">
-      <h1 className="text-2xl font-bold mb-2">Blog Posts</h1>
-      <p className="mb-4">I tend to write about machine learning, longevity, philosophy, and productivity</p>
+    <div className="w-full pt-8">
+      <div className="mb-8">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="text-xl font-bold hover:text-gray-600 transition-colors">
+            Max Forsey's
+          </Link>
+          <span className="text-xl font-bold"> Blog</span>
+        </div>
+      </div>
       <BlogContent blogPosts={groupedBlogPosts} />
     </div>
   );

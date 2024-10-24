@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ThemeWrapper from "@/components/ThemeWrapper";
 
@@ -22,9 +21,8 @@ export default function RootLayout({
       <body className={`${inter.className} min-h-screen flex flex-col`} suppressHydrationWarning>
         <ThemeWrapper>
           <div className="flex-grow mx-auto px-4 min-h-screen dark:bg-[#171717] dark:text-white">
-            <Header />
             <main className="w-full content-wrapper">
-                {children}
+              {children}
             </main>
           </div>
           <Footer />
