@@ -35,7 +35,7 @@ const sortedPosts = posts.sort((a, b) => b.date.getTime() - a.date.getTime());
 
 export default function Home() {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4">
       {/* Header Section with Profile */}
       <div className="flex items-center justify-between mb-5 pb-5 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-4">
@@ -150,12 +150,22 @@ export default function Home() {
       {/* Skills Section */}
       <section className="mb-8">
         <h2 className="text-xl font-bold mb-4">Skills</h2>
-        <ul className="list-disc list-inside space-y-2">
-          <li>Languages: Python, Java, Node.js, C++, JavaScript, CSS, HTML</li>
-          <li>Databases: MySQL, NoSQL, Firebase</li>
-          <li>Machine Learning & LLM: PyTorch, NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn</li>
-          <li>Misc: Linear, Ollama, Notion, Twilio, Github, GCP, Eagle Scout, Crucial Conversations</li>
-        </ul>
+        <p>
+          <span className="text-black">Languages:</span> 
+          <span className="text-gray-500 dark:text-gray-400"> Python, Java, Node.js, C++, JavaScript, CSS, HTML</span>
+        </p>
+        <p>
+          <span className="text-black">Databases:</span> 
+          <span className="text-gray-500 dark:text-gray-400"> MySQL, NoSQL, Firebase</span>
+        </p>
+        <p>
+          <span className="text-black">Machine Learning & LLM:</span> 
+          <span className="text-gray-500 dark:text-gray-400"> PyTorch, NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn</span>
+        </p>
+        <p>
+          <span className="text-black">Misc:</span> 
+          <span className="text-gray-500 dark:text-gray-400"> Linear, Ollama, Notion, Twilio, Github, GCP, Eagle Scout, Crucial Conversations</span>
+        </p>
       </section>
 
       {/* Deep Dive Section - with reduced margin */}
@@ -171,6 +181,9 @@ export default function Home() {
           <Link href="/blog/quotes" className="text-center p-2 border rounded hover:bg-gray-50">Quotes</Link>
         </div>
       </section>
+
+      {/* Add margin-bottom to match the header spacing */}
+      <div className="mb-8"></div>
     </div>
   );
 }

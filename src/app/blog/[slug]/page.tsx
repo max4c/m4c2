@@ -5,6 +5,7 @@ import MDXContent from '@/components/MDXContent';
 import * as MDXComponents from '@/components/MDXComponents';
 import matter from 'gray-matter';
 import { format, addMonths } from 'date-fns';
+import Link from 'next/link';
 
 function calculateReadTime(content: string): number {
   const wordsPerMinute = 200;
@@ -35,6 +36,19 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   return (
     <>
       <div className="mb-4">
+        {data.type === 'ongoing' ? (
+          <Link href="/" className="text-2xl font-bold hover:text-gray-600 transition-colors">
+            Max Forsey
+          </Link>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Link href="/" className="text-2xl font-bold hover:text-gray-600 transition-colors">
+              Max Forsey&apos;s
+            </Link>
+            <span className="text-2xl font-bold"> Blog</span>
+          </div>
+        )}
+        <div className="border-b border-gray-300 my-2"></div>
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="text-sm text-gray-500">
           {formattedDate && location ? `${formattedDate}, ${location} • ` : ''}

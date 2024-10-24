@@ -72,7 +72,7 @@ export default function BlogPage() {
   console.log('Grouped posts:', groupedBlogPosts);
 
   return (
-    <div className="w-full pt-8">
+    <div className="w-full max-w-screen-lg mx-auto pt-8">
       <div className="mb-8">
         <div className="flex items-center gap-2">
           <Link href="/" className="text-xl font-bold hover:text-gray-600 transition-colors">
