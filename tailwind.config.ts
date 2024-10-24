@@ -9,7 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       maxWidth: {
-        'content': '650px', // This matches max-w-4xl
+        'content': '650px',
+      },
+      width: {
+        'content': '650px',
       },
       typography: {
         DEFAULT: {

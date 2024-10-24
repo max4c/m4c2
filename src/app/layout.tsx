@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
-import ThemeWrapper from "@/components/ThemeWrapper";
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,15 +19,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen flex flex-col`} suppressHydrationWarning>
-        <ThemeWrapper>
-          <div className="flex-grow mx-auto px-4 min-h-screen dark:bg-[#171717] dark:text-white">
-            <main className="w-full content-wrapper">
-              {children}
-            </main>
-          </div>
-          <Footer />
-        </ThemeWrapper>
+      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
+        <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeProvider>
+            <div className="flex-grow mx-auto px-4 min-h-screen dark:bg-[#171717] dark:text-white">
+              <main className="w-full content-wrapper">
+                {children}
+              </main>
+            </div>
+            <Footer />
+          </ThemeProvider>
+        </NextThemesProvider>
       </body>
     </html>
   );

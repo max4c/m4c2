@@ -151,19 +151,19 @@ export default function Home() {
       <section className="mb-8">
         <h2 className="text-xl font-bold mb-4">Skills</h2>
         <p>
-          <span className="text-black">Languages:</span> 
+          <span>Languages:</span> 
           <span className="text-gray-500 dark:text-gray-400"> Python, Java, Node.js, C++, JavaScript, CSS, HTML</span>
         </p>
         <p>
-          <span className="text-black">Databases:</span> 
+          <span>Databases:</span> 
           <span className="text-gray-500 dark:text-gray-400"> MySQL, NoSQL, Firebase</span>
         </p>
         <p>
-          <span className="text-black">Machine Learning & LLM:</span> 
+          <span>Machine Learning & LLMs:</span> 
           <span className="text-gray-500 dark:text-gray-400"> PyTorch, NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn</span>
         </p>
         <p>
-          <span className="text-black">Misc:</span> 
+          <span>Misc:</span> 
           <span className="text-gray-500 dark:text-gray-400"> Linear, Ollama, Notion, Twilio, Github, GCP, Eagle Scout, Crucial Conversations</span>
         </p>
       </section>

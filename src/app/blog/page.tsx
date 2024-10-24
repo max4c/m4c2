@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import BlogContent from './BlogContent';
 import { format, parseISO, startOfMonth } from 'date-fns';
 import Link from 'next/link';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
 
@@ -72,16 +73,23 @@ export default function BlogPage() {
   console.log('Grouped posts:', groupedBlogPosts);
 
   return (
-    <div className="w-full max-w-screen-lg mx-auto pt-8">
-      <div className="mb-8">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="text-xl font-bold hover:text-gray-600 transition-colors">
-            Max Forsey&apos;s
-          </Link>
-          <span className="text-xl font-bold"> Blog</span>
+    <div className="w-full max-w-[650px] mx-auto px-4">
+      <header className="blog-header mb-4 w-full pt-6">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="text-2xl font-bold hover:text-gray-600 transition-colors">
+              Max Forsey&apos;s
+            </Link>
+            <span className="text-2xl font-bold">Blog</span>
+            <ThemeToggle />
+          </div>
         </div>
+        <div className="border-b border-gray-200 dark:border-gray-700 mt-2"></div>
+      </header>
+      <div className="w-full">
+        <p className="text-gray-500 mb-4">I tend to write about machine learning, startups, longevity, and productivity.</p>
+        <BlogContent blogPosts={groupedBlogPosts} />
       </div>
-      <BlogContent blogPosts={groupedBlogPosts} />
     </div>
   );
 }

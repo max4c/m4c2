@@ -10,14 +10,16 @@ type BlogContentProps = {
 const BlogContent: React.FC<BlogContentProps> = ({ blogPosts }) => {
   return (
     <div className="w-full">
-      
       {blogPosts.map(([monthYear, posts]) => (
-        <div key={monthYear} className="mb-6">
-          <h2 className="mb-2">{monthYear}</h2>
-          <div className="space-y-2">
+        <div key={monthYear} className="mb-4 w-full">
+          <h2 className="mb-2 w-full font-bold">{monthYear}</h2>
+          <div className="space-y-2 w-full">
             {posts.map(post => (
               <div key={post.slug}>
-                <Link href={`/blog/${post.slug}`} className="text-lg hover:text-[#e97319] blog-link">
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors block w-full"
+                >
                   {post.title}
                 </Link>
               </div>

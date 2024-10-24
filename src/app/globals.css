@@ -27,14 +27,14 @@ body {
   @apply prose max-w-none;
 }
 
-/* Add this new class */
+/* Update the content-wrapper class */
 .content-wrapper {
-  @apply w-full max-w-[650px] mx-auto px-4;
+  @apply w-full max-w-[650px] mx-auto px-4 flex flex-col;
 }
 
 /* Add this to ensure consistent width across all pages */
 main {
-  @apply w-full;
+  @apply w-full flex flex-col items-center;
 }
 
 @layer base {
@@ -47,21 +47,33 @@ main {
 }
 
 @layer components {
+  /* Default link styles */
   a {
-    @apply text-[#0957D0] hover:text-[#e97319];
+    @apply text-[#0957D0] hover:text-[#e97319] font-normal;
   }
 
+  /* Header and footer specific links */
+  header a, footer a {
+    @apply font-bold;
+  }
+
+  /* Dark mode links */
   .dark a:not(.header a) {
     @apply text-[#F7C217] hover:text-[#e97319];
   }
 
-  .header a {
-    @apply text-inherit hover:text-[#e97319];
+  /* Blog header specific links */
+  .blog-header a:not([href="/blog"]) {
+    @apply font-bold;
   }
+}
 
-  .header a, .blog-link, .work-link {
-    @apply hover:no-underline;
-  }
+/* Override the general no-bold rule for specific cases */
+header a:not([href="/blog"]), 
+footer a, 
+.blog-header a:not([href="/blog"]), 
+.blog-nav a {
+  font-weight: bold !important;
 }
 
 .prose {
@@ -81,11 +93,28 @@ main {
 }
 
 .prose a {
-  @apply text-[#0084ff] hover:text-[#e97319];
+  @apply text-[#0957D0] hover:text-[#e97319] no-underline font-normal;
 }
 
-.prose ul, .prose ol {
-  @apply list-disc pl-5 mb-6 space-y-2;
+.dark .prose a {
+  @apply text-[#F7C217] hover:text-[#e97319] no-underline font-normal;
+}
+
+.prose a:hover {
+  text-decoration: none;
+}
+
+.prose * a,
+.prose * a:hover {
+  text-decoration: none;
+}
+
+* a {
+  text-decoration: none !important;
+}
+
+* a:hover {
+  text-decoration: none !important;
 }
 
 html.dark {
@@ -108,4 +137,16 @@ footer {
   flex-shrink: 0;
 }
 
+/* Add this new global style for links */
+a {
+  text-decoration: none;
+}
 
+a:hover {
+  text-decoration: none;
+}
+
+/* Remove any potential bold styling from links */
+a, a *, .prose a, .prose a * {
+  font-weight: normal !important;
+}
