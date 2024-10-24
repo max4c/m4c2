@@ -173,12 +173,24 @@ export default function Home() {
         <h2 className="text-xl font-bold mb-4">Deep Dive</h2>
         <p className="mb-4">Explore these ongoing pages to get a sense of who I am and what I value.</p>
         <div className="grid grid-cols-3 gap-4">
-          <Link href="/blog/books" className="text-center p-2 border rounded hover:bg-gray-50">Books</Link>
-          <Link href="/blog/longevity" className="text-center p-2 border rounded hover:bg-gray-50">Longevity</Link>
-          <Link href="/blog/tools" className="text-center p-2 border rounded hover:bg-gray-50">Tools</Link>
-          <Link href="/blog/films" className="text-center p-2 border rounded hover:bg-gray-50">Films</Link>
-          <Link href="/blog/music" className="text-center p-2 border rounded hover:bg-gray-50">Music</Link>
-          <Link href="/blog/quotes" className="text-center p-2 border rounded hover:bg-gray-50">Quotes</Link>
+          <Link href="/blog/books" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
+            Books
+          </Link>
+          <Link href="/blog/longevity" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
+            Longevity
+          </Link>
+          <Link href="/blog/tools" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
+            Tools
+          </Link>
+          <Link href="/blog/films" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
+            Films
+          </Link>
+          <Link href="/blog/music" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
+            Music
+          </Link>
+          <Link href="/blog/quotes" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
+            Quotes
+          </Link>
         </div>
       </section>
 

@@ -111,14 +111,15 @@ export default function Highlights() {
                     )}
                 </AnimatePresence>
             </div>
-            <button 
-                onClick={handleMore}
-                className="mt-1 px-3 py-1 text-sm rounded-full border border-gray-300 dark:border-gray-600
-                          hover:border-gray-400 dark:hover:border-gray-500
-                          transition-all duration-200"
-            >
-                {currentIndex === 0 ? 'More' : 'Keep Going'}
-            </button>
+        <button 
+            onClick={handleMore}
+            className="text-sm px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 
+              hover:border-gray-400 dark:hover:border-gray-500 
+              text-blue-600 dark:text-yellow-500 hover:text-orange-500 dark:hover:text-orange-500
+              transition-all duration-200"
+        >
+            {currentIndex === 0 ? 'More' : 'Keep Going'}
+        </button>
         </section>
     );
 }
