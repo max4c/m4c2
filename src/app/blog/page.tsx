@@ -76,7 +76,7 @@ export default function BlogPage() {
       <div className="mb-8">
         <div className="flex items-center gap-2">
           <Link href="/" className="text-xl font-bold hover:text-gray-600 transition-colors">
-            Max Forsey's
+            Max Forsey&apos;s
           </Link>
           <span className="text-xl font-bold"> Blog</span>
         </div>

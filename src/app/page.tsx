@@ -64,13 +64,13 @@ export default function Home() {
       {/* Bio Section */}
       <div className="mb-8">
         <p className="mb-4">
-          Hi, I'm a junior at Brigham Young University studying computer science with 
+          Hi, I&apos;m a junior at Brigham Young University studying computer science with 
           an emphasis in Machine Learning.
         </p>
         <p className="mb-4">
           Currently, I am doing AI research in the <a href="https://github.com/BYU-PCCL" className="text-blue-600 hover:underline">PCC Lab</a> focusing on mechanistic 
           interpretability. Previously, I cofounded <a href="https://www.gosameday.com" className="text-blue-600 hover:underline">Sameday AI</a>, participating in Y 
-          Combinator's W23 batch and AI Grant's batch 1.
+          Combinator&apos;s W23 batch and AI Grant&apos;s batch 1.
         </p>
       </div>
 
@@ -91,7 +91,7 @@ export default function Home() {
       <section className="mb-8">
         <h2 className="text-xl font-bold mb-4">Work</h2>
         <p className="mb-4">For my career, I follow the advice of Charlie Munger:</p>
-        <p className="mb-4 italic">"You want to deliver to the world what you would buy if you were on the other end."</p>
+        <p className="mb-4 italic">&quot;You want to deliver to the world what you would buy if you were on the other end.&quot;</p>
         <div className="space-y-4">
           <div>
             <h3 className="font-medium">PCC Lab (May 2024-Present): AI Research Assistant</h3>
@@ -138,11 +138,11 @@ export default function Home() {
         <div className="space-y-4">
           <div>
             <h3 className="font-medium">maxforsey.com (Ongoing)</h3>
-            <p className="text-gray-500 dark:text-gray-400">This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS!</p>
+            <p className="text-gray-500 dark:text-gray-400">This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS!</p>
           </div>
           <div>
             <h3 className="font-medium">FreshSesh AI (March 2024)</h3>
-            <p className="text-gray-500 dark:text-gray-400">A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU's YHack hackathon.</p>
+            <p className="text-gray-500 dark:text-gray-400">A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU&apos;s YHack hackathon.</p>
           </div>
         </div>
       </section>
