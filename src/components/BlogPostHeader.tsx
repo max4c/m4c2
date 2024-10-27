@@ -41,29 +41,25 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
       <div className="w-full border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-[650px] mx-auto px-6">
           <div className="pt-6 pb-4 blog-header">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col items-center sm:flex-row sm:justify-between w-full">
               {type === 'ongoing' ? (
                 <>
-                  <div className="flex items-center gap-2">
-                    <Link 
-                      href="/" 
-                      className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold"
-                    >
-                      Max Forsey
-                    </Link>
-                  </div>
+                  <Link 
+                    href="/" 
+                    className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold mb-4 sm:mb-0"
+                  >
+                    Max Forsey
+                  </Link>
                   <ThemeDropdown />
                 </>
               ) : (
                 <>
-                  <div className="flex items-center gap-2">
-                    <Link 
-                      href="/blog" 
-                      className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold"
-                    >
-                      Max Forsey&apos;s Blog
-                    </Link>
-                  </div>
+                  <Link 
+                    href="/blog" 
+                    className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold mb-4 sm:mb-0"
+                  >
+                    Max Forsey&apos;s Blog
+                  </Link>
                   <div className="flex items-center gap-2">
                     <Link 
                       href="/" 

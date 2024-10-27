@@ -6,6 +6,7 @@ import * as MDXComponents from '@/components/MDXComponents';
 import matter from 'gray-matter';
 import { format, addMonths } from 'date-fns';
 import BlogPostHeader from '@/components/BlogPostHeader';
+import Link from 'next/link';
 
 function calculateReadTime(content: string): number {
   const wordsPerMinute = 200;
@@ -42,6 +43,17 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           }}
         />
       </MDXContent>
+      
+      <div>
+        <div className="mt-8 text-center">
+          <Link 
+            href={data.type === 'ongoing' ? '/' : '/blog'}
+            className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors"
+          >
+            ← Back to {data.type === 'ongoing' ? 'home' : 'all posts'}
+          </Link>
+        </div>
+      </div>
     </article>
   );
 }

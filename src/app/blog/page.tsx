@@ -78,8 +78,10 @@ export default function BlogPage() {
         <div className="content-border border-b">
           <div className="max-w-[650px] mx-auto px-6">
             <header className="blog-header w-full pt-6 pb-3">
-              <div className="flex items-center justify-between w-full">
-                <span className="text-2xl font-bold">Max Forsey&apos;s Blog</span>
+              <div className="flex flex-col items-center sm:flex-row sm:justify-between w-full">
+                <h1 className="text-2xl font-bold mb-4 sm:mb-0">
+                  Max Forsey&apos;s Blog
+                </h1>
                 <div className="flex items-center gap-2">
                   <Link 
                     href="/" 
