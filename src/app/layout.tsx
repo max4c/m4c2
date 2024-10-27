@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,22 +13,30 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
-        <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
-          <ThemeProvider>
-            <div className="flex-grow mx-auto px-4 min-h-screen dark:bg-[#171717] dark:text-white">
-              <main className="w-full content-wrapper">
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="min-h-screen flex flex-col items-center">
+            <div className="w-full max-w-[650px] px-6 flex-grow">
+              <main>
                 {children}
               </main>
             </div>
-            <Footer />
-          </ThemeProvider>
-        </NextThemesProvider>
+            <div className="w-full max-w-[650px] px-6">
+              <Footer />
+            </div>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

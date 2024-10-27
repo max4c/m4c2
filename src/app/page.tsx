@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { format } from 'date-fns';
+import ThemeDropdown from '@/components/ThemeDropdown';
 
 const blogDir = path.join(process.cwd(), 'src/app/blog');
 const files = fs.readdirSync(blogDir).filter(file => file.endsWith('.mdx'));
@@ -35,27 +36,33 @@ const sortedPosts = posts.sort((a, b) => b.date.getTime() - a.date.getTime());
 
 export default function Home() {
   return (
-    <div className="max-w-2xl mx-auto px-4">
+    <div>
       {/* Header Section with Profile */}
-      <div className="flex items-center justify-between mb-5 pb-5 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-4">
-          <Image 
-            src="/DigitalProfile_tiny.png"
-            alt="Max Forsey"
-            width={192}
-            height={192}
-            className="rounded-full"
-          />
-          <div>
-            <h1 className="text-4xl font-bold">Max Forsey</h1>
-            <p className="text-gray-500 dark:text-gray-400 font-bold">
-              I like to research AI and
-            </p>
-            <p className="text-gray-500 dark:text-gray-400 font-bold">
-              build helpful tools  🛠️ 
-            </p>
-            <div className="flex items-center gap-2 mt-2">
-              <SocialIcons />
+      <div className="relative mb-8">
+        <div className="content-border border-b">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 mb-5 pt-4 md:pt-0">
+            <Image 
+              src="/DigitalProfile_tiny.png"
+              alt="Max Forsey"
+              width={192}
+              height={192}
+              className="rounded-full"
+            />
+            <div className="flex flex-col items-center md:items-start md:pt-8">
+              <h1 className="text-4xl font-bold mb-1">Max Forsey</h1>
+              {/* Mobile version - single line */}
+              <p className="md:hidden text-gray-500 dark:text-gray-400 font-bold mb-2">
+                I like to research AI and build helpful tools 🛠️
+              </p>
+              {/* Desktop version - two lines */}
+              <div className="hidden md:block text-gray-500 dark:text-gray-400 font-bold mb-2">
+                <p>I like to research AI and</p>
+                <p>build helpful tools 🛠️</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <SocialIcons />
+                <ThemeDropdown />
+              </div>
             </div>
           </div>
         </div>

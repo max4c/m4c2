@@ -4,7 +4,7 @@ import matter from 'gray-matter';
 import BlogContent from './BlogContent';
 import { format, parseISO, startOfMonth } from 'date-fns';
 import Link from 'next/link';
-import ThemeToggle from '@/components/ThemeToggle';
+import ThemeDropdown from '@/components/ThemeDropdown';
 
 const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
 
@@ -73,23 +73,34 @@ export default function BlogPage() {
   console.log('Grouped posts:', groupedBlogPosts);
 
   return (
-    <div className="w-full max-w-[650px] mx-auto px-4">
-      <header className="blog-header mb-4 w-full pt-6">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="text-2xl font-bold hover:text-gray-600 transition-colors">
-              Max Forsey&apos;s
-            </Link>
-            <span className="text-2xl font-bold">Blog</span>
-            <ThemeToggle />
+    <>
+      <div className="w-full">
+        <div className="content-border border-b">
+          <div className="max-w-[650px] mx-auto px-6">
+            <header className="blog-header w-full pt-6 pb-3">
+              <div className="flex items-center justify-between w-full">
+                <span className="text-2xl font-bold">Max Forsey&apos;s Blog</span>
+                <div className="flex items-center gap-2">
+                  <Link 
+                    href="/" 
+                    className="text-sm px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 
+                              hover:border-gray-400 dark:hover:border-gray-500 
+                              transition-all duration-200"
+                  >
+                    Home
+                  </Link>
+                  <ThemeDropdown />
+                </div>
+              </div>
+            </header>
           </div>
         </div>
-        <div className="border-b border-gray-200 dark:border-gray-700 mt-2"></div>
-      </header>
-      <div className="w-full">
-        <p className="text-gray-500 mb-4">I tend to write about machine learning, startups, longevity, and productivity.</p>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-[650px] mx-auto px-6 pt-3">
         <BlogContent blogPosts={groupedBlogPosts} />
       </div>
-    </div>
+    </>
   );
 }

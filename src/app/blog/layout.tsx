@@ -1,10 +1,17 @@
-import React from 'react';
-import { ThemeProvider } from '@/context/ThemeContext';
+"use client"
 
-export default function BlogLayout({ children }: { children: React.ReactNode }) {
+import React from 'react';
+
+export default function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <ThemeProvider>
-      {children}
-    </ThemeProvider>
+    <div className="w-full flex justify-center">
+      <div className="w-full max-w-[650px]">
+        {children}
+      </div>
+    </div>
   );
 }

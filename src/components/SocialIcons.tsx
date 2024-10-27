@@ -1,10 +1,20 @@
 "use client";
 
-import Image from 'next/image';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 const SocialIcons = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   const isDarkMode = theme === 'dark';
 
   const socialLinks = [
@@ -19,7 +29,7 @@ const SocialIcons = () => {
     },
     {
       name: 'X',
-      url: 'https://twitter.com/maxforsey',
+      url: 'https://twitter.com/max_4c',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill={isDarkMode ? "white" : "black"}>
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -77,14 +87,6 @@ const SocialIcons = () => {
           {link.icon}
         </a>
       ))}
-      <button onClick={toggleTheme} className="hover:opacity-80 transition-opacity">
-        <Image 
-          src={isDarkMode ? "/makelight.svg" : "/makedark.svg"} 
-          alt="Toggle theme" 
-          width={24} 
-          height={24} 
-        />
-      </button>
     </div>
   );
 };

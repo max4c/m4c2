@@ -1,11 +1,7 @@
-import React from 'react';
-
-const MDXContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export default function MDXContent({ children }: { children: React.ReactNode }) {
   return (
-    <div className="prose dark:prose-invert max-w-none mdx-content text-black dark:text-white">
+    <div className="max-w-[650px] mx-auto px-6 prose dark:prose-invert">
       {children}
     </div>
   );
-};
-
-export default MDXContent;
+}
