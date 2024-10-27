@@ -85,9 +85,9 @@ export default function BlogPage() {
                     href="/" 
                     className="text-sm px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 
                               hover:border-gray-400 dark:hover:border-gray-500 
-                              transition-all duration-200"
+                              transition-all duration-200 nav-button"
                   >
-                    Home
+                    About
                   </Link>
                   <ThemeDropdown />
                 </div>

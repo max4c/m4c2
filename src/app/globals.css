@@ -51,29 +51,24 @@ main {
 @layer components {
   /* Default link styles */
   a {
-    @apply text-[#0957D0] hover:text-[#e97319] font-normal;
+    @apply text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors;
   }
 
-  /* Header and footer specific links */
-  header a, footer a {
-    @apply font-bold;
+  /* Only make the main title bold and large */
+  .blog-header a[href="/blog"]:first-of-type:not(.nav-button),
+  .blog-header a[href="/"]:first-of-type:not(.nav-button) {
+    @apply font-bold text-2xl text-[#0957D0] dark:text-[#F7C217];
   }
 
-  /* Dark mode links */
-  .dark a:not(.header a) {
-    @apply text-[#F7C217] hover:text-[#e97319];
-  }
-
-  /* Blog header specific links */
-  .blog-header a:not([href="/blog"]) {
-    @apply font-bold;
+  /* Navigation button specific styles */
+  .nav-button {
+    @apply text-sm font-normal text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors;
   }
 }
 
+/* Remove these overrides if they exist */
 /* Override the general no-bold rule for specific cases */
-header a:not([href="/blog"]), 
-footer a, 
-.blog-header a:not([href="/blog"]), 
+footer a,
 .blog-nav a {
   font-weight: bold !important;
 }
@@ -95,7 +90,7 @@ footer a,
 }
 
 .prose a {
-  @apply text-[#0957D0] hover:text-[#e97319] no-underline font-normal;
+  @apply text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors no-underline font-normal;
 }
 
 .dark .prose a {
@@ -146,14 +141,6 @@ a {
 
 a:hover {
   text-decoration: none;
-}
-
-/* Remove any potential bold styling from links except in headers */
-a:not(.blog-header a), 
-a:not(.blog-header a) *, 
-.prose a:not(.blog-header a), 
-.prose a:not(.blog-header a) * {
-  font-weight: normal !important;
 }
 
 /* Add this new rule to ensure footer links remain bold */

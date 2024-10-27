@@ -70,16 +70,16 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
                       className="text-sm px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 
                                 hover:bg-gray-100 dark:hover:bg-gray-800
                                 hover:border-gray-400 dark:hover:border-gray-500 
-                                transition-all duration-200"
+                                transition-all duration-200 nav-button"
                     >
-                      Home
+                      About
                     </Link>
                     <Link 
                       href="/blog" 
                       className="text-sm px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 
                                 hover:bg-gray-100 dark:hover:bg-gray-800
                                 hover:border-gray-400 dark:hover:border-gray-500 
-                                transition-all duration-200"
+                                transition-all duration-200 nav-button"
                     >
                       More Posts
                     </Link>
