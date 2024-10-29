@@ -5,10 +5,21 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import SocialIcons from './SocialIcons';
 import ThemeDropdown from './ThemeDropdown';
+import { useEffect, useState } from 'react';
 
 const Footer = () => {
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
+  const { theme, systemTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  const isDarkMode = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
 
   return (
     <footer className="mt-8 w-full">

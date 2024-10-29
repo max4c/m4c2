@@ -4,7 +4,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
 const SocialIcons = () => {
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const SocialIcons = () => {
     return null;
   }
 
-  const isDarkMode = theme === 'dark';
+  const isDarkMode = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
 
   const socialLinks = [
     {

@@ -5,7 +5,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useEffect, useState } from 'react';
 
 export default function ThemeDropdown() {
-  const { theme, setTheme } = useTheme();
+  const { theme, systemTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -16,8 +16,10 @@ export default function ThemeDropdown() {
     return <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />;
   }
 
+  const isDarkMode = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
+
   // Determine focus ring color based on current theme
-  const focusRingClass = theme === "dark" 
+  const focusRingClass = isDarkMode
     ? "focus:ring-[#F7C217]" // Yellow ring for dark mode
     : "focus:ring-[#0957D0]"; // Blue ring for light mode
 
@@ -28,7 +30,7 @@ export default function ThemeDropdown() {
           className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 ${focusRingClass}`}
           aria-label="Toggle theme"
         >
-          {theme === "dark" ? (
+          {isDarkMode ? (
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
               <circle cx="12" cy="12" r="6" className="fill-[#F7C217]"/>
               <g className="stroke-[#F7C217]" strokeWidth="2" strokeLinecap="round">
