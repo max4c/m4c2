@@ -43,7 +43,7 @@ export default function Highlights() {
 
     return (
         <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
-            <h2 className="text-xl font-bold mb-4">Hi, I'm Max 👋</h2>
+            <h2 className="text-xl font-bold mb-4">Hi, I&apos;m Max 👋</h2>
             <div className="relative h-[144px] overflow-hidden">
                 <AnimatePresence mode="sync" initial={false}>
                     {!isResetting ? (
