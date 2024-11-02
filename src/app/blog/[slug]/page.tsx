@@ -45,12 +45,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       </MDXContent>
       
       <div>
-        <div className="mt-8 text-center">
+        <div className="mt-8 pb-8 text-center">
           <Link 
-            href={data.type === 'ongoing' ? '/' : '/blog'}
+            href="/"
             className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors"
           >
-            ← Back to {data.type === 'ongoing' ? 'home' : 'all posts'}
+            ← Back to home
           </Link>
         </div>
       </div>

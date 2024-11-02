@@ -49,21 +49,30 @@ main {
 }
 
 @layer components {
-  /* Default link styles */
+  /* Update link styles to use underline instead of colors */
   a {
-    @apply text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors;
+    @apply text-inherit underline-offset-4 hover:underline decoration-gray-400 dark:decoration-gray-500;
   }
 
-  /* Only make the main title bold and large */
+  /* Update the main title style */
   .blog-header a[href="/blog"]:first-of-type:not(.nav-button),
   .blog-header a[href="/"]:first-of-type:not(.nav-button) {
-    @apply font-bold text-2xl text-[#0957D0] dark:text-[#F7C217];
+    @apply font-bold text-2xl text-inherit no-underline;
   }
 
   /* Navigation button specific styles */
   .nav-button {
-    @apply text-sm font-normal text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors;
+    @apply text-sm font-normal text-inherit hover:underline decoration-gray-400 dark:decoration-gray-500;
   }
+}
+
+/* Update prose link styles */
+.prose a {
+  @apply text-inherit underline-offset-4 hover:underline decoration-gray-400 dark:decoration-gray-500 font-normal;
+}
+
+.dark .prose a {
+  @apply text-inherit hover:underline decoration-gray-500 font-normal;
 }
 
 /* Remove these overrides if they exist */

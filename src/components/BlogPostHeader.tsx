@@ -41,48 +41,14 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
       <div className="w-full border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-[650px] mx-auto px-6">
           <div className="pt-6 pb-4 blog-header">
-            <div className="flex flex-col items-center sm:flex-row sm:justify-between w-full">
-              {type === 'ongoing' ? (
-                <>
-                  <Link 
-                    href="/" 
-                    className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold mb-4 sm:mb-0"
-                  >
-                    Max Forsey
-                  </Link>
-                  <ThemeDropdown />
-                </>
-              ) : (
-                <>
-                  <Link 
-                    href="/blog" 
-                    className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold mb-4 sm:mb-0"
-                  >
-                    Max Forsey&apos;s Blog
-                  </Link>
-                  <div className="flex items-center gap-2">
-                    <Link 
-                      href="/" 
-                      className="text-sm px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 
-                                hover:bg-gray-100 dark:hover:bg-gray-800
-                                hover:border-gray-400 dark:hover:border-gray-500 
-                                transition-all duration-200 nav-button"
-                    >
-                      About
-                    </Link>
-                    <Link 
-                      href="/blog" 
-                      className="text-sm px-4 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 
-                                hover:bg-gray-100 dark:hover:bg-gray-800
-                                hover:border-gray-400 dark:hover:border-gray-500 
-                                transition-all duration-200 nav-button"
-                    >
-                      More Posts
-                    </Link>
-                    <ThemeDropdown />
-                  </div>
-                </>
-              )}
+            <div className="flex items-center justify-between w-full">
+              <Link 
+                href="/" 
+                className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold"
+              >
+                Max Forsey&apos;s Blog
+              </Link>
+              <ThemeDropdown />
             </div>
           </div>
         </div>

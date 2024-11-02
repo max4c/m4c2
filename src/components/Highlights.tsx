@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const highlights = [
+    "Venture Partner at Contrary",
+    "Currently doing AI research in the PCC Lab",
+    "Studying machine learning at BYU",
+    "Cofounded Sameday AI going through YC and AI Grant",
     "Recently lived in San Francisco, currently in Provo",
     "VP of the BYU's AI Association",
     "Y Combinator alum",
@@ -38,8 +42,8 @@ export default function Highlights() {
     };
 
     return (
-        <section className="mb-8">
-            <h2 className="text-xl font-bold mb-4">Highlights</h2>
+        <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
+            <h2 className="text-xl font-bold mb-4">Hi, I'm Max 👋</h2>
             <div className="relative h-[144px] overflow-hidden">
                 <AnimatePresence mode="sync" initial={false}>
                     {!isResetting ? (
@@ -111,15 +115,25 @@ export default function Highlights() {
                     )}
                 </AnimatePresence>
             </div>
-        <button 
-            onClick={handleMore}
-            className="text-sm px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 
-              hover:border-gray-400 dark:hover:border-gray-500 
-              text-blue-600 dark:text-yellow-500 hover:text-orange-500 dark:hover:text-orange-500
-              transition-all duration-200"
-        >
-            {currentIndex === 0 ? 'More' : 'Keep Going'}
-        </button>
+            <button 
+                onClick={handleMore}
+                className="px-4 py-2 text-sm bg-white dark:bg-gray-800 
+                    rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 
+                    border border-gray-200 dark:border-gray-700
+                    transition-colors duration-200
+                    text-gray-700 dark:text-gray-300
+                    flex items-center gap-2"
+            >
+                <span>{currentIndex === 0 ? 'Learn about me' : 'Keep Going'}</span>
+                <svg 
+                    className="w-4 h-4 text-gray-400 transform group-hover:translate-x-1 transition-transform" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
         </section>
     );
 }

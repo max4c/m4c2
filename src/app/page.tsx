@@ -67,142 +67,116 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Bio Section */}
-      <div className="mb-8">
-        <p className="mb-4">
-          Hi, I&apos;m a junior at Brigham Young University studying computer science with 
-          an emphasis in Machine Learning.
-        </p>
-        <p className="mb-4">
-          Currently, I am doing AI research in the <a href="https://github.com/BYU-PCCL" className="text-blue-600 hover:underline">PCC Lab</a> focusing on mechanistic 
-          interpretability. Previously, I cofounded <a href="https://www.gosameday.com" className="text-blue-600 hover:underline">Sameday AI</a>, participating in Y 
-          Combinator&apos;s W23 batch and AI Grant&apos;s batch 1.
-        </p>
-      </div>
-
-      {/* Publications Section */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Publications</h2>
-        <div className="space-y-4">
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning</p>
-          </div>
-        </div>
-      </section>
-
       {/* Highlights Section */}
       <Highlights />
 
-      {/* Work Section */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Work</h2>
-        <p className="mb-4">For my career, I follow the advice of Charlie Munger:</p>
-        <p className="mb-4 italic">&quot;You want to deliver to the world what you would buy if you were on the other end.&quot;</p>
-        <div className="space-y-4">
-          <div>
-            <h3 className="font-medium">PCC Lab (May 2024-Present): AI Research Assistant</h3>
-            <p className="text-gray-500 dark:text-gray-400">I research sparse autoencoders, interpretability, and hallucinations in the context of AI safety.</p>
-          </div>
-          <div>
-            <h3 className="font-medium">Sameday (May 2022-Oct 2023): Cofounder & CTO</h3>
-            <p className="text-gray-500 dark:text-gray-400">Engineered an AI phone agent that handled 4000+ calls monthly and successfully went through YCombinator and AI grant.</p>
-          </div>
-          <div>
-            <h3 className="font-medium">Juni Learning (May 2022-Oct 2022): Computer Science Tutor</h3>
-            <p className="text-gray-500 dark:text-gray-400">Mentored 4 students (ages 8-16) for 8+ months in computer science, advancing one from Python basics to mastering complex algorithms like merge sort.</p>
+      {/* Blog Section */}
+      <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Blog</h2>
+        </div>
+
+        {/* Ongoing section */}
+        <div className="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Ongoing</h3>
+          <div className="flex flex-wrap gap-3">
+            {[
+              'books', 'films', 'music', 'quotes', 'tools', 'longevity'
+            ].map((item) => (
+              <Link 
+                key={item}
+                href={`/blog/${item}`} 
+                className="px-4 py-2 text-sm bg-white dark:bg-gray-800 
+                  rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 
+                  border border-gray-200 dark:border-gray-700
+                  transition-colors duration-200
+                  text-gray-700 dark:text-gray-300"
+              >
+                {item}
+              </Link>
+            ))}
           </div>
         </div>
-      </section>
 
-  {/* Blog Section */}
-  <section className="mb-8">
-    <div className="flex items-center justify-between mb-4">
-      <h2 className="text-xl font-bold">Blog</h2>
-      <Link 
-        href="/blog" 
-        className="text-sm px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 
-                  hover:border-gray-400 dark:hover:border-gray-500 
+        {/* Posts section */}
+        <div>
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Posts</h3>
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            {sortedPosts.map(post => (
+              <Link 
+                key={post.slug} 
+                href={`/blog/${post.slug}`}
+                className="group block py-4 first:pt-0 last:pb-0
+                  hover:bg-gray-100/50 dark:hover:bg-gray-700/50
                   transition-all duration-200"
-      >
-        More →
-      </Link>
-    </div>
-    <div className="space-y-4">
-      {sortedPosts.slice(0, 3).map(post => (
-        <div key={post.slug}>
-          <Link href={`/blog/${post.slug}`} className="text-blue-600 hover:underline">
-            {post.title}
-          </Link>
+              >
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+                  <h3 className="font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {post.title}
+                  </h3>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {format(post.date, 'MMM yyyy')}
+                    </span>
+                    <svg 
+                      className="w-4 h-4 text-gray-400 transform group-hover:translate-x-1 transition-transform" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </section>
+      </section>
 
-      {/* Projects Section */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Projects</h2>
+      {/* Work Section */}
+      <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
+        <h2 className="text-xl font-bold mb-4">Projects and Papers</h2>
         <div className="space-y-4">
+          {/* Paper */}
           <div>
-            <h3 className="font-medium">maxforsey.com (Ongoing)</h3>
-            <p className="text-gray-500 dark:text-gray-400">This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS!</p>
+            <h3 className="font-medium mb-1">
+              Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
+              <a href="#" className="text-sm text-gray-500 dark:text-gray-400 ml-2 hover:underline !decoration-gray-400 dark:!decoration-gray-500">
+                paper
+              </a>
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400">
+              Exploring novel approaches to dictionary learning through gradient analysis
+            </p>
           </div>
+
+          {/* Projects */}
           <div>
-            <h3 className="font-medium">FreshSesh AI (March 2024)</h3>
-            <p className="text-gray-500 dark:text-gray-400">A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU&apos;s YHack hackathon.</p>
+            <h3 className="font-medium mb-1">
+              maxforsey.com (Ongoing)
+              <a href="https://github.com/max4c/m4c2" className="text-sm text-gray-500 dark:text-gray-400 ml-2 hover:underline !decoration-gray-400 dark:!decoration-gray-500">
+                project
+              </a>
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400">
+              This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS!
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-medium mb-1">
+              FreshSesh AI (March 2024)
+              <a href="https://github.com/max4c/freshsesh" className="text-sm text-gray-500 dark:text-gray-400 ml-2 hover:underline !decoration-gray-400 dark:!decoration-gray-500">
+                project
+              </a>
+            </h3>
+            <p className="text-gray-500 dark:text-gray-400">
+              A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU&apos;s YHack hackathon.
+            </p>
           </div>
         </div>
       </section>
-
-      {/* Skills Section */}
-      <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Skills</h2>
-        <p>
-          <span>Languages:</span> 
-          <span className="text-gray-500 dark:text-gray-400"> Python, Java, Node.js, C++, JavaScript, CSS, HTML</span>
-        </p>
-        <p>
-          <span>Databases:</span> 
-          <span className="text-gray-500 dark:text-gray-400"> MySQL, NoSQL, Firebase</span>
-        </p>
-        <p>
-          <span>Machine Learning & LLMs:</span> 
-          <span className="text-gray-500 dark:text-gray-400"> PyTorch, NumPy, Pandas, Matplotlib, Seaborn, Scikit-learn</span>
-        </p>
-        <p>
-          <span>Misc:</span> 
-          <span className="text-gray-500 dark:text-gray-400"> Linear, Ollama, Notion, Twilio, Github, GCP, Eagle Scout, Crucial Conversations</span>
-        </p>
-      </section>
-
-      {/* Deep Dive Section - with reduced margin */}
-      <section>
-        <h2 className="text-xl font-bold mb-4">Deep Dive</h2>
-        <p className="mb-4">Explore these ongoing pages to get a sense of who I am and what I value.</p>
-        <div className="grid grid-cols-3 gap-4">
-          <Link href="/blog/books" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
-            Books
-          </Link>
-          <Link href="/blog/longevity" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
-            Longevity
-          </Link>
-          <Link href="/blog/tools" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
-            Tools
-          </Link>
-          <Link href="/blog/films" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
-            Films
-          </Link>
-          <Link href="/blog/music" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
-            Music
-          </Link>
-          <Link href="/blog/quotes" className="text-center p-2 border rounded-lg border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200">
-            Quotes
-          </Link>
-        </div>
-      </section>
-
-      {/* Add margin-bottom to match the header spacing */}
-      <div className="mb-8"></div>
     </div>
   );
 }

@@ -33,7 +33,6 @@ export default function RootLayout({
               </main>
             </div>
             <div className="w-full max-w-[650px] px-6">
-              <Footer />
             </div>
           </div>
         </ThemeProvider>
