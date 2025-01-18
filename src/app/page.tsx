@@ -7,6 +7,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { format } from 'date-fns';
 import ThemeDropdown from '@/components/ThemeDropdown';
+import ImageModal from '@/components/ImageModal';
 
 const blogDir = path.join(process.cwd(), 'src/app/blog');
 const files = fs.readdirSync(blogDir).filter(file => file.endsWith('.mdx'));
@@ -118,10 +119,17 @@ export default function Home() {
                   transition-colors duration-200"
               >
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium text-gray-800 dark:text-gray-200 
-                    group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
-                    {post.title}
-                  </h3>
+                  <div className="flex items-center">
+                    <h3 className="font-medium text-gray-800 dark:text-gray-200 
+                      group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                      {post.title}
+                    </h3>
+                    <span className="ml-1 text-gray-400 dark:text-gray-500 
+                      group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]
+                      transition-colors duration-200">
+                      ›
+                    </span>
+                  </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400 ml-4">
                     {format(post.date, 'MMM yyyy')}
                   </span>
@@ -135,65 +143,86 @@ export default function Home() {
       {/* Projects and Papers Section */}
       <section key="projects" className="mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
         <h3 className="text-3xl font-bold mb-3">Projects and Papers</h3>
-        <div className="space-y-6">
-          {/* Paper */}
-          <div>
-            <a href="https://arxiv.org/abs/2411.10397" className="group block">
-              <div className="flex items-center gap-3">
-                <h3 className="font-medium text-gray-800 dark:text-gray-200 
-                  group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+        <div className="space-y-8">
+          {/* Paper Example */}
+          <div className="space-y-4">
+            <div className="flex-1">
+              <Link href="https://arxiv.org/abs/2312.09251" className="group">
+                <h4 className="text-lg font-medium mb-2 group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
-                </h3>
-                <span className="px-4 py-2 text-sm bg-white dark:bg-transparent 
-                  rounded-full hover:scale-105 hover:shadow-md
-                  border border-black dark:border-white
-                  transition-all duration-200 ease-in-out
-                  text-black dark:text-white
-                  hover:border-black dark:hover:border-white">
-                  paper
-                </span>
-              </div>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+                </h4>
+              </Link>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                 Exploring novel approaches to dictionary learning through gradient analysis
               </p>
-            </a>
+              <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                rounded-full border border-black dark:border-white
+                text-black dark:text-white inline-block">
+                paper
+              </span>
+            </div>
+            
+            <div className="w-full md:w-2/3 mx-auto">
+              <ImageModal
+                src="/paper.png"
+                alt="Gradient analysis visualization"
+                width={800}
+                height={500}
+              />
+            </div>
           </div>
 
-          {/* Projects */}
-          {[
-            {
-              title: "maxforsey.com (Ongoing)",
-              href: "https://github.com/max4c/m4c2",
-              description: "This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS!"
-            },
-            {
-              title: "FreshSesh AI (March 2024)",
-              href: "https://github.com/max4c/freshsesh",
-              description: "A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU's YHack hackathon."
-            }
-          ].map((project) => (
-            <div key={project.title}>
-              <a href={project.href} className="group block">
-                <div className="flex items-center gap-3">
-                  <h3 className="font-medium text-gray-800 dark:text-gray-200 
-                    group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
-                    {project.title}
-                  </h3>
-                  <span className="px-4 py-2 text-sm bg-white dark:bg-transparent 
-                    rounded-full hover:scale-105 hover:shadow-md
-                    border border-black dark:border-white
-                    transition-all duration-200 ease-in-out
-                    text-black dark:text-white
-                    hover:border-black dark:hover:border-white">
-                    project
-                  </span>
-                </div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
-                  {project.description}
-                </p>
-              </a>
+          {/* FreshSesh AI Project */}
+          <div className="space-y-4">
+            <div className="flex-1">
+              <Link href="https://freshsesh.ai" className="group">
+                <h4 className="text-lg font-medium mb-2 group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                  FreshSesh AI
+                </h4>
+              </Link>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                Built an AI-powered tool that helps you write better session notes. Used by hundreds of therapists to save time and improve their documentation.
+              </p>
+              <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                rounded-full border border-black dark:border-white
+                text-black dark:text-white inline-block">
+                project
+              </span>
             </div>
-          ))}
+            
+            <div className="w-full md:w-2/3 mx-auto">
+              <ImageModal
+                src="/freshsesh.jpeg"
+                alt="FreshSesh AI interface"
+                width={800}
+                height={500}
+              />
+            </div>
+          </div>
+
+          {/* maxforsey.com Project */}
+          <div className="space-y-4">
+            <div className="flex-1">
+              <h4 className="text-lg font-medium mb-2">maxforsey.com (Ongoing)</h4>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS! Below are some previous iterations.
+              </p>
+              <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                rounded-full border border-black dark:border-white
+                text-black dark:text-white inline-block">
+                project
+              </span>
+            </div>
+            
+            <div className="w-full md:w-2/3 mx-auto">
+              <ImageModal
+                src="/website.png"
+                alt="Website screenshot"
+                width={800}
+                height={500}
+              />
+            </div>
+          </div>
         </div>
       </section>
     </div>
