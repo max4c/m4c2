@@ -31,12 +31,12 @@
 
 /* Update the content-wrapper class */
 .content-wrapper {
-  @apply w-full max-w-[650px] mx-auto px-4 flex flex-col;
+  @apply w-full max-w-[650px] mx-auto px-4 sm:px-6;
 }
 
 /* Add this to ensure consistent width across all pages */
 main {
-  @apply w-full flex flex-col items-center;
+  @apply w-full max-w-[650px] mx-auto;
 }
 
 @layer base {
@@ -178,5 +178,20 @@ footer a.font-bold {
 }
 
 .content-border {
-  @apply w-[calc(100%+2rem)] -ml-4 border-gray-200 dark:border-gray-700;
+  @apply relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] sm:w-full sm:left-0 sm:right-0 sm:ml-0 sm:mr-0 border-black dark:border-white;
+}
+
+@layer utilities {
+  .content-wrapper {
+    @apply w-full px-4 sm:px-6;
+  }
+  
+  section {
+    @apply p-4 sm:p-8;
+  }
+}
+
+/* Add new section styles */
+section {
+  @apply w-full;
 }

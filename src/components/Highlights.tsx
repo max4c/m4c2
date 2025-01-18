@@ -3,17 +3,83 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const highlights = [
-    "Venture Partner at Contrary",
-    "Currently doing AI research in the PCC Lab",
-    "Studying machine learning at BYU",
-    "Cofounded Sameday AI going through YC and AI Grant",
-    "Recently lived in San Francisco, currently in Provo",
-    "VP of the BYU's AI Association",
-    "Y Combinator alum",
-    "Hiked the Grand Canyon rim to rim",
-    "Type in Colemak",
-    "Use a split keyboard and vertical mouse",
-    "Daily driver is a flip phone"
+    {
+        text: "Venture Partner at Contrary",
+        links: [{
+            url: "https://contrary.com",
+            text: "Contrary"
+        }]
+    },
+    {
+        text: "Currently doing AI research in the PCC Lab",
+        links: null
+    },
+    {
+        text: "Studying machine learning at BYU",
+        links: null
+    },
+    {
+        text: "Co-founder of justbuild, the hackathon community",
+        links: [{
+            url: "https://justbuild.ing/",
+            text: "justbuild"
+        }]
+    },
+    {
+        text: "Cofounded Sameday AI going through AI Grant and YC",
+        links: [
+            {
+                url: "https://www.gosameday.com/",
+                text: "Sameday AI"
+            },
+            {
+                url: "https://aigrant.com/",
+                text: "AI Grant"
+            }
+        ]
+    },
+    {
+        text: "Recently lived in San Francisco, currently in Provo",
+        links: null
+    },
+    {
+        text: "Hiked the Grand Canyon rim to rim",
+        links: null
+    },
+    {
+        text: "Type in Colemak",
+        links: [{
+            url: "https://colemak.com/",
+            text: "Colemak"
+        }]
+    },
+    {
+        text: "Have fun experimenting with longevity",
+        links: [{
+            url: "https://www.maxforsey.com/blog/longevity",
+            text: "longevity"
+        }]
+    },
+    {
+        text: "Use a split keyboard and vertical mouse",
+        links: [
+            {
+                url: "https://www.zsa.io/moonlander/",
+                text: "split keyboard"
+            },
+            {
+                url: "https://www.logitech.com/en-us/products/mice/lift-vertical-ergonomic-mouse.html",
+                text: "vertical mouse"
+            }
+        ]
+    },
+    {
+        text: "Daily driver is a flip phone",
+        links: [{
+            url: "https://sunbeamwireless.com/",
+            text: "flip phone"
+        }]
+    }
 ];
 
 export default function Highlights() {
@@ -42,9 +108,8 @@ export default function Highlights() {
     };
 
     return (
-        <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
-            <h2 className="text-xl font-bold mb-4">Hi, I&apos;m Max 👋</h2>
-            <div className="relative h-[144px] overflow-hidden">
+        <div>
+            <div className="relative h-[144px] overflow-hidden mt-2">
                 <AnimatePresence mode="sync" initial={false}>
                     {!isResetting ? (
                         <motion.div key="normal" className="relative">
@@ -76,7 +141,27 @@ export default function Highlights() {
                                         zIndex: 3 - index
                                     }}
                                 >
-                                    {highlight}
+                                    {highlight.links ? (
+                                        <>
+                                            {highlight.text.split(new RegExp(highlight.links.map(link => link.text).join('|'))).map((part, i) => (
+                                                <>
+                                                    {part}
+                                                    {highlight.links[i] && (
+                                                        <a 
+                                                            href={highlight.links[i].url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                                                        >
+                                                            {highlight.links[i].text}
+                                                        </a>
+                                                    )}
+                                                </>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        highlight.text
+                                    )}
                                 </motion.p>
                             ))}
                         </motion.div>
@@ -108,7 +193,27 @@ export default function Highlights() {
                                     }}
                                     className="text-gray-600 dark:text-gray-400 absolute w-full"
                                 >
-                                    {highlight}
+                                    {highlight.links ? (
+                                        <>
+                                            {highlight.text.split(new RegExp(highlight.links.map(link => link.text).join('|'))).map((part, i) => (
+                                                <>
+                                                    {part}
+                                                    {highlight.links[i] && (
+                                                        <a 
+                                                            href={highlight.links[i].url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                                                        >
+                                                            {highlight.links[i].text}
+                                                        </a>
+                                                    )}
+                                                </>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        highlight.text
+                                    )}
                                 </motion.p>
                             ))}
                         </motion.div>
@@ -117,16 +222,17 @@ export default function Highlights() {
             </div>
             <button 
                 onClick={handleMore}
-                className="px-4 py-2 text-sm bg-white dark:bg-gray-800 
-                    rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 
-                    border border-gray-200 dark:border-gray-700
-                    transition-colors duration-200
-                    text-gray-700 dark:text-gray-300
+                className="mt-1 px-4 py-2 text-sm bg-white dark:bg-transparent 
+                    rounded-full hover:scale-105 hover:shadow-md
+                    border border-black dark:border-white
+                    transition-all duration-200 ease-in-out
+                    text-black dark:text-white
+                    hover:border-black dark:hover:border-white
                     flex items-center gap-2"
             >
                 <span>{currentIndex === 0 ? 'Learn about me' : 'Keep Going'}</span>
                 <svg 
-                    className="w-4 h-4 text-gray-400 transform group-hover:translate-x-1 transition-transform" 
+                    className="w-4 h-4 text-black dark:text-white" 
                     fill="none" 
                     viewBox="0 0 24 24" 
                     stroke="currentColor"
@@ -134,6 +240,6 @@ export default function Highlights() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
             </button>
-        </section>
+        </div>
     );
 }

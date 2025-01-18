@@ -35,12 +35,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         readTime={readTime}
       />
       <MDXContent>
+        {/* @ts-expect-error Server Component */}
         <MDXRemote
           source={content}
-          components={{
-            ...MDXComponents,
-            iframe: MDXComponents.Iframe
-          }}
+          components={MDXComponents}
         />
       </MDXContent>
       

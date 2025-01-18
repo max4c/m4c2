@@ -27,12 +27,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="min-h-screen flex flex-col items-center">
-            <div className="w-full max-w-[650px] px-6 flex-grow">
-              <main>
+            <div className="w-full max-w-[650px] flex-grow">
+              <main className="px-4 sm:px-6">
                 {children}
               </main>
-            </div>
-            <div className="w-full max-w-[650px] px-6">
             </div>
           </div>
         </ThemeProvider>

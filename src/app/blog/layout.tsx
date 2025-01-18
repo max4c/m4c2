@@ -10,7 +10,9 @@ export default function BlogLayout({
   return (
     <div className="w-full flex justify-center">
       <div className="w-full max-w-[650px]">
-        {children}
+        <div className="px-4 sm:px-6">
+          {children}
+        </div>
       </div>
     </div>
   );

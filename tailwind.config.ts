@@ -17,7 +17,7 @@ const config: Config = {
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: '650px', // This ensures prose content also respects the new width
+            maxWidth: '650px',
           },
         },
       },

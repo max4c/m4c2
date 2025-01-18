@@ -34,13 +34,15 @@ const posts = files.map(filename => {
 
 const sortedPosts = posts.sort((a, b) => b.date.getTime() - a.date.getTime());
 
+console.log("Render timestamp:", Date.now());
+
 export default function Home() {
   return (
     <div>
       {/* Header Section with Profile */}
-      <div className="relative mb-8">
-        <div className="content-border border-b">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 mb-5 pt-4 md:pt-0">
+      <div className="relative mb-8 -mx-4 sm:mx-0">
+        <div className="content-border border-b border-black dark:border-white">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 mb-5 pt-4 md:pt-0 px-4 sm:px-6">
             <Image 
               src="/DigitalProfile_tiny.png"
               alt="Max Forsey"
@@ -68,29 +70,33 @@ export default function Home() {
         </div>
       </div>
       {/* Highlights Section */}
-      <Highlights />
+      <section key="highlights" className="mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
+        <h3 className="text-3xl font-bold mb-3">Hi, I&apos;m Max 👋</h3>
+        <Highlights />
+      </section>
 
       {/* Blog Section */}
-      <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Blog</h2>
-        </div>
+      <section key="blog" className="mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
+        <h3 className="text-3xl font-bold mb-3">Blog</h3>
 
-        {/* Ongoing section */}
-        <div className="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Ongoing</h3>
-          <div className="flex flex-wrap gap-3">
+        {/* Collections section */}
+        <div className="mb-12">
+          <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Collections</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Continuously updated lists and resources:</p>
+          <div className="flex flex-nowrap gap-2 overflow-x-auto pb-2">
             {[
               'books', 'films', 'music', 'quotes', 'tools', 'longevity'
             ].map((item) => (
               <Link 
                 key={item}
                 href={`/blog/${item}`} 
-                className="px-4 py-2 text-sm bg-white dark:bg-gray-800 
-                  rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 
-                  border border-gray-200 dark:border-gray-700
-                  transition-colors duration-200
-                  text-gray-700 dark:text-gray-300"
+                className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                  rounded-full hover:scale-105 hover:shadow-md
+                  border border-black dark:border-white
+                  transition-all duration-200 ease-in-out
+                  text-black dark:text-white
+                  hover:border-black dark:hover:border-white
+                  whitespace-nowrap"
               >
                 {item}
               </Link>
@@ -100,33 +106,25 @@ export default function Home() {
 
         {/* Posts section */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Posts</h3>
-          <div className="divide-y divide-gray-200 dark:divide-gray-700">
+          <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Individual articles and thoughts:</p>
+          <div className="space-y-5">
             {sortedPosts.map(post => (
               <Link 
                 key={post.slug} 
                 href={`/blog/${post.slug}`}
-                className="group block py-4 first:pt-0 last:pb-0
-                  hover:bg-gray-100/50 dark:hover:bg-gray-700/50
-                  transition-all duration-200"
+                className="group block py-2 -mx-2 px-2 rounded-lg
+                  hover:bg-gray-100/50 dark:hover:bg-gray-700/30
+                  transition-colors duration-200"
               >
-                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
-                  <h3 className="font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-medium text-gray-800 dark:text-gray-200 
+                    group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                     {post.title}
                   </h3>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      {format(post.date, 'MMM yyyy')}
-                    </span>
-                    <svg 
-                      className="w-4 h-4 text-gray-400 transform group-hover:translate-x-1 transition-transform" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
+                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-4">
+                    {format(post.date, 'MMM yyyy')}
+                  </span>
                 </div>
               </Link>
             ))}
@@ -134,47 +132,68 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Work Section */}
-      <section className="mb-8 p-6 rounded-lg bg-gray-100/50 dark:bg-gray-800/50">
-        <h2 className="text-xl font-bold mb-4">Projects and Papers</h2>
-        <div className="space-y-4">
+      {/* Projects and Papers Section */}
+      <section key="projects" className="mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
+        <h3 className="text-3xl font-bold mb-3">Projects and Papers</h3>
+        <div className="space-y-6">
           {/* Paper */}
           <div>
-            <h3 className="font-medium mb-1">
-              Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
-              <a href="#" className="text-sm text-gray-500 dark:text-gray-400 ml-2 hover:underline !decoration-gray-400 dark:!decoration-gray-500">
-                paper
-              </a>
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              Exploring novel approaches to dictionary learning through gradient analysis
-            </p>
+            <a href="https://arxiv.org/abs/2411.10397" className="group block">
+              <div className="flex items-center gap-3">
+                <h3 className="font-medium text-gray-800 dark:text-gray-200 
+                  group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                  Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
+                </h3>
+                <span className="px-4 py-2 text-sm bg-white dark:bg-transparent 
+                  rounded-full hover:scale-105 hover:shadow-md
+                  border border-black dark:border-white
+                  transition-all duration-200 ease-in-out
+                  text-black dark:text-white
+                  hover:border-black dark:hover:border-white">
+                  paper
+                </span>
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+                Exploring novel approaches to dictionary learning through gradient analysis
+              </p>
+            </a>
           </div>
 
           {/* Projects */}
-          <div>
-            <h3 className="font-medium mb-1">
-              maxforsey.com (Ongoing)
-              <a href="https://github.com/max4c/m4c2" className="text-sm text-gray-500 dark:text-gray-400 ml-2 hover:underline !decoration-gray-400 dark:!decoration-gray-500">
-                project
+          {[
+            {
+              title: "maxforsey.com (Ongoing)",
+              href: "https://github.com/max4c/m4c2",
+              description: "This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS!"
+            },
+            {
+              title: "FreshSesh AI (March 2024)",
+              href: "https://github.com/max4c/freshsesh",
+              description: "A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU's YHack hackathon."
+            }
+          ].map((project) => (
+            <div key={project.title}>
+              <a href={project.href} className="group block">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-medium text-gray-800 dark:text-gray-200 
+                    group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                    {project.title}
+                  </h3>
+                  <span className="px-4 py-2 text-sm bg-white dark:bg-transparent 
+                    rounded-full hover:scale-105 hover:shadow-md
+                    border border-black dark:border-white
+                    transition-all duration-200 ease-in-out
+                    text-black dark:text-white
+                    hover:border-black dark:hover:border-white">
+                    project
+                  </span>
+                </div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+                  {project.description}
+                </p>
               </a>
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS!
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-medium mb-1">
-              FreshSesh AI (March 2024)
-              <a href="https://github.com/max4c/freshsesh" className="text-sm text-gray-500 dark:text-gray-400 ml-2 hover:underline !decoration-gray-400 dark:!decoration-gray-500">
-                project
-              </a>
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              A macOS menu bar tool that summarizes recent git commits using a local LLM. It also won Best 1 Person Team at BYU&apos;s YHack hackathon.
-            </p>
-          </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>
