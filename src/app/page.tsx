@@ -205,7 +205,7 @@ export default function Home() {
             <div className="flex-1">
               <h4 className="text-lg font-medium mb-2">maxforsey.com (Ongoing)</h4>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                This website has become so much fun to work on and to experiment with design principles. It's also how I learned next.js and tailwind CSS! Below are some previous iterations.
+                This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS! Below are some previous iterations.
               </p>
               <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
                 rounded-full border border-black dark:border-white
