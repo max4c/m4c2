@@ -18,180 +18,92 @@
   }
 }
 
-
-@layer base {
+@layer components {
   html {
     font-size: 1.05rem;
   }
-}
 
-.mdx-content {
-  @apply prose max-w-none;
-}
-
-/* Update the content-wrapper class */
-.content-wrapper {
-  @apply w-full max-w-[650px] mx-auto px-4 sm:px-6;
-}
-
-/* Add this to ensure consistent width across all pages */
-main {
-  @apply w-full max-w-[650px] mx-auto;
-}
-
-@layer base {
   body {
-    @apply transition-colors duration-200;
+    @apply bg-background text-foreground min-h-screen flex flex-col;
   }
-  html {
-    @apply transition-colors duration-200;
-  }
-}
 
-@layer components {
-  /* Update link styles to use underline instead of colors */
+  footer {
+    @apply flex-shrink-0;
+  }
+
+  footer a {
+    @apply font-bold;
+  }
+
+  .mdx-content {
+    @apply prose max-w-none;
+  }
+
+  .content-wrapper {
+    @apply w-full max-w-[650px] mx-auto px-4 sm:px-6;
+  }
+
+  main {
+    @apply w-full max-w-[650px] mx-auto flex-1;
+  }
+
+  /* Link styles */
   a {
-    @apply text-inherit underline-offset-4 hover:underline decoration-gray-400 dark:decoration-gray-500;
+    @apply text-inherit no-underline transition-colors duration-200;
   }
 
-  /* Update the main title style */
+  /* Blog header styles */
   .blog-header a[href="/blog"]:first-of-type:not(.nav-button),
   .blog-header a[href="/"]:first-of-type:not(.nav-button) {
     @apply font-bold text-2xl text-inherit no-underline;
   }
 
-  /* Navigation button specific styles */
   .nav-button {
-    @apply text-sm font-normal text-inherit hover:underline decoration-gray-400 dark:decoration-gray-500;
+    @apply text-sm font-normal text-inherit transition-colors duration-200;
   }
-}
 
-/* Update prose link styles */
-.prose a {
-  @apply text-inherit underline-offset-4 hover:underline decoration-gray-400 dark:decoration-gray-500 font-normal;
-}
+  /* Prose styles */
+  .prose {
+    @apply max-w-none;
+  }
 
-.dark .prose a {
-  @apply text-inherit hover:underline decoration-gray-500 font-normal;
-}
+  .prose h1 {
+    @apply text-2xl font-bold mb-4;
+  }
 
-/* Remove these overrides if they exist */
-/* Override the general no-bold rule for specific cases */
-footer a,
-.blog-nav a {
-  font-weight: bold !important;
-}
+  .prose h2 {
+    @apply text-xl font-bold mb-3;
+  }
 
-.prose {
-  @apply max-w-none;
-}
+  .prose p {
+    @apply mb-4;
+  }
 
-.prose h1 {
-  @apply text-2xl font-bold mb-4;
-}
+  .prose a {
+    @apply text-primary hover:text-[#e97319] transition-colors no-underline font-normal;
+  }
 
-.prose h2 {
-  @apply text-xl font-bold mb-3;
-}
+  /* Theme specific styles */
+  .theme-icon {
+    @apply fill-primary stroke-primary transition-all duration-200;
+  }
 
-.prose p {
-  @apply mb-4;
-}
-
-.prose a {
-  @apply text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors no-underline font-normal;
-}
-
-.dark .prose a {
-  @apply text-[#F7C217] hover:text-[#e97319] no-underline font-normal;
-}
-
-.prose a:hover {
-  text-decoration: none;
-}
-
-.prose * a,
-.prose * a:hover {
-  text-decoration: none;
-}
-
-* a {
-  text-decoration: none !important;
-}
-
-* a:hover {
-  text-decoration: none !important;
-}
-
-html.dark {
-  background-color: #171717;
-  color: white;
-}
-
-/* Add these styles at the end of the file */
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-main {
-  flex: 1;
-}
-
-footer {
-  flex-shrink: 0;
-}
-
-/* Add this new global style for links */
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
-/* Add this new rule to ensure footer links remain bold */
-footer a.font-bold {
-  font-weight: bold !important;
-}
-
-.theme-icon {
-  fill: #F7C217;
-  stroke: #F7C217;
-  transition: fill 0.2s, stroke 0.2s;
-}
-
-.dark .theme-icon {
-  fill: #0957D0;
-  stroke: #0957D0;
-}
-
-.social-icon {
-  fill: black;
-  transition: fill 0.2s;
-}
-
-.dark .social-icon {
-  fill: white;
-}
-
-.content-border {
-  @apply relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] sm:w-full sm:left-0 sm:right-0 sm:ml-0 sm:mr-0 border-black dark:border-white;
+  .social-icon {
+    @apply fill-foreground transition-colors duration-200;
+  }
 }
 
 @layer utilities {
-  .content-wrapper {
-    @apply w-full px-4 sm:px-6;
+  .content-border {
+    @apply relative w-screen left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] sm:w-full sm:left-0 sm:right-0 sm:ml-0 sm:mr-0 border-foreground;
   }
-  
+
   section {
-    @apply p-4 sm:p-8;
+    @apply w-full p-4 sm:p-8;
   }
 }
 
-/* Add new section styles */
-section {
-  @apply w-full;
+/* Dark mode specific */
+html.dark {
+  @apply bg-[#171717] text-white;
 }

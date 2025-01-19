@@ -55,7 +55,7 @@ const SocialIcons = () => {
           href={link.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-blue-500 dark:text-gray-400 transition-colors"
+          className="text-gray-600 dark:text-gray-400 hover:text-[#0957D0] dark:hover:text-[#e97319] transition-colors duration-200"
         >
           {link.icon}
         </a>

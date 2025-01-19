@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
 
 const highlights = [
     {
@@ -135,7 +136,7 @@ export default function Highlights() {
                                         duration: 0.5,
                                         ease: [0.4, 0, 0.2, 1]
                                     }}
-                                    className="text-gray-600 dark:text-gray-400 absolute w-full"
+                                    className="text-foreground absolute w-full"
                                     style={{ 
                                         position: 'absolute',
                                         zIndex: 3 - index
@@ -144,19 +145,19 @@ export default function Highlights() {
                                     {highlight.links ? (
                                         <>
                                             {highlight.text.split(new RegExp(highlight.links.map(link => link.text).join('|'))).map((part, i) => (
-                                                <>
+                                                <React.Fragment key={i}>
                                                     {part}
                                                     {highlight.links[i] && (
                                                         <a 
                                                             href={highlight.links[i].url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                                                            className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors duration-200"
                                                         >
                                                             {highlight.links[i].text}
                                                         </a>
                                                     )}
-                                                </>
+                                                </React.Fragment>
                                             ))}
                                         </>
                                     ) : (
@@ -191,24 +192,24 @@ export default function Highlights() {
                                         delay: 0.3,  // Delay entrance until after exit
                                         ease: [0.4, 0, 0.2, 1]
                                     }}
-                                    className="text-gray-600 dark:text-gray-400 absolute w-full"
+                                    className="text-foreground absolute w-full"
                                 >
                                     {highlight.links ? (
                                         <>
                                             {highlight.text.split(new RegExp(highlight.links.map(link => link.text).join('|'))).map((part, i) => (
-                                                <>
+                                                <React.Fragment key={i}>
                                                     {part}
                                                     {highlight.links[i] && (
                                                         <a 
                                                             href={highlight.links[i].url}
                                                             target="_blank"
                                                             rel="noopener noreferrer"
-                                                            className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 underline"
+                                                            className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors duration-200"
                                                         >
                                                             {highlight.links[i].text}
                                                         </a>
                                                     )}
-                                                </>
+                                                </React.Fragment>
                                             ))}
                                         </>
                                     ) : (
@@ -222,17 +223,18 @@ export default function Highlights() {
             </div>
             <button 
                 onClick={handleMore}
-                className="mt-1 px-4 py-2 text-sm bg-white dark:bg-transparent 
-                    rounded-full hover:scale-105 hover:shadow-md
+                className="group mt-1 px-4 py-2 text-sm bg-white dark:bg-transparent 
                     border border-black dark:border-white
-                    transition-all duration-200 ease-in-out
+                    transition-all duration-200
                     text-black dark:text-white
-                    hover:border-black dark:hover:border-white
+                    hover:bg-[#0957D0] dark:hover:bg-[#e97319]
+                    hover:text-white dark:hover:text-white
+                    hover:border-[#0957D0] dark:hover:border-[#e97319]
                     flex items-center gap-2"
             >
                 <span>{currentIndex === 0 ? 'Learn about me' : 'Keep Going'}</span>
                 <svg 
-                    className="w-4 h-4 text-black dark:text-white" 
+                    className="w-4 h-4 text-black dark:text-white group-hover:text-white dark:group-hover:text-white transition-colors duration-200" 
                     fill="none" 
                     viewBox="0 0 24 24" 
                     stroke="currentColor"

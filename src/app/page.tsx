@@ -81,10 +81,10 @@ export default function Home() {
         <h3 className="text-3xl font-bold mb-3">Blog</h3>
 
         {/* Collections section */}
-        <div className="mb-12">
+        <div className="mb-8">
           <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Collections</h3>
           <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Continuously updated lists and resources:</p>
-          <div className="flex flex-nowrap gap-2 overflow-x-auto pb-2">
+          <div className="grid grid-cols-2 sm:flex sm:flex-nowrap gap-2 pb-2">
             {[
               'books', 'films', 'music', 'quotes', 'tools', 'longevity'
             ].map((item) => (
@@ -92,12 +92,13 @@ export default function Home() {
                 key={item}
                 href={`/blog/${item}`} 
                 className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                  rounded-full hover:scale-105 hover:shadow-md
                   border border-black dark:border-white
-                  transition-all duration-200 ease-in-out
+                  transition-all duration-200
                   text-black dark:text-white
-                  hover:border-black dark:hover:border-white
-                  whitespace-nowrap"
+                  hover:bg-[#0957D0] dark:hover:bg-[#e97319]
+                  hover:text-white dark:hover:text-white
+                  hover:border-[#0957D0] dark:hover:border-[#e97319]
+                  whitespace-nowrap text-center"
               >
                 {item}
               </Link>
@@ -114,23 +115,22 @@ export default function Home() {
               <Link 
                 key={post.slug} 
                 href={`/blog/${post.slug}`}
-                className="group block py-2 -mx-2 px-2 rounded-lg
-                  hover:bg-gray-100/50 dark:hover:bg-gray-700/30
-                  transition-colors duration-200"
+                className="group block mb-4 px-3 py-2
+                    border border-black dark:border-white
+                    transition-all duration-200
+                    bg-white dark:bg-transparent
+                    text-black dark:text-white
+                    hover:bg-[#0957D0] dark:hover:bg-[#e97319]
+                    hover:text-white dark:hover:text-white
+                    hover:border-[#0957D0] dark:hover:border-[#e97319]"
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
-                    <h3 className="font-medium text-gray-800 dark:text-gray-200 
-                      group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                    <h3 className="font-medium">
                       {post.title}
                     </h3>
-                    <span className="ml-1 text-gray-400 dark:text-gray-500 
-                      group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]
-                      transition-colors duration-200">
-                      ›
-                    </span>
                   </div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 ml-4">
+                  <span className="text-sm ml-4 opacity-70">
                     {format(post.date, 'MMM yyyy')}
                   </span>
                 </div>
@@ -147,19 +147,20 @@ export default function Home() {
           {/* Paper Example */}
           <div className="space-y-4">
             <div className="flex-1">
-              <Link href="https://arxiv.org/abs/2312.09251" className="group">
-                <h4 className="text-lg font-medium mb-2 group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+              <Link href="https://arxiv.org/abs/2312.09251" className="group flex items-center gap-3 mb-2">
+                <h4 className="text-lg font-medium group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
                 </h4>
+                <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                  border border-black dark:border-white
+                  transition-all duration-200
+                  text-black dark:text-white
+                  group-hover:bg-[#0957D0] dark:group-hover:bg-[#e97319]
+                  group-hover:text-white dark:group-hover:text-white
+                  group-hover:border-[#0957D0] dark:group-hover:border-[#e97319]">
+                  paper
+                </span>
               </Link>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Exploring novel approaches to dictionary learning through gradient analysis
-              </p>
-              <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                rounded-full border border-black dark:border-white
-                text-black dark:text-white inline-block">
-                paper
-              </span>
             </div>
             
             <div className="w-full md:w-2/3 mx-auto">
@@ -175,19 +176,20 @@ export default function Home() {
           {/* FreshSesh AI Project */}
           <div className="space-y-4">
             <div className="flex-1">
-              <Link href="https://freshsesh.ai" className="group">
-                <h4 className="text-lg font-medium mb-2 group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+              <Link href="https://freshsesh.ai" className="group flex items-center gap-3 mb-2">
+                <h4 className="text-lg font-medium group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   FreshSesh AI
                 </h4>
+                <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                  border border-black dark:border-white
+                  transition-all duration-200
+                  text-black dark:text-white
+                  group-hover:bg-[#0957D0] dark:group-hover:bg-[#e97319]
+                  group-hover:text-white dark:group-hover:text-white
+                  group-hover:border-[#0957D0] dark:group-hover:border-[#e97319]">
+                  project
+                </span>
               </Link>
-              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
-                Built an AI-powered tool that helps you write better session notes. Used by hundreds of therapists to save time and improve their documentation.
-              </p>
-              <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                rounded-full border border-black dark:border-white
-                text-black dark:text-white inline-block">
-                project
-              </span>
             </div>
             
             <div className="w-full md:w-2/3 mx-auto">
@@ -203,15 +205,19 @@ export default function Home() {
           {/* maxforsey.com Project */}
           <div className="space-y-4">
             <div className="flex-1">
-              <h4 className="text-lg font-medium mb-2">maxforsey.com (Ongoing)</h4>
+              <div className="flex items-center gap-3 mb-2">
+                <h4 className="text-lg font-medium">
+                  maxforsey.com
+                </h4>
+                <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
+                  border border-black dark:border-white
+                  text-black dark:text-white">
+                  project
+                </span>
+              </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                 This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS! Below are some previous iterations.
               </p>
-              <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                rounded-full border border-black dark:border-white
-                text-black dark:text-white inline-block">
-                project
-              </span>
             </div>
             
             <div className="w-full md:w-2/3 mx-auto">
