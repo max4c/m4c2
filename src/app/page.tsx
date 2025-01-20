@@ -147,7 +147,7 @@ export default function Home() {
           {/* Paper Example */}
           <div className="space-y-4">
             <div className="flex-1">
-              <Link href="https://arxiv.org/abs/2312.09251" className="group flex items-center gap-3 mb-2">
+              <Link href="https://arxiv.org/abs/2411.10397" className="group flex items-center gap-3 mb-2">
                 <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
                 </h4>
@@ -177,7 +177,7 @@ export default function Home() {
           {/* FreshSesh AI Project */}
           <div className="space-y-4">
             <div className="flex-1">
-              <Link href="https://freshsesh.ai" className="group flex items-center gap-3 mb-2">
+              <Link href="https://github.com/max4c/freshsesh" className="group flex items-center gap-3 mb-2">
                 <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   FreshSesh AI
                 </h4>
