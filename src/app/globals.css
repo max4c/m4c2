@@ -65,22 +65,30 @@
   /* Prose styles */
   .prose {
     @apply max-w-none;
+    @apply prose-h1:text-lg prose-h1:font-bold prose-h1:mb-4;
+    @apply prose-h2:text-xl prose-h2:font-bold prose-h2:mb-3 prose-h2:mt-8;
+    @apply prose-h3:text-lg prose-h3:font-bold prose-h3:mb-3 prose-h3:mt-6;
+    @apply prose-p:mb-4 prose-p:leading-relaxed;
+    @apply prose-ul:my-4 prose-ul:list-disc prose-ul:pl-5;
+    @apply prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-5;
+    @apply prose-li:mb-2;
+    @apply prose-img:my-8 prose-img:rounded-lg;
+    @apply prose-code:text-primary prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
+    @apply prose-pre:bg-gray-100 prose-pre:dark:bg-gray-800 prose-pre:p-4 prose-pre:rounded-lg;
+    @apply prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic;
   }
 
-  .prose h1 {
-    @apply text-2xl font-bold mb-4;
-  }
-
-  .prose h2 {
-    @apply text-xl font-bold mb-3;
-  }
-
-  .prose p {
-    @apply mb-4;
+  .dark .prose {
+    @apply prose-invert;
+    @apply prose-code:text-primary-foreground;
   }
 
   .prose a {
-    @apply text-primary hover:text-[#e97319] transition-colors no-underline font-normal;
+    @apply text-primary hover:text-[#e97319] transition-colors duration-200 no-underline;
+  }
+
+  .dark .prose a {
+    @apply text-primary-foreground hover:text-[#e97319];
   }
 
   /* Theme specific styles */

@@ -44,7 +44,7 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
             <div className="flex items-center justify-between w-full">
               <Link 
                 href="/" 
-                className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-2xl font-bold"
+                className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-xl font-bold"
               >
                 Max Forsey&apos;s Blog
               </Link>
@@ -55,7 +55,7 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
       </div>
 
       <div className="max-w-[650px] mx-auto px-6 mt-4">
-        <h1 className="text-2xl font-bold mb-2">{title}</h1>
+        <h2 className="text-lg font-bold mb-2">{title}</h2>
         <p className="text-sm text-gray-500">
           {formattedDate && location ? `${formattedDate}, ${location} • ` : ''}
           {type !== 'ongoing' && (formattedDate && location ? ` ${readTime} min read` : `${readTime} min read`)}
