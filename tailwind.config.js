@@ -14,16 +14,7 @@ module.exports = {
         primary: 'rgb(var(--primary) / <alpha-value>)',
         'primary-foreground': 'rgb(var(--primary-foreground) / <alpha-value>)',
       },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: 'none',
-          },
-        },
-      },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [],
 } 

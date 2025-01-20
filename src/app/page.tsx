@@ -82,7 +82,7 @@ export default function Home() {
 
         {/* Collections section */}
         <div className="mb-8">
-          <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Collections</h3>
+          <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Collections</h4>
           <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Continuously updated lists and resources:</p>
           <div className="grid grid-cols-2 sm:flex sm:flex-nowrap gap-2 pb-2">
             {[
@@ -108,7 +108,7 @@ export default function Home() {
 
         {/* Posts section */}
         <div>
-          <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h3>
+          <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h4>
           <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Individual articles and thoughts:</p>
           <div className="space-y-5">
             {sortedPosts.map(post => (
@@ -126,9 +126,9 @@ export default function Home() {
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
-                    <h3 className="font-medium">
+                    <div className="text-base">
                       {post.title}
-                    </h3>
+                    </div>
                   </div>
                   <span className="text-sm ml-4 opacity-70">
                     {format(post.date, 'MMM yyyy')}
@@ -148,7 +148,7 @@ export default function Home() {
           <div className="space-y-4">
             <div className="flex-1">
               <Link href="https://arxiv.org/abs/2312.09251" className="group flex items-center gap-3 mb-2">
-                <h4 className="text-lg font-medium group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
                 </h4>
                 <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
@@ -169,6 +169,7 @@ export default function Home() {
                 alt="Gradient analysis visualization"
                 width={800}
                 height={500}
+                scaleFactor={2}
               />
             </div>
           </div>
@@ -177,7 +178,7 @@ export default function Home() {
           <div className="space-y-4">
             <div className="flex-1">
               <Link href="https://freshsesh.ai" className="group flex items-center gap-3 mb-2">
-                <h4 className="text-lg font-medium group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
+                <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   FreshSesh AI
                 </h4>
                 <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
@@ -198,6 +199,7 @@ export default function Home() {
                 alt="FreshSesh AI interface"
                 width={800}
                 height={500}
+                scaleFactor={1.25}
               />
             </div>
           </div>
@@ -206,7 +208,7 @@ export default function Home() {
           <div className="space-y-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h4 className="text-lg font-medium">
+                <h4 className="text-lg">
                   maxforsey.com
                 </h4>
                 <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 

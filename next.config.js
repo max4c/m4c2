@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  experimental: {
+    mdxRs: true,
+  },
   // Add this to suppress the punycode warning
   webpack: (config, { isServer }) => {
     if (!isServer) {

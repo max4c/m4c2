@@ -12,7 +12,7 @@ const highlights = [
         }]
     },
     {
-        text: "Currently doing AI research in the PCC Lab",
+        text: "Researching AI in the PCC Lab",
         links: null
     },
     {
