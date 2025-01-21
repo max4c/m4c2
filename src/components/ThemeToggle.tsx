@@ -16,18 +16,31 @@ export function ThemeToggle() {
     return null;
   }
 
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-blue-500"
-      aria-label="Toggle theme"
+      onClick={toggleTheme}
+      className="p-2 rounded-lg transition-colors duration-200"
     >
-      {theme === "dark" ? (
+      {theme === 'light' ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           width="24"
           height="24"
+        >
+          <circle cx="12" cy="12" r="11" className="stroke-[#0957D0] fill-none" strokeWidth="2"/>
+          <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 3z" className="fill-[#0957D0]"/>
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
         >
           <circle cx="12" cy="12" r="6" className="fill-[#F7C217]"/>
           <g className="stroke-[#F7C217]" strokeWidth="2" strokeLinecap="round">
@@ -40,16 +53,6 @@ export function ThemeToggle() {
             <line x1="18.364" y1="5.636" x2="19.778" y2="4.222"/>
             <line x1="4.222" y1="19.778" x2="5.636" y2="18.364"/>
           </g>
-        </svg>
-      ) : (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          width="24"
-          height="24"
-        >
-          <circle cx="12" cy="12" r="11" className="stroke-[#0957D0] fill-none" strokeWidth="2"/>
-          <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 3z" className="fill-[#0957D0]"/>
         </svg>
       )}
     </button>

@@ -7,13 +7,13 @@
     --background: 255 255 255;
     --foreground: 0 0 0;
     --primary: 9 87 208;
-    --primary-foreground: 247 194 23;
+    --primary-foreground: 233 115 25;
   }
 
   .dark {
     --background: 23 23 23;
     --foreground: 255 255 255;
-    --primary: 247 194 23;
+    --primary: 233 115 25;
     --primary-foreground: 9 87 208;
   }
 }
@@ -88,7 +88,7 @@
   }
 
   .dark .prose a {
-    @apply text-primary-foreground hover:text-[#e97319];
+    @apply text-[#F7C217] hover:text-[#e97319];
   }
 
   /* Theme specific styles */

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import ThemeDropdown from './ThemeDropdown';
+import { ThemeToggle } from './ThemeToggle';
 
 interface BlogPostHeaderProps {
   title: string;
@@ -48,7 +48,7 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
               >
                 Max Forsey&apos;s Blog
               </Link>
-              <ThemeDropdown />
+              <ThemeToggle />
             </div>
           </div>
         </div>

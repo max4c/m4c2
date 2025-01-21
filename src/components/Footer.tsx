@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import SocialIcons from './SocialIcons';
-import ThemeDropdown from './ThemeDropdown';
+import { ThemeToggle } from './ThemeToggle';
 import { useEffect, useState } from 'react';
 
 const Footer = () => {
@@ -34,7 +34,7 @@ const Footer = () => {
             </Link>
             <div className="flex gap-4 sm:ml-auto items-center">
               <SocialIcons />
-              <ThemeDropdown />
+              <ThemeToggle />
             </div>
           </div>
         </div>

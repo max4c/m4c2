@@ -1,14 +1,38 @@
-import type { Metadata } from "next";
+import { Metadata } from 'next'
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "maxforsey",
-  description: "Max Forsey's personal website",
+  metadataBase: new URL('https://maxforsey.com'),
+  title: 'Max Forsey',
+  description: 'I like to research AI and build helpful tools 🛠️',
+  openGraph: {
+    title: 'Max Forsey',
+    description: 'I like to research AI and build helpful tools 🛠️',
+    url: 'https://maxforsey.com',
+    siteName: 'Max Forsey',
+    images: [
+      {
+        url: '/DigitalProfile_tiny.png', // your profile image
+        width: 192,
+        height: 192,
+        alt: 'Max Forsey',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Max Forsey',
+    description: 'I like to research AI and build helpful tools 🛠️',
+    images: ['/DigitalProfile_tiny.png'],
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +56,7 @@ export default function RootLayout({
                 {children}
               </main>
             </div>
+            <Footer />
           </div>
         </ThemeProvider>
       </body>

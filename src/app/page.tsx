@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { format } from 'date-fns';
-import ThemeDropdown from '@/components/ThemeDropdown';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import ImageModal from '@/components/ImageModal';
 
 const blogDir = path.join(process.cwd(), 'src/app/blog');
@@ -64,7 +64,7 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-3">
                 <SocialIcons />
-                <ThemeDropdown />
+                <ThemeToggle />
               </div>
             </div>
           </div>
@@ -83,7 +83,6 @@ export default function Home() {
         {/* Collections section */}
         <div className="mb-8">
           <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Collections</h4>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Continuously updated lists and resources:</p>
           <div className="grid grid-cols-2 sm:flex sm:flex-nowrap gap-2 pb-2">
             {[
               'books', 'films', 'music', 'quotes', 'tools', 'longevity'
@@ -109,7 +108,6 @@ export default function Home() {
         {/* Posts section */}
         <div>
           <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h4>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mb-5">Individual articles and thoughts:</p>
           <div className="space-y-5">
             {sortedPosts.map(post => (
               <Link 
@@ -144,12 +142,12 @@ export default function Home() {
       <section key="projects" className="mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
         <h3 className="text-3xl font-bold mb-3">Projects and Papers</h3>
         <div className="space-y-8">
-          {/* Paper Example */}
+          {/* Paper Project */}
           <div className="space-y-4">
             <div className="flex-1">
-              <Link href="https://arxiv.org/abs/2411.10397" className="group flex items-center gap-3 mb-2">
+              <Link href="https://arxiv.org/abs/2402.10431" className="group flex items-center gap-3 mb-2">
                 <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
-                  Features that Make a Difference: Leveraging Gradients for Improved Dictionary Learning
+                  Gradient Sparse Autoencoders
                 </h4>
                 <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
                   border border-black dark:border-white
@@ -161,6 +159,9 @@ export default function Home() {
                   paper
                 </span>
               </Link>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                Introduces a novel approach to extracting neural network features by considering both activation values and their downstream effects. This modification to traditional Sparse Autoencoders leads to more faithful reconstructions and more effective model steering capabilities.
+              </p>
             </div>
             
             <div className="w-full md:w-2/3 mx-auto">
@@ -174,7 +175,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* FreshSesh AI Project */}
+          {/* FreshSesh Project */}
           <div className="space-y-4">
             <div className="flex-1">
               <Link href="https://github.com/max4c/freshsesh" className="group flex items-center gap-3 mb-2">
@@ -191,6 +192,9 @@ export default function Home() {
                   project
                 </span>
               </Link>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                A developer tool that uses a local LLM to provide personalized context summaries of your previous work sessions. Helps you quickly get back into flow by recapping where you left off.
+              </p>
             </div>
             
             <div className="w-full md:w-2/3 mx-auto">
