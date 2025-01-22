@@ -145,7 +145,7 @@ export default function Home() {
           {/* Paper Project */}
           <div className="space-y-4">
             <div className="flex-1">
-              <Link href="https://arxiv.org/abs/2402.10431" className="group flex items-center gap-3 mb-2">
+              <Link href="https://arxiv.org/abs/2411.10397" className="group flex items-center gap-3 mb-2">
                 <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
                   Gradient Sparse Autoencoders
                 </h4>
