@@ -22,9 +22,9 @@ const Footer = () => {
   const isDarkMode = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
 
   return (
-    <footer className="mt-8 w-full">
-      <div className="content-border border-t">
-        <div className="py-4 px-6">
+    <div className="w-full">
+      <div className="content-wrapper">
+        <footer className="mt-8 mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <Link
               href="/"
@@ -37,9 +37,9 @@ const Footer = () => {
               <ThemeToggle />
             </div>
           </div>
-        </div>
+        </footer>
       </div>
-    </footer>
+    </div>
   );
 };
 

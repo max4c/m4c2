@@ -20,11 +20,10 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
     setMounted(true);
   }, []);
 
-
   if (!mounted) {
     return (
       <div className="w-full border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-[650px] mx-auto px-6">
+        <div className="max-w-[650px] mx-auto px-4 sm:px-8">
           <div className="pt-6 pb-4 blog-header">
             <div className="flex items-center justify-between gap-2">
               <div className="h-8 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
@@ -39,14 +38,23 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
   return (
     <>
       <div className="w-full border-b border-gray-200 dark:border-gray-700">
-        <div className="max-w-[650px] mx-auto px-6">
+        <div className="max-w-[650px] mx-auto px-4 sm:px-8">
           <div className="pt-6 pb-4 blog-header">
             <div className="flex items-center justify-between w-full">
               <Link 
                 href="/" 
-                className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors text-xl font-bold"
+                className="px-4 py-2 border border-black dark:border-white
+                  transition-all duration-200 bg-white dark:bg-transparent
+                  text-black dark:text-white
+                  hover:bg-[#0957D0] dark:hover:bg-[#e97319]
+                  hover:text-white !important
+                  hover:border-[#0957D0] dark:hover:border-[#e97319]
+                  text-xl font-bold
+                  group"
               >
-                Max Forsey&apos;s Blog
+                <span className="group-hover:text-white">
+                  Max Forsey&apos;s Blog
+                </span>
               </Link>
               <ThemeToggle />
             </div>
@@ -54,8 +62,8 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
         </div>
       </div>
 
-      <div className="max-w-[650px] mx-auto px-6 mt-4">
-        <h2 className="text-lg font-bold mb-2">{title}</h2>
+      <div className="max-w-[650px] mx-auto px-4 sm:px-8 mt-6 mb-6">
+        <h2 className="text-3xl font-bold mb-4">{title}</h2>
         <p className="text-sm text-gray-500">
           {formattedDate && location ? `${formattedDate}, ${location} • ` : ''}
           {type !== 'ongoing' && (formattedDate && location ? ` ${readTime} min read` : `${readTime} min read`)}

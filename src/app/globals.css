@@ -36,7 +36,7 @@
   }
 
   .mdx-content {
-    @apply prose max-w-none;
+    @apply prose max-w-none px-4 sm:px-8 mt-6;
   }
 
   .content-wrapper {
@@ -44,7 +44,7 @@
   }
 
   main {
-    @apply w-full max-w-[650px] mx-auto flex-1;
+    @apply w-full flex-1;
   }
 
   /* Link styles */
@@ -65,7 +65,7 @@
   /* Prose styles */
   .prose {
     @apply max-w-none;
-    @apply prose-h1:text-lg prose-h1:font-bold prose-h1:mb-4;
+    @apply prose-h1:text-lg prose-h1:font-bold prose-h1:mb-4 prose-h1:mt-8;
     @apply prose-h2:text-xl prose-h2:font-bold prose-h2:mb-3 prose-h2:mt-8;
     @apply prose-h3:text-lg prose-h3:font-bold prose-h3:mb-3 prose-h3:mt-6;
     @apply prose-p:mb-4 prose-p:leading-relaxed;
