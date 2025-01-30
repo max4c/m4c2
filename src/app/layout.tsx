@@ -50,13 +50,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col items-center">
-            <div className="w-full max-w-[650px] flex-grow">
-              <main className="px-4 sm:px-6">
-                {children}
-              </main>
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-grow flex flex-col items-center">
+              {children}
+            </main>
+            <div className="mt-16">
+              <div className="w-full max-w-[650px] mx-auto px-4 sm:px-8">
+                <Footer />
+              </div>
             </div>
-            <Footer />
           </div>
         </ThemeProvider>
       </body>

@@ -22,9 +22,9 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
 
   if (!mounted) {
     return (
-      <div className="w-full border-b border-gray-200 dark:border-gray-700">
+      <div className="w-full">
         <div className="max-w-[650px] mx-auto px-4 sm:px-8">
-          <div className="pt-6 pb-4 blog-header">
+          <div className="pt-6 pb-4 blog-header border-b border-black dark:border-white">
             <div className="flex items-center justify-between gap-2">
               <div className="h-8 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
               <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
@@ -37,9 +37,9 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
 
   return (
     <>
-      <div className="w-full border-b border-gray-200 dark:border-gray-700">
+      <div className="w-full">
         <div className="max-w-[650px] mx-auto px-4 sm:px-8">
-          <div className="pt-6 pb-4 blog-header">
+          <div className="pt-6 pb-4 blog-header border-b border-black dark:border-white">
             <div className="flex items-center justify-between w-full">
               <Link 
                 href="/" 

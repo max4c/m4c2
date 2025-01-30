@@ -223,14 +223,15 @@ export default function Highlights() {
             </div>
             <button 
                 onClick={handleMore}
-                className="group mt-1 px-4 py-2 text-sm bg-white dark:bg-transparent 
+                className="group relative mt-1 px-4 py-2 text-sm bg-white dark:bg-transparent 
                     border border-black dark:border-white
                     transition-all duration-200
                     text-black dark:text-white
                     hover:bg-[#0957D0] dark:hover:bg-[#e97319]
                     hover:text-white dark:hover:text-white
                     hover:border-[#0957D0] dark:hover:border-[#e97319]
-                    flex items-center gap-2"
+                    flex items-center gap-2
+                    animated-border"
             >
                 <span>{currentIndex === 0 ? 'Learn about me' : 'Keep Going'}</span>
                 <svg 
@@ -241,6 +242,7 @@ export default function Highlights() {
                 >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
+                <div className="absolute inset-0 border-2 border-transparent animated-border-line"></div>
             </button>
         </div>
     );

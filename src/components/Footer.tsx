@@ -22,24 +22,20 @@ const Footer = () => {
   const isDarkMode = theme === 'dark' || (theme === 'system' && systemTheme === 'dark');
 
   return (
-    <div className="w-full">
-      <div className="content-wrapper">
-        <footer className="mt-8 mb-8 p-4 sm:p-8 border border-black dark:border-white bg-white dark:bg-transparent">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Link
-              href="/"
-              className="text-xl text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors font-bold"
-            >
-              Max Forsey
-            </Link>
-            <div className="flex gap-4 sm:ml-auto items-center">
-              <SocialIcons />
-              <ThemeToggle />
-            </div>
-          </div>
-        </footer>
+    <footer className="p-6 sm:p-10 border border-black dark:border-white bg-white dark:bg-transparent mb-8">
+      <div className="flex flex-col sm:flex-row items-center gap-4">
+        <Link
+          href="/"
+          className="text-xl text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors font-bold"
+        >
+          Max Forsey
+        </Link>
+        <div className="flex gap-4 sm:ml-auto items-center">
+          <SocialIcons />
+          <ThemeToggle />
+        </div>
       </div>
-    </div>
+    </footer>
   );
 };
 

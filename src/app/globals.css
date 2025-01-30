@@ -12,7 +12,7 @@
 
   .dark {
     --background: 23 23 23;
-    --foreground: 255 255 255;
+    --foreground: 255 255 255 0.87;
     --primary: 233 115 25;
     --primary-foreground: 9 87 208;
   }
@@ -74,13 +74,37 @@
     @apply prose-li:mb-2;
     @apply prose-img:my-8 prose-img:rounded-lg;
     @apply prose-code:text-primary prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
-    @apply prose-pre:bg-gray-100 prose-pre:dark:bg-gray-800 prose-pre:p-4 prose-pre:rounded-lg;
+    @apply prose-pre:bg-gray-100 prose-pre:dark:bg-[#1a1a1a] prose-pre:p-4 prose-pre:rounded-lg;
     @apply prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic;
   }
 
   .dark .prose {
     @apply prose-invert;
+    color: rgba(255, 255, 255, 0.87);
     @apply prose-code:text-primary-foreground;
+    @apply prose-pre:text-gray-300;
+  }
+
+  .dark .prose h1,
+  .dark .prose h2,
+  .dark .prose h3,
+  .dark .prose h4,
+  .dark .prose h5,
+  .dark .prose h6,
+  .dark .prose strong,
+  .dark .prose a {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  /* Update the code block styling */
+  .prose pre {
+    @apply bg-gray-100 dark:bg-[#1a1a1a] p-6 rounded-lg overflow-x-auto relative;
+    @apply border border-gray-200 dark:border-gray-700;
+  }
+
+  .prose pre code {
+    @apply bg-transparent dark:bg-transparent text-gray-800 dark:text-gray-200 p-0;
+    @apply font-mono text-sm leading-relaxed;
   }
 
   .prose a {
@@ -99,6 +123,28 @@
   .social-icon {
     @apply fill-foreground transition-colors duration-200;
   }
+
+  /* Update copy button styling */
+  .copy-button {
+    @apply absolute top-3 right-3 p-2 rounded-md 
+      bg-gray-200 dark:bg-gray-800
+      hover:bg-gray-300 dark:hover:bg-gray-700
+      text-gray-600 dark:text-gray-300
+      border border-gray-300 dark:border-gray-600
+      transition-all duration-200
+      opacity-100;
+  }
+
+  .copy-button-success {
+    @apply bg-green-100 dark:bg-green-900 
+      border-green-300 dark:border-green-600
+      text-green-700 dark:text-green-300;
+  }
+
+  /* Add hover effect to code blocks */
+  .prose pre:hover .copy-button {
+    @apply opacity-100;
+  }
 }
 
 @layer utilities {
@@ -113,7 +159,8 @@
 
 /* Dark mode specific */
 html.dark {
-  @apply bg-[#171717] text-white;
+  @apply bg-[#171717];
+  color: rgba(255, 255, 255, 0.87);
 }
 
 /* Add this to test direct CSS */
@@ -148,4 +195,97 @@ h3 {
 
 body.modal-open {
   overflow: hidden;
+}
+
+@keyframes borderAnimation {
+  0% {
+    border-top-color: rgba(0, 0, 0, 0.3);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  25% {
+    border-top-color: transparent;
+    border-right-color: rgba(0, 0, 0, 0.3);
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  50% {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.3);
+    border-left-color: transparent;
+  }
+  75% {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    border-top-color: rgba(0, 0, 0, 0.3);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
+.animated-border {
+  position: relative;
+  overflow: visible;
+}
+
+.animated-border-line {
+  pointer-events: none;
+  position: absolute;
+  inset: -2px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  animation: borderAnimation 6s linear infinite;
+}
+
+:is(.dark .animated-border-line) {
+  --border-color: rgba(255, 255, 255, 0.3);
+}
+
+:is(.dark) .animated-border-line {
+  animation-name: borderAnimationDark;
+}
+
+@keyframes borderAnimationDark {
+  0% {
+    border-top-color: rgba(255, 255, 255, 0.3);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  25% {
+    border-top-color: transparent;
+    border-right-color: rgba(255, 255, 255, 0.3);
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+  50% {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+    border-left-color: transparent;
+  }
+  75% {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    border-top-color: rgba(255, 255, 255, 0.3);
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+  }
+}
+
+.animated-border:hover .animated-border-line {
+  display: none;
 }

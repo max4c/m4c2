@@ -1,10 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import type { MDXComponents as MDXComponentsType } from 'mdx/types';
 import MDXContent from '@/components/MDXContent';
-import * as MDXComponents from '@/components/MDXComponents';
+import { components as MDXComponents } from '@/components/MDXComponents';
 import matter from 'gray-matter';
-import { format, addMonths } from 'date-fns';
+import { format, addMonths, parseISO } from 'date-fns';
 import BlogPostHeader from '@/components/BlogPostHeader';
 import Link from 'next/link';
 
@@ -22,7 +23,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const { content, data } = matter(fileContent);
   const title = data.title || slug;
   const readTime = calculateReadTime(content);
-  const formattedDate = data.date ? format(addMonths(new Date(data.date), 1), 'MMMM yyyy') : '';
+  const formattedDate = data.date ? format(new Date(data.date), 'MMMM yyyy') : '';
   const location = data.location || '';
 
   return (
@@ -37,7 +38,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       <MDXContent>
         <MDXRemote
           source={content}
-          components={MDXComponents}
+          components={MDXComponents as any}
         />
       </MDXContent>
       
