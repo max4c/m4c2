@@ -5,13 +5,6 @@ import React from 'react';
 
 const highlights = [
     {
-        text: "Venture Partner at Contrary",
-        links: [{
-            url: "https://contrary.com",
-            text: "Contrary"
-        }]
-    },
-    {
         text: "Researching AI in the PCC Lab",
         links: null
     },
@@ -19,11 +12,18 @@ const highlights = [
         text: "Studying machine learning at BYU",
         links: null
     },
-    {
+        {
         text: "Co-founder of justbuild, the hackathon community",
         links: [{
             url: "https://justbuild.ing/",
             text: "justbuild"
+        }]
+    },
+    {
+        text: "Venture Partner at Contrary",
+        links: [{
+            url: "https://contrary.com",
+            text: "Contrary"
         }]
     },
     {
