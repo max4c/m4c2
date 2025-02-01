@@ -13,7 +13,7 @@ const highlights = [
         links: null
     },
         {
-        text: "Co-founder of justbuild, the hackathon community",
+        text: "Co-founder of justbuild, the builder community",
         links: [{
             url: "https://justbuild.ing/",
             text: "justbuild"
