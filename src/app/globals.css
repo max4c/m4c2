@@ -145,6 +145,186 @@
   .prose pre:hover .copy-button {
     @apply opacity-100;
   }
+
+  /* Custom Button Styles */
+  .custom-button {
+    all: unset;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    position: relative;
+    border-radius: 999vw;
+    background-color: rgba(0, 0, 0, 0.75);
+    box-shadow: -0.15em -0.15em 0.15em -0.075em rgba(5, 5, 5, 0.25),
+      0.0375em 0.0375em 0.0675em 0 rgba(5, 5, 5, 0.1);
+  }
+
+  .custom-button::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: calc(100% + 0.3em);
+    height: calc(100% + 0.3em);
+    top: -0.15em;
+    left: -0.15em;
+    border-radius: inherit;
+    background: linear-gradient(
+      -135deg,
+      rgba(5, 5, 5, 0.5),
+      transparent 20%,
+      transparent 100%
+    );
+    filter: blur(0.0125em);
+    opacity: 0.25;
+    mix-blend-mode: multiply;
+  }
+
+  .custom-button .button-outter {
+    position: relative;
+    z-index: 1;
+    border-radius: inherit;
+    transition: box-shadow 300ms ease;
+    will-change: box-shadow;
+    box-shadow: 0 0.05em 0.05em -0.01em rgba(5, 5, 5, 1),
+      0 0.01em 0.01em -0.01em rgba(5, 5, 5, 0.5),
+      0.15em 0.3em 0.1em -0.01em rgba(5, 5, 5, 0.25);
+  }
+
+  .custom-button:hover .button-outter {
+    box-shadow: 0 0 0 0 rgba(5, 5, 5, 1), 0 0 0 0 rgba(5, 5, 5, 0.5),
+      0 0 0 0 rgba(5, 5, 5, 0.25);
+  }
+
+  .custom-button .button-inner {
+    --inset: 0.035em;
+    position: relative;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1em 1.5em;
+    background-image: linear-gradient(
+      135deg,
+      rgba(230, 230, 230, 1),
+      rgba(180, 180, 180, 1)
+    );
+    transition: box-shadow 300ms ease, clip-path 250ms ease,
+      background-image 250ms ease, transform 250ms ease;
+    will-change: box-shadow, clip-path, background-image, transform;
+    overflow: clip;
+    clip-path: inset(0 0 0 0 round 999vw);
+    box-shadow:
+      0 0 0 0 inset rgba(5, 5, 5, 0.1),
+      -0.05em -0.05em 0.05em 0 inset rgba(5, 5, 5, 0.25),
+      0 0 0 0 inset rgba(5, 5, 5, 0.1),
+      0 0 0.05em 0.2em inset rgba(255, 255, 255, 0.25),
+      0.025em 0.05em 0.1em 0 inset rgba(255, 255, 255, 1),
+      0.12em 0.12em 0.12em inset rgba(255, 255, 255, 0.25),
+      -0.075em -0.25em 0.25em 0.1em inset rgba(5, 5, 5, 0.25);
+  }
+
+  .dark .custom-button .button-inner {
+    background-image: linear-gradient(
+      135deg,
+      rgba(40, 40, 40, 1),
+      rgba(20, 20, 20, 1)
+    );
+    box-shadow:
+      0.1em 0.15em 0.05em 0 inset rgba(5, 5, 5, 0.75),
+      -0.025em -0.03em 0.05em 0.025em inset rgba(5, 5, 5, 0.5),
+      0.25em 0.25em 0.2em 0 inset rgba(5, 5, 5, 0.5),
+      0 0 0.05em 0.5em inset rgba(255, 255, 255, 0.15),
+      0 0 0 0 inset rgba(255, 255, 255, 0.5),
+      0.12em 0.12em 0.12em inset rgba(255, 255, 255, 0.1),
+      -0.075em -0.12em 0.2em 0.1em inset rgba(5, 5, 5, 0.5);
+  }
+
+  .custom-button:hover .button-inner {
+    clip-path: inset(
+      clamp(1px, 0.0625em, 2px) clamp(1px, 0.0625em, 2px)
+        clamp(1px, 0.0625em, 2px) clamp(1px, 0.0625em, 2px) round 999vw
+    );
+    box-shadow:
+      0.1em 0.15em 0.05em 0 inset rgba(5, 5, 5, 0.75),
+      -0.025em -0.03em 0.05em 0.025em inset rgba(5, 5, 5, 0.5),
+      0.25em 0.25em 0.2em 0 inset rgba(5, 5, 5, 0.5),
+      0 0 0.05em 0.5em inset rgba(255, 255, 255, 0.15),
+      0 0 0 0 inset rgba(255, 255, 255, 1),
+      0.12em 0.12em 0.12em inset rgba(255, 255, 255, 0.25),
+      -0.075em -0.12em 0.2em 0.1em inset rgba(5, 5, 5, 0.25);
+  }
+
+  .custom-button .button-inner span {
+    position: relative;
+    z-index: 4;
+    font-family: "Inter", sans-serif;
+    letter-spacing: -0.05em;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0);
+    background-image: linear-gradient(
+      135deg,
+      rgba(25, 25, 25, 1),
+      rgba(75, 75, 75, 1)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: transform 250ms ease;
+    display: block;
+    will-change: transform;
+    text-shadow: rgba(0, 0, 0, 0.1) 0 0 0.1em;
+  }
+
+  .dark .custom-button .button-inner span {
+    color: rgba(255, 255, 255, 0);
+    background-image: linear-gradient(
+      135deg,
+      rgba(230, 230, 230, 1),
+      rgba(180, 180, 180, 1)
+    );
+    text-shadow: rgba(255, 255, 255, 0.1) 0 0 0.1em;
+  }
+
+  .custom-button:hover .button-inner span {
+    transform: scale(0.975);
+  }
+
+  .custom-button:active .button-inner {
+    transform: scale(0.975);
+  }
+
+  /* Additional button layout styles */
+  .custom-button.block {
+    display: block;
+    width: 100%;
+  }
+
+  .custom-button.block .button-inner {
+    display: block;
+    width: 100%;
+    padding: 0.75em 1em;
+  }
+
+  /* Adjust grid layout for collection buttons */
+  @media (min-width: 640px) {
+    .grid-cols-2.sm\:flex .custom-button {
+      flex: 1;
+    }
+    
+    .grid-cols-2.sm\:flex .button-inner {
+      padding: 0.75em 1em;
+    }
+  }
+
+  /* Smaller padding for tag buttons */
+  .custom-button.tag .button-inner {
+    padding: 0.5em 1em;
+  }
+
+  /* Adjust font size for different button types */
+  .custom-button.block .button-inner span {
+    font-size: 1rem;
+  }
+
+  .custom-button.tag .button-inner span {
+    font-size: 0.875rem;
+  }
 }
 
 @layer utilities {
@@ -288,4 +468,74 @@ body.modal-open {
 
 .animated-border:hover .animated-border-line {
   display: none;
+}
+
+/* Dark mode button styles - final polish */
+.dark .custom-button {
+  background-color: rgba(25, 25, 25, 1);
+  box-shadow: 
+    -0.2em -0.2em 0.4em rgba(40, 40, 40, 0.4),
+    0.2em 0.2em 0.5em rgba(0, 0, 0, 0.5),
+    inset 0 0 1em rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+  padding: 0.12em;
+}
+
+.dark .custom-button .button-inner {
+  background-image: linear-gradient(
+    170deg,
+    rgba(35, 35, 35, 1) 0%,
+    rgba(32, 32, 32, 1) 30%,
+    rgba(30, 30, 30, 1) 70%,
+    rgba(28, 28, 28, 1) 100%
+  );
+  box-shadow:
+    inset 0 0.1em 0.2em rgba(45, 45, 45, 0.15),
+    inset 0 -0.1em 0.2em rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(22, 22, 22, 0.95);
+  border-radius: 999px;
+}
+
+.dark .custom-button:hover .button-inner {
+  background-image: linear-gradient(
+    170deg,
+    rgba(30, 30, 30, 1) 0%,
+    rgba(28, 28, 28, 1) 30%,
+    rgba(26, 26, 26, 1) 70%,
+    rgba(24, 24, 24, 1) 100%
+  );
+  transform: translateY(0.07em);
+  box-shadow:
+    inset 0 0.15em 0.3em rgba(0, 0, 0, 0.25),
+    inset 0 -0.1em 0.2em rgba(0, 0, 0, 0.2),
+    inset 0 0 0.8em rgba(0, 0, 0, 0.15);
+}
+
+/* Text styling - refined gradients */
+.dark .custom-button .button-inner span {
+  background-image: linear-gradient(
+    170deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(230, 230, 230, 0.95) 50%,
+    rgba(210, 210, 210, 0.95) 100%
+  );
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .custom-button:hover .button-inner span {
+  background-image: linear-gradient(
+    170deg,
+    rgba(230, 230, 230, 0.95) 0%,
+    rgba(210, 210, 210, 0.95) 50%,
+    rgba(190, 190, 190, 0.95) 100%
+  );
+}
+
+/* Enhanced transitions */
+.dark .custom-button,
+.dark .custom-button .button-inner,
+.dark .custom-button .button-inner span {
+  transition: all 0.2s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }

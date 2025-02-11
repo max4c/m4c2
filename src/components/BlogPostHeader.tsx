@@ -43,18 +43,13 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
             <div className="flex items-center justify-between w-full">
               <Link 
                 href="/" 
-                className="px-4 py-2 border border-black dark:border-white
-                  transition-all duration-200 bg-white dark:bg-transparent
-                  text-black dark:text-white
-                  hover:bg-[#0957D0] dark:hover:bg-[#e97319]
-                  hover:text-white !important
-                  hover:border-[#0957D0] dark:hover:border-[#e97319]
-                  text-xl font-bold
-                  group"
+                className="custom-button"
               >
-                <span className="group-hover:text-white">
-                  Max Forsey&apos;s Blog
-                </span>
+                <div className="button-outter">
+                  <div className="button-inner">
+                    <span>Max Forsey's Blog</span>
+                  </div>
+                </div>
               </Link>
               <ThemeToggle />
             </div>

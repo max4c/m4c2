@@ -92,16 +92,13 @@ export default function Home() {
                 <Link 
                   key={item}
                   href={`/blog/${item}`} 
-                  className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                    border border-black dark:border-white
-                    transition-all duration-200
-                    text-black dark:text-white
-                    hover:bg-[#0957D0] dark:hover:bg-[#e97319]
-                    hover:text-white dark:hover:text-white
-                    hover:border-[#0957D0] dark:hover:border-[#e97319]
-                    whitespace-nowrap text-center"
+                  className="custom-button"
                 >
-                  {item}
+                  <div className="button-outter">
+                    <div className="button-inner">
+                      <span>{item}</span>
+                    </div>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -110,29 +107,17 @@ export default function Home() {
           {/* Posts section */}
           <div>
             <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h4>
-            <div className="space-y-5">
-              {sortedPosts.map(post => (
-                <Link 
-                  key={post.slug} 
+            <div className="space-y-2">
+              {sortedPosts.slice(0, 5).map((post) => (
+                <Link
+                  key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="group block mb-4 px-3 py-2
-                      border border-black dark:border-white
-                      transition-all duration-200
-                      bg-white dark:bg-transparent
-                      text-black dark:text-white
-                      hover:bg-[#0957D0] dark:hover:bg-[#e97319]
-                      hover:text-white dark:hover:text-white
-                      hover:border-[#0957D0] dark:hover:border-[#e97319]"
+                  className="custom-button block"
                 >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div className="text-base">
-                        {post.title}
-                      </div>
+                  <div className="button-outter">
+                    <div className="button-inner">
+                      <span>{post.title}</span>
                     </div>
-                    <span className="text-sm ml-4 opacity-70">
-                      {format(post.date, 'MMMM yyyy')}
-                    </span>
                   </div>
                 </Link>
               ))}
@@ -143,23 +128,19 @@ export default function Home() {
         {/* Projects and Papers Section */}
         <section key="projects" className="p-6 sm:p-10 border border-black dark:border-white bg-white dark:bg-transparent">
           <h3 className="text-3xl font-bold mb-3">Projects and Papers</h3>
-          <div className="space-y-8">
+          <div className="space-y-4">
             {/* Paper Project */}
             <div className="space-y-4">
               <div className="flex-1">
                 <Link href="https://arxiv.org/abs/2411.10397" className="group flex items-center gap-3 mb-2">
-                  <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
-                    Gradient Sparse Autoencoders
-                  </h4>
-                  <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                    border border-black dark:border-white
-                    transition-all duration-200
-                    text-black dark:text-white
-                    group-hover:bg-[#0957D0] dark:group-hover:bg-[#e97319]
-                    group-hover:text-white dark:group-hover:text-white
-                    group-hover:border-[#0957D0] dark:group-hover:border-[#e97319]">
-                    paper
-                  </span>
+                  <h4 className="text-lg">Gradient Sparse Autoencoders</h4>
+                  <div className="custom-button">
+                    <div className="button-outter">
+                      <div className="button-inner">
+                        <span>paper</span>
+                      </div>
+                    </div>
+                  </div>
                 </Link>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                   Introduces a novel approach to extracting neural network features by considering both activation values and their downstream effects. This modification to traditional Sparse Autoencoders leads to more faithful reconstructions and more effective model steering capabilities.
@@ -181,18 +162,14 @@ export default function Home() {
             <div className="space-y-4">
               <div className="flex-1">
                 <Link href="https://github.com/max4c/freshsesh" className="group flex items-center gap-3 mb-2">
-                  <h4 className="text-lg group-hover:text-[#0957D0] dark:group-hover:text-[#e97319]">
-                    FreshSesh AI
-                  </h4>
-                  <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                    border border-black dark:border-white
-                    transition-all duration-200
-                    text-black dark:text-white
-                    group-hover:bg-[#0957D0] dark:group-hover:bg-[#e97319]
-                    group-hover:text-white dark:group-hover:text-white
-                    group-hover:border-[#0957D0] dark:group-hover:border-[#e97319]">
-                    project
-                  </span>
+                  <h4 className="text-lg">FreshSesh AI</h4>
+                  <div className="custom-button">
+                    <div className="button-outter">
+                      <div className="button-inner">
+                        <span>project</span>
+                      </div>
+                    </div>
+                  </div>
                 </Link>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                   A developer tool that uses a local LLM to provide personalized context summaries of your previous work sessions. Helps you quickly get back into flow by recapping where you left off.
@@ -214,14 +191,14 @@ export default function Home() {
             <div className="space-y-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h4 className="text-lg">
-                    maxforsey.com
-                  </h4>
-                  <span className="px-3 py-1.5 text-sm bg-white dark:bg-transparent 
-                    border border-black dark:border-white
-                    text-black dark:text-white">
-                    project
-                  </span>
+                  <h4 className="text-lg">maxforsey.com</h4>
+                  <div className="custom-button">
+                    <div className="button-outter">
+                      <div className="button-inner">
+                        <span>project</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-3">
                   This website has become so much fun to work on and to experiment with design principles. It&apos;s also how I learned next.js and tailwind CSS! Below are some previous iterations.

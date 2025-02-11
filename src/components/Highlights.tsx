@@ -109,7 +109,7 @@ export default function Highlights() {
     };
 
     return (
-        <div>
+        <div className="space-y-4">
             <div className="relative h-[144px] overflow-hidden mt-2">
                 <AnimatePresence mode="sync" initial={false}>
                     {!isResetting ? (
@@ -223,26 +223,13 @@ export default function Highlights() {
             </div>
             <button 
                 onClick={handleMore}
-                className="group relative mt-1 px-4 py-2 text-sm bg-white dark:bg-transparent 
-                    border border-black dark:border-white
-                    transition-all duration-200
-                    text-black dark:text-white
-                    hover:bg-[#0957D0] dark:hover:bg-[#e97319]
-                    hover:text-white dark:hover:text-white
-                    hover:border-[#0957D0] dark:hover:border-[#e97319]
-                    flex items-center gap-2
-                    animated-border"
+                className="custom-button"
             >
-                <span>{currentIndex === 0 ? 'Learn about me' : 'Keep Going'}</span>
-                <svg 
-                    className="w-4 h-4 text-black dark:text-white group-hover:text-white dark:group-hover:text-white transition-colors duration-200" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
-                >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-                <div className="absolute inset-0 border-2 border-transparent animated-border-line"></div>
+                <div className="button-outter">
+                    <div className="button-inner">
+                        <span>{currentIndex === 0 ? 'Learn about me' : 'Keep Going'}</span>
+                    </div>
+                </div>
             </button>
         </div>
     );
