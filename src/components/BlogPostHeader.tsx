@@ -47,7 +47,7 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
               >
                 <div className="button-outter">
                   <div className="button-inner">
-                    <span>Max Forsey's Blog</span>
+                    <span>Max Forsey&apos;s Blog</span>
                   </div>
                 </div>
               </Link>
