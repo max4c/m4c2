@@ -21,32 +21,24 @@ export default function Video({ src, title }: VideoProps) {
 
   const videoStyle: CSSProperties = {
     outline: 'none',
-    marginBottom: '-4px',
+    width: '100%',
+    display: 'block',
     borderRadius: '8px',
   };
 
   return (
-    <div className="my-8 relative">
-      <div 
-        className="relative w-full overflow-hidden rounded-lg"
-        style={{
-          // This ensures the video player controls stay within rounded corners
-          backgroundColor: '#000',
-        }}
+    <div className="mb-8">
+      <video
+        ref={videoRef}
+        controls
+        loop
+        muted
+        playsInline
+        style={videoStyle}
       >
-        <video
-          ref={videoRef}
-          className="w-full"
-          controls
-          loop
-          muted
-          playsInline
-          style={videoStyle}
-        >
-          <source src={src} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
+        <source src={src} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
       {title && (
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
           {title}

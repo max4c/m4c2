@@ -1,7 +1,19 @@
-export default function MDXContent({ children }: { children: React.ReactNode }) {
+import React from 'react';
+
+interface MDXContentProps {
+  children: React.ReactNode;
+}
+
+const MDXContent: React.FC<MDXContentProps> = ({ children }) => {
   return (
-    <div className="max-w-[650px] mx-auto px-6 prose dark:prose-invert prose-img:rounded-lg prose-img:w-full prose-a:text-primary hover:prose-a:text-[#e97319] prose-headings:scroll-mt-20">
-      {children}
+    <div className="w-full">
+      <div className="max-w-[650px] mx-auto px-4 sm:px-8">
+        <div className="mdx-content prose dark:prose-invert">
+          {children}
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default MDXContent;

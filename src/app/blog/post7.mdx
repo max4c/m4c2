@@ -1,11 +1,13 @@
 ---
-title: "uv add > pip install: accelerate python project setup"
+title: "uv add > pip install"
 type: post
 date: 2025-02-15
 location: Provo
 ---
 
-When setting up Python projects, the traditional workflow of using pip, virtualenv, and pip-tools can be slow and cumbersome. UV, a modern Rust-based package manager, offers a faster and more streamlined alternative.
+When setting up Python projects, the traditional workflow of using pip, virtualenv, and pip-tools can be slow and cumbersome. 
+
+uv, a modern Rust-based package manager, is a lot faster.
 
 ### Why UV?
 - Up to 10x faster than pip for package installation
@@ -13,8 +15,8 @@ When setting up Python projects, the traditional workflow of using pip, virtuale
 - Compatible with existing Python tooling
 - Automatic dependency resolution
 
-<Video src="/pip-demo.mp4" title="pip install (16 s)" />
-<Video src="/uv-demo.mp4" title="uv add (4 s)" />
+<Video src="/uv-demo.mp4" title="uv add (4 seconds)" />
+<Video src="/pip-demo.mp4" title="pip install (16 seconds)" />
 
 ### Installation
 
@@ -78,7 +80,7 @@ This ML research template creates:
 3. Creates an empty Jupyter notebook for exploration
 4. Sets up the same basic Python package structure with UV
 
-You can save these templates in two ways:
+#### You can save these templates in two ways:
 
 1. Traditional Shell Aliases:
 Add them to your shell configuration file (`.zshrc` or `.bashrc`):
@@ -93,13 +95,11 @@ source ~/.zshrc  # or source ~/.bashrc
 
 2. Raycast Snippets (Recommended):
 I prefer using [Raycast](https://raycast.com) to manage these snippets:
-- Install Raycast from raycast.com
-- Open Raycast Settings > Snippets
 - Create two snippets:
   - Name: "Python Quick Project", Keyword: `pyquick`
   - Name: "Python ML Project", Keyword: `pyml`
 - Paste the respective template code into each snippet
-- Trigger anywhere with `pyquick` or `pyml`
+- Trigger anywhere with `pyquick` or `pyml` keyword
 
 ### Installing Packages with UV
 After setting up your project with either snippet, you can quickly add dependencies using UV's faster package installation:
@@ -124,6 +124,6 @@ UV's package installation is significantly faster than pip, especially when inst
 - Add the package to your dependencies
 - Handle dependency resolution more efficiently than pip
 
-Start developing faster with UV's superior package management and project organization.
+I recommend trying uv out!
 
 <br /> 
