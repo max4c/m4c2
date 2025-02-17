@@ -104,7 +104,7 @@ const Paragraph = ({ children, ...rest }: ParagraphProps) => {
 };
 
 export const components: MDXComponents = {
-  Video: Video as any,
+  Video,
   Iframe,
   Link,
   Image,
