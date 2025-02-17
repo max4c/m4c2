@@ -73,7 +73,7 @@
     @apply prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-5;
     @apply prose-li:mb-2;
     @apply prose-img:my-8 prose-img:rounded-lg;
-    @apply prose-code:text-primary prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
+    @apply prose-code:text-primary dark:prose-code:text-[#F7C217] prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
     @apply prose-pre:bg-gray-100 prose-pre:dark:bg-[#1a1a1a] prose-pre:p-4 prose-pre:rounded-lg;
     @apply prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic;
   }
@@ -81,7 +81,6 @@
   .dark .prose {
     @apply prose-invert;
     color: rgba(255, 255, 255, 0.87);
-    @apply prose-code:text-primary-foreground;
     @apply prose-pre:text-gray-300;
   }
 
@@ -103,7 +102,7 @@
   }
 
   .prose pre code {
-    @apply bg-transparent dark:bg-transparent text-gray-800 dark:text-gray-200 p-0;
+    @apply bg-transparent dark:bg-transparent text-gray-800 dark:text-[#F7C217] p-0;
     @apply font-mono text-sm leading-relaxed;
   }
 

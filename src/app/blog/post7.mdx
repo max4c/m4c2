@@ -1,0 +1,129 @@
+---
+title: "uv add > pip install: accelerate python project setup"
+type: post
+date: 2025-02-15
+location: Provo
+---
+
+When setting up Python projects, the traditional workflow of using pip, virtualenv, and pip-tools can be slow and cumbersome. UV, a modern Rust-based package manager, offers a faster and more streamlined alternative.
+
+### Why UV?
+- Up to 10x faster than pip for package installation
+- Built in Rust for maximum performance
+- Compatible with existing Python tooling
+- Automatic dependency resolution
+
+<Video src="/pip-demo.mp4" title="pip install (16 s)" />
+<Video src="/uv-demo.mp4" title="uv add (4 s)" />
+
+### Installation
+
+For macOS and Linux:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+For Windows:
+```bash
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Quick Project Templates
+Here are two templates you can use directly in your terminal for quick project setup:
+
+```bash
+mkdir -p src/$(basename $(pwd)) && \
+touch src/$(basename $(pwd))/__init__.py && \
+touch src/$(basename $(pwd))/main.py && \
+echo "[project]
+name = \"$(basename $(pwd))\"
+version = \"0.1.0\"
+requires-python = \">=3.12\"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = [\"src/$(basename $(pwd))\"]" > pyproject.toml && \
+uv venv && \
+source .venv/bin/activate
+```
+This basic template sets up:
+1. A `src/` directory with your project name (based on current directory)
+2. Initializes a Python package with `__init__.py` and `main.py`
+3. Creates a `pyproject.toml` with basic configuration
+4. Sets up a UV virtual environment and activates it
+
+```bash
+mkdir -p src/$(basename $(pwd))/models src/$(basename $(pwd))/data src/$(basename $(pwd))/notebooks && \
+touch src/$(basename $(pwd))/__init__.py && \
+touch src/$(basename $(pwd))/main.py && \
+touch src/$(basename $(pwd))/app.py && \
+touch src/$(basename $(pwd))/notebooks/exploration.ipynb && \
+echo "[project]
+name = \"$(basename $(pwd))\"
+version = \"0.1.0\"
+requires-python = \">=3.12\"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = [\"src/$(basename $(pwd))\"]" > pyproject.toml && \
+uv venv && \
+source .venv/bin/activate
+```
+This ML research template creates:
+1. A full ML project structure with dedicated directories for:
+   - `models/`: Trained models and model definitions
+   - `data/`: Dataset storage and processing
+   - `notebooks/`: Jupyter notebooks for experimentation
+2. Adds `app.py` for Streamlit dashboard development
+3. Creates an empty Jupyter notebook for exploration
+4. Sets up the same basic Python package structure with UV
+
+You can save these templates in two ways:
+
+1. Traditional Shell Aliases:
+Add them to your shell configuration file (`.zshrc` or `.bashrc`):
+```bash
+# Add to your .zshrc or .bashrc
+alias pyquick='[first template above]'
+alias pyml='[second template above]'
+
+# Then reload your configuration
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+2. Raycast Snippets (Recommended):
+I prefer using [Raycast](https://raycast.com) to manage these snippets:
+- Install Raycast from raycast.com
+- Open Raycast Settings > Snippets
+- Create two snippets:
+  - Name: "Python Quick Project", Keyword: `pyquick`
+  - Name: "Python ML Project", Keyword: `pyml`
+- Paste the respective template code into each snippet
+- Trigger anywhere with `pyquick` or `pyml`
+
+### Installing Packages with UV
+After setting up your project with either snippet, you can quickly add dependencies using UV's faster package installation:
+
+Instead of using pip install pandas numpy, use:
+```bash
+uv add pandas numpy torch
+```
+
+For dev dependencies like pytest:
+```bash
+uv add --dev pytest black
+```
+
+Installing from requirements.txt:
+```bash
+uv pip install -r requirements.txt
+```
+
+UV's package installation is significantly faster than pip, especially when installing multiple packages simultaneously. The `uv add` command will automatically:
+- Update your virtual environment
+- Add the package to your dependencies
+- Handle dependency resolution more efficiently than pip
+
+Start developing faster with UV's superior package management and project organization.
+
+<br /> 

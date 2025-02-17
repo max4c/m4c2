@@ -4,6 +4,7 @@ import LatexEquation from './LatexEquation';
 import CopyButton from './CopyButton';
 import React from 'react';
 import type { AnchorHTMLAttributes, DetailedHTMLProps } from 'react';
+import Video from './Video';
 
 const Pre = ({ children, ...props }: { children: React.ReactNode }) => {
   // Extract the code content from pre > code element
@@ -44,6 +45,7 @@ export const components = {
   pre: Pre,
   Iframe,
   LatexEquation,
+  Video,
 };
 
 export default components;
