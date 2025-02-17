@@ -1,5 +1,5 @@
 import { MDXComponents } from 'mdx/types';
-import Video from '../../src/components/Video';
+import Video from './Video';
 import Iframe from './Iframe';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -104,7 +104,7 @@ const Paragraph = ({ children, ...rest }: ParagraphProps) => {
 };
 
 export const components: MDXComponents = {
-  Video,
+  Video: Video as any,
   Iframe,
   Link,
   Image,
