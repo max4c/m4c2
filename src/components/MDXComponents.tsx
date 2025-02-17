@@ -1,5 +1,5 @@
 import { MDXComponents } from 'mdx/types';
-import Video from './Video';
+import Video from '@/components/Video';
 import Iframe from './Iframe';
 import Link from 'next/link';
 import Image from 'next/image';
