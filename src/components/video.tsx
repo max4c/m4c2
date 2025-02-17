@@ -8,7 +8,7 @@ interface VideoProps {
   title?: string;
 }
 
-export function Video({ src, title }: VideoProps) {
+export default function Video({ src, title }: VideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
