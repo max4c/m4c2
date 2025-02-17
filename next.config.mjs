@@ -12,13 +12,19 @@ const withMDX = createMDX({
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  webpack: (config, { dev, isServer }) => {
-    // Disable caching in development
-    if (dev) {
-      config.cache = false;
+  experimental: {
+    mdxRs: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        punycode: false,
+      };
     }
+    config.cache = false;
     return config;
   },
 }
 
-export default withMDX(nextConfig);
+export default withMDX(nextConfig)
