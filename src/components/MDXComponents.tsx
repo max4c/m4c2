@@ -1,10 +1,11 @@
 import { MDXComponents } from 'mdx/types';
-import Video from '@/components/Video';
+import { Video } from './Video';
 import Iframe from './Iframe';
 import Link from 'next/link';
 import Image from 'next/image';
 import CopyButton from './CopyButton';
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import LatexEquation from './LatexEquation';
 
 // Types
 type CodeProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
@@ -120,5 +121,22 @@ export const components: MDXComponents = {
         }
       </div>
     );
-  }
+  },
+  a: ({ href, ...props }: any) => {
+    if (href.startsWith('http')) {
+      return <a href={href} target="_blank" rel="noopener noreferrer" {...props} />
+    }
+    return <Link href={href} {...props} />
+  },
+  img: ({ src, alt, ...props }: any) => (
+    <Image 
+      src={src} 
+      alt={alt} 
+      width={800} 
+      height={400} 
+      className="rounded-lg"
+      {...props}
+    />
+  ),
+  LatexEquation,
 };

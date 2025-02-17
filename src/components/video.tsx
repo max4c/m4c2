@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { CSSProperties } from 'react';
 
 interface VideoProps {
@@ -8,7 +8,7 @@ interface VideoProps {
   title?: string;
 }
 
-export default function Video({ src, title }: VideoProps) {
+export function Video({ src, title }: VideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -27,14 +27,14 @@ export default function Video({ src, title }: VideoProps) {
   };
 
   return (
-    <div className="mb-8">
+    <div className="my-8">
       <video
         ref={videoRef}
         controls
         loop
         muted
         playsInline
-        style={videoStyle}
+        className="w-full rounded-lg"
       >
         <source src={src} type="video/mp4" />
         Your browser does not support the video tag.
