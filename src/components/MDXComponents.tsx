@@ -6,6 +6,8 @@ import Image from 'next/image';
 import CopyButton from './CopyButton';
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
 import LatexEquation from './LatexEquation';
+import Table from './Table';
+import MDXTable from './MDXTable';
 
 // Types
 type CodeProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
@@ -111,14 +113,13 @@ export const components: MDXComponents = {
   code: InlineCode,
   p: Paragraph,
   pre: ({ children, ...props }) => {
+    const childrenArray = React.Children.toArray(children);
+    const code = childrenArray[0] as React.ReactElement;
+    
     return (
       <div className="relative">
-        <pre {...props}>{children}</pre>
-        {typeof children === 'object' && 
-         children !== null && 
-         'props' in children && 
-          <CopyButton code={children.props.children} />
-        }
+        <pre {...props}>{code}</pre>
+        <CopyButton code={code.props.children} />
       </div>
     );
   },
@@ -129,14 +130,17 @@ export const components: MDXComponents = {
     return <Link href={href} {...props} />
   },
   img: ({ src, alt, ...props }: any) => (
-    <Image 
-      src={src} 
-      alt={alt} 
-      width={800} 
-      height={400} 
-      className="rounded-lg"
-      {...props}
-    />
+    <div className="relative w-full my-8">
+      <Image
+        {...props}
+        alt={alt || ''}
+        width={800}
+        height={500}
+        className="rounded-lg mx-auto"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+    </div>
   ),
   LatexEquation,
+  Table: MDXTable,
 };
