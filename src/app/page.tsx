@@ -8,6 +8,7 @@ import matter from 'gray-matter';
 import { format, parseISO } from 'date-fns';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import ImageModal from '@/components/ImageModal';
+import BlogPagination from '@/components/BlogPagination';
 
 const blogDir = path.join(process.cwd(), 'src/app/blog');
 const files = fs.readdirSync(blogDir).filter(file => file.endsWith('.mdx'));
@@ -107,21 +108,7 @@ export default function Home() {
           {/* Posts section */}
           <div>
             <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h4>
-            <div className="space-y-2">
-              {sortedPosts.slice(0, 5).map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className="custom-button block"
-                >
-                  <div className="button-outter">
-                    <div className="button-inner">
-                      <span>{post.title}</span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <BlogPagination posts={sortedPosts} />
           </div>
         </section>
 

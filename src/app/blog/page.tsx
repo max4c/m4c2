@@ -4,7 +4,7 @@ import matter from 'gray-matter';
 import BlogContent from './BlogContent';
 import { format, parseISO, startOfMonth } from 'date-fns';
 import Link from 'next/link';
-import ThemeDropdown from '@/components/ThemeDropdown';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
 
@@ -91,7 +91,7 @@ export default function BlogPage() {
                   >
                     About
                   </Link>
-                  <ThemeDropdown />
+                  <ThemeToggle />
                 </div>
               </div>
             </header>
