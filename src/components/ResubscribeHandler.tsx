@@ -8,6 +8,8 @@ interface ResubscribeHandlerProps {
 }
 
 export default function ResubscribeHandler({ onResubscribe }: ResubscribeHandlerProps) {
+  // We will move the params handling to useEffect only, 
+  // which will run after the component has mounted
   const searchParams = useSearchParams();
   
   useEffect(() => {
