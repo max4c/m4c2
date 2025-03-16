@@ -44,7 +44,7 @@ export const BlogUpdateEmail: React.FC<Readonly<BlogUpdateEmailProps>> = ({
       </p>
       
       <p style={{ margin: '16px 0' }}>
-        I've just published a new article that I thought you might find interesting.
+        I&apos;ve just published a new article that I thought you might find interesting.
       </p>
       
       <div style={{
@@ -127,7 +127,7 @@ export const BlogUpdateEmail: React.FC<Readonly<BlogUpdateEmailProps>> = ({
         margin: '16px 0',
         textAlign: 'center',
       }}>
-        You're receiving this email because you subscribed to The Signal.
+        You&apos;re receiving this email because you subscribed to The Signal.
       </p>
       
       <p style={{

@@ -32,11 +32,11 @@ export const WelcomeEmail: React.FC<Readonly<WelcomeEmailProps>> = ({
       </h1>
       
       <p style={{ margin: '16px 0' }}>
-        Hey, it's Max! 
+        Hey, it&apos;s Max! 
       </p>
       
       <p style={{ margin: '16px 0' }}>
-        Thanks for subscribing to The Signal! I'm excited to have you join this community of curious minds seeking high signal-to-noise ratio content.
+        Thanks for subscribing to The Signal! I&apos;m excited to have you join this community of curious minds seeking high signal-to-noise ratio content.
       </p>
       
       <p style={{ margin: '16px 0', color: '#666666' }}>
@@ -102,7 +102,7 @@ export const WelcomeEmail: React.FC<Readonly<WelcomeEmailProps>> = ({
       </div>
       
       <p style={{ margin: '32px 0 16px' }}>
-        I'm looking forward to sharing valuable insights with you!
+        I&apos;m looking forward to sharing valuable insights with you!
       </p>
       
       <p style={{ margin: '16px 0' }}>
@@ -122,7 +122,7 @@ export const WelcomeEmail: React.FC<Readonly<WelcomeEmailProps>> = ({
         margin: '16px 0',
         textAlign: 'center',
       }}>
-        You're receiving this email because you subscribed to The Signal.
+        You&apos;re receiving this email because you subscribed to The Signal.
       </p>
       
       <p style={{
