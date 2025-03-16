@@ -1,15 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SubscriptionFormProps {
   className?: string;
+  defaultEmail?: string;
 }
 
-export default function SubscriptionForm({ className = '' }: SubscriptionFormProps) {
-  const [email, setEmail] = useState('');
+export default function SubscriptionForm({ className = '', defaultEmail = '' }: SubscriptionFormProps) {
+  const [email, setEmail] = useState(defaultEmail);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Update email when defaultEmail prop changes
+  useEffect(() => {
+    if (defaultEmail) {
+      setEmail(defaultEmail);
+    }
+  }, [defaultEmail]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

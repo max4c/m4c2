@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import ClientWrapper from "@/components/ClientWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,16 +50,18 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col">
-            <main className="flex-grow flex flex-col items-center">
-              {children}
-            </main>
-            <div className="mt-16">
-              <div className="w-full max-w-[650px] mx-auto px-4 sm:px-8">
-                <Footer />
+          <ClientWrapper>
+            <div className="min-h-screen flex flex-col">
+              <main className="flex-grow flex flex-col items-center">
+                {children}
+              </main>
+              <div className="mt-16">
+                <div className="w-full max-w-[650px] mx-auto px-4 sm:px-8">
+                  <Footer />
+                </div>
               </div>
             </div>
-          </div>
+          </ClientWrapper>
         </ThemeProvider>
       </body>
     </html>

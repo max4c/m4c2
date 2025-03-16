@@ -1,22 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import SubscriptionForm from './SubscriptionForm';
 
 interface SubscribeButtonProps {
   className?: string;
   variant?: 'link' | 'button' | 'custom-button';
   children?: React.ReactNode;
+  defaultEmail?: string;
 }
 
-export default function SubscribeButton({ 
-  className = '', 
-  variant = 'link',
-  children = 'Subscribe'
-}: SubscribeButtonProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export interface SubscribeButtonRef {
+  openModal: (email?: string) => void;
+}
 
-  const openModal = () => {
+const SubscribeButton = forwardRef<SubscribeButtonRef, SubscribeButtonProps>((
+  { 
+    className = '', 
+    variant = 'link',
+    children = 'Subscribe',
+    defaultEmail = '',
+  }, 
+  ref
+) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [email, setEmail] = useState(defaultEmail);
+
+  useEffect(() => {
+    // Update email if defaultEmail changes
+    setEmail(defaultEmail);
+  }, [defaultEmail]);
+
+  const openModal = (newEmail?: string) => {
+    if (newEmail) {
+      setEmail(newEmail);
+    }
     setIsOpen(true);
     document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
   };
@@ -25,6 +43,11 @@ export default function SubscribeButton({
     setIsOpen(false);
     document.body.style.overflow = ''; // Restore scrolling
   };
+
+  // Expose the openModal method through the ref
+  useImperativeHandle(ref, () => ({
+    openModal
+  }));
 
   // Default styles for link variant
   let buttonContent;
@@ -47,7 +70,7 @@ export default function SubscribeButton({
   return (
     <>
       <button
-        onClick={openModal}
+        onClick={() => openModal()}
         className={className}
         aria-label="Subscribe to blog"
       >
@@ -76,11 +99,15 @@ export default function SubscribeButton({
             
             <div className="p-6">
               <h3 className="text-2xl font-bold mb-2 text-center">The Signal</h3>
-              <SubscriptionForm className="shadow-none bg-transparent dark:bg-transparent" />
+              <SubscriptionForm className="shadow-none bg-transparent dark:bg-transparent" defaultEmail={email} />
             </div>
           </div>
         </div>
       )}
     </>
   );
-} 
+});
+
+SubscribeButton.displayName = 'SubscribeButton';
+
+export default SubscribeButton; 
