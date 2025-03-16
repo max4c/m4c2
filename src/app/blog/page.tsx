@@ -80,7 +80,7 @@ export default function BlogPage() {
             <header className="blog-header w-full pt-6 pb-3">
               <div className="flex flex-col items-center sm:flex-row sm:justify-between w-full">
                 <h1 className="text-2xl font-bold mb-4 sm:mb-0">
-                  Max Forsey&apos;s Blog
+                  The Signal
                 </h1>
                 <div className="flex items-center gap-2">
                   <Link 

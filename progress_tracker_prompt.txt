@@ -1,0 +1,85 @@
+# Universal Project Progress Tracker Prompt
+
+Create a progress.txt file that tracks the implementation of the project described in the PRD I've pasted at the end of this prompt. The file structure should be adapted based on the project scope (full application vs. feature addition).
+
+The progress tracker should follow this structure:
+
+```
+# [PROJECT_NAME] - Progress Tracker
+
+## Project Overview
+This file tracks the implementation progress of [PROJECT_NAME] for [WEBSITE/APPLICATION/SYSTEM].
+
+**IMPORTANT: Update this file whenever a milestone is completed**
+
+## Reference Documentation
+- [Include relevant documentation links for the technologies being used]
+- [Examples: Framework docs, API docs, integration docs, etc.]
+
+## Implementation Milestones
+
+[Number each milestone sequentially to create a clear implementation path]
+
+### Milestone 1: [Component/Feature Name]
+#### Implementation Tasks
+1.1 [ ] [Task 1]
+1.2 [ ] [Task 2]
+1.3 [ ] [Task 3]
+
+#### Testing Tasks
+1.4 [ ] Test [specific functionality]
+1.5 [ ] Verify [expected behavior]
+1.6 [ ] Validate [requirements]
+
+### Milestone 2: [Next Component/Feature]
+#### Implementation Tasks
+2.1 [ ] [Task 1]
+2.2 [ ] [Task 2]
+2.3 [ ] [Task 3]
+
+#### Testing Tasks
+2.4 [ ] Test [specific functionality]
+2.5 [ ] Verify [expected behavior]
+2.6 [ ] Validate [requirements]
+
+[Repeat the pattern for each milestone. For full applications, include system-level milestones like:]
+
+### Milestone 3: Architecture Setup
+#### Implementation Tasks
+3.1 [ ] Set up project structure
+3.2 [ ] Configure build system
+3.3 [ ] Set up database/storage
+3.4 [ ] Configure CI/CD pipeline
+
+### Milestone 4: Authentication/Users (if applicable)
+#### Implementation Tasks
+4.1 [ ] Implement user registration
+4.2 [ ] Implement login/logout
+4.3 [ ] Set up authorization rules
+
+### Milestone 5: Deployment & Final Validation
+5.1 [ ] Deploy to staging/test environment
+5.2 [ ] Conduct end-to-end testing
+5.3 [ ] Deploy to production
+5.4 [ ] Monitor performance metrics
+
+## Implementation Locations
+[For features being added to existing systems, list where they'll be implemented:]
+- [ ] [Location 1 where component will be placed/integrated]
+- [ ] [Location 2 where component will be placed/integrated]
+
+[For full applications, list key pages/sections:]
+- [ ] [Page/Section 1]
+- [ ] [Page/Section 2]
+
+## Technical Considerations
+- [List any technical considerations or potential challenges]
+- [Include notes on architecture, scalability, security, etc.]
+- [Note any third-party service dependencies]
+
+## Notes on Progress
+(Add notes here as you complete milestones)
+
+Last Updated: [DATE]
+
+PRD TO CONVERT: 

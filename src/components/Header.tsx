@@ -51,7 +51,7 @@ export default function Header() {
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/') ? 'font-semibold' : ''}`}>Home</Link>
               <Link href="/about" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/about') ? 'font-semibold' : ''}`}>About</Link>
-              <Link href="/blog" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/blog') ? 'font-semibold' : ''}`}>Blog</Link>
+              <Link href="/blog" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/blog') ? 'font-semibold' : ''}`}>Posts</Link>
               <Link href="/work" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/work') ? 'font-semibold' : ''}`}>Work</Link>
               <ThemeToggle />
             </nav>
@@ -87,7 +87,7 @@ export default function Header() {
                 <nav className="flex flex-col space-y-2">
                   <Link href="/" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Home</Link>
                   <Link href="/about" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/about') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>About</Link>
-                  <Link href="/blog" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/blog') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Blog</Link>
+                  <Link href="/blog" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/blog') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Posts</Link>
                   <Link href="/work" className={`text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ${isActive('/work') ? 'font-semibold' : ''}`} onClick={handleLinkClick}>Work</Link>
                 </nav>
                 <div className="mt-2">

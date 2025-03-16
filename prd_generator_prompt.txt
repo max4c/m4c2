@@ -1,0 +1,72 @@
+# PRD Generator Prompt
+
+Transform my idea/concept below into a comprehensive Product Requirements Document (PRD) for [PROJECT_NAME]. The PRD should provide clear direction for both product vision and technical implementation.
+
+Please create a structured PRD with the following sections:
+
+## Project Overview
+- Provide a concise summary of the project/feature
+- Explain the problem it solves and why it's valuable
+- Define the scope of the project
+
+## Goals & Objectives
+- List 3-5 specific, measurable goals for this project
+- Define what success looks like
+- Identify key metrics that will be used to measure success
+
+## Target Audience
+- Describe the primary users/customers for this project
+- Explain their needs, pain points, and how this addresses them
+- Include any relevant user personas
+
+## Feature Requirements
+[Break down the project into clear, specific features/components]
+
+**Feature 1: [Name]**
+- Detailed description of functionality
+- User flows and interactions
+- Edge cases and considerations
+
+**Feature 2: [Name]**
+- Detailed description of functionality
+- User flows and interactions
+- Edge cases and considerations
+
+[Add more features as needed]
+
+## User Experience Requirements
+- Describe the overall user experience and journey
+- Define key user interactions and flows
+- Outline any specific UX considerations or constraints
+- List accessibility requirements
+
+## Technical Requirements
+- Define the technical approach and architecture
+- List required technologies, APIs, or integrations
+- Outline any specific performance requirements
+- Note any technical constraints or considerations
+
+## Design Specifications
+- Describe the visual design direction and requirements
+- List any brand guidelines or design constraints
+- Specify required design assets or components
+- Note any responsive design considerations
+
+## Implementation Considerations
+- Outline any dependencies or prerequisites
+- Note any security, privacy, or compliance requirements
+- Identify potential technical challenges
+- List any third-party services or tools required
+
+## Out of Scope
+- Clearly define what is NOT included in this project
+- List any features or considerations for future phases
+
+## Timeline & Milestones
+- Provide a high-level implementation timeline
+- Define key milestones or phases
+- Note any critical deadlines
+
+Format the PRD in a clear, well-structured manner using markdown for readability. Ensure that the requirements are specific enough to guide implementation but not so prescriptive that they limit creative solutions.
+
+MY IDEA/CONCEPT: 

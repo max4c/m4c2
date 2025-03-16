@@ -81,7 +81,7 @@ export default function Home() {
 
         {/* Blog Section */}
         <section key="blog" className="p-6 sm:p-10 border border-black dark:border-white bg-white dark:bg-transparent">
-          <h3 className="text-3xl font-bold mb-3">Blog</h3>
+          <h3 className="text-3xl font-bold mb-3">The Signal</h3>
 
           {/* Collections section */}
           <div className="mb-8">
@@ -107,7 +107,7 @@ export default function Home() {
 
           {/* Posts section */}
           <div>
-            <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Blog Posts</h4>
+            <h4 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-3">Posts</h4>
             <BlogPagination posts={sortedPosts} />
           </div>
         </section>

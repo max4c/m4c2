@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { ThemeToggle } from './ThemeToggle';
+import SubscribeButton from './SubscribeButton';
 
 interface BlogPostHeaderProps {
   title: string;
@@ -47,11 +48,16 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
               >
                 <div className="button-outter">
                   <div className="button-inner">
-                    <span>Max Forsey&apos;s Blog</span>
+                    <span>The Signal</span>
                   </div>
                 </div>
               </Link>
-              <ThemeToggle />
+              <div className="flex items-center gap-6">
+                <div className="text-lg">
+                  <SubscribeButton variant="link" />
+                </div>
+                <ThemeToggle />
+              </div>
             </div>
           </div>
         </div>
