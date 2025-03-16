@@ -86,7 +86,6 @@ async function handleUnsubscribe(request: Request) {
         <body>
           <h1>You've been unsubscribed</h1>
           <p>You will no longer receive emails from The Signal.</p>
-          <p>If this was a mistake, you can <a href="/?resubscribe=${encodeURIComponent(email)}">resubscribe here</a>.</p>
           <p><a href="/">Return to site</a></p>
         </body>
       </html>
