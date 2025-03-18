@@ -47,7 +47,7 @@ const Table: React.FC<TableProps> = ({ headers, rows, caption, className = '' })
     );
   }
   
-  // Client-side fully styled version
+  // Client-side fully styled version with explicit gray backgrounds for dark mode
   return (
     <div className="overflow-x-auto my-6">
       <table className={`min-w-full border-collapse ${className}`}>

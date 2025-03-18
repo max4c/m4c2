@@ -73,7 +73,7 @@
     @apply prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-5;
     @apply prose-li:mb-2;
     @apply prose-img:my-8 prose-img:rounded-lg;
-    @apply prose-code:text-primary dark:prose-code:text-[#F7C217] prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
+    @apply prose-code:text-primary dark:prose-code:text-blue-400 prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
     @apply prose-pre:bg-gray-100 prose-pre:dark:bg-[#1a1a1a] prose-pre:p-4 prose-pre:rounded-lg;
     @apply prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic;
     @apply prose-code:before:content-none prose-code:after:content-none;
@@ -103,7 +103,7 @@
   }
 
   .prose pre code {
-    @apply bg-transparent dark:bg-transparent text-gray-800 dark:text-[#F7C217] p-0;
+    @apply bg-transparent dark:bg-transparent text-gray-800 dark:text-blue-400 p-0;
     @apply font-mono text-sm leading-relaxed;
   }
 
@@ -112,7 +112,7 @@
   }
 
   .dark .prose a {
-    @apply text-[#F7C217] hover:text-[#e97319];
+    @apply text-blue-400 hover:text-[#e97319];
   }
 
   /* Theme specific styles */
@@ -225,7 +225,7 @@
   }
 
   .dark .custom-button .button-inner span {
-    color: #F7C217;
+    color: #60a5fa;
   }
 
   .custom-button:hover .button-inner span {
@@ -276,6 +276,87 @@
 
   .custom-button.tag .button-inner span {
     font-size: 0.875rem;
+  }
+
+  /* Table styles for dark mode */
+  .dark .prose table {
+    @apply border-collapse border-gray-700;
+  }
+
+  .dark .prose thead {
+    @apply bg-gray-800;
+  }
+
+  .dark .prose thead th {
+    @apply border-gray-700 text-gray-100 bg-gray-800;
+  }
+
+  .dark .prose tbody tr {
+    @apply border-gray-700;
+  }
+
+  .dark .prose tbody tr:nth-child(odd) {
+    @apply bg-gray-900;
+  }
+
+  .dark .prose tbody tr:nth-child(even) {
+    @apply bg-gray-800;
+  }
+
+  .dark .prose td {
+    @apply border-gray-700 text-gray-300;
+  }
+
+  /* Ensure tables have proper styling in light mode too */
+  .prose table {
+    @apply border-collapse border-gray-300 my-6;
+  }
+
+  .prose thead {
+    @apply bg-gray-100;
+  }
+
+  .prose thead th {
+    @apply border border-gray-300 p-2 text-left font-semibold;
+  }
+
+  .prose tbody tr {
+    @apply border-gray-300;
+  }
+
+  .prose tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+
+  .prose tbody tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+
+  .prose td {
+    @apply border border-gray-300 p-2;
+  }
+
+  /* More specific table styles for dark mode to ensure override */
+  .dark article table {
+    @apply border-collapse border-gray-700;
+  }
+
+  .dark article thead tr {
+    @apply bg-gray-800 !important;
+  }
+
+  .dark article tbody tr:nth-child(odd) {
+    @apply bg-gray-900 !important;
+  }
+
+  .dark article tbody tr:nth-child(even) {
+    @apply bg-gray-800 !important;
+  }
+
+  .dark article th,
+  .dark article td {
+    @apply border-gray-700 text-gray-300;
+    background-color: transparent !important;
   }
 }
 
@@ -443,11 +524,11 @@ body.modal-open {
 
 /* Text styling */
 .dark .custom-button .button-inner span {
-  color: #F7C217; /* Yellow in dark mode */
+  color: #60a5fa;
 }
 
 .dark .custom-button:hover .button-inner span {
-  color: #e97319; /* Hover color in dark mode */
+  color: #e97319;
 }
 
 /* Enhanced transitions */
@@ -455,4 +536,28 @@ body.modal-open {
 .dark .custom-button .button-inner,
 .dark .custom-button .button-inner span {
   transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+}
+
+/* Updated simplified table styles for dark mode */
+.dark table {
+  border-collapse: collapse;
+  border-color: #374151; /* gray-700 */
+}
+
+.dark table th {
+  background-color: #1f2937; /* gray-800 */
+  color: #e5e7eb; /* gray-200 */
+  border-color: #374151; /* gray-700 */
+}
+
+.dark table tr:nth-child(odd) td {
+  background-color: #111827; /* gray-900 */
+}
+
+.dark table tr:nth-child(even) td {
+  background-color: #1f2937; /* gray-800 */
+}
+
+.dark table td {
+  border-color: #374151; /* gray-700 */
 }

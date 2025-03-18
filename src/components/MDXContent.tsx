@@ -7,8 +7,8 @@ interface MDXContentProps {
 const MDXContent: React.FC<MDXContentProps> = ({ children }) => {
   return (
     <div className="w-full">
-      <div className="max-w-[650px] mx-auto px-4 sm:px-8">
-        <div className="mdx-content prose dark:prose-invert">
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="mdx-content prose dark:prose-invert prose-a:text-blue-600 dark:prose-a:text-blue-400">
           {children}
         </div>
       </div>

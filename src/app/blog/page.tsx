@@ -1,12 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import BlogContent from './BlogContent';
-import { format, parseISO, startOfMonth } from 'date-fns';
+import { format } from 'date-fns';
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/ThemeToggle';
-
-const ongoingPages = ['books', 'longevity', 'films', 'music', 'quotes', 'tools'];
+import MinimalHeader from '@/components/MinimalHeader';
 
 export type Post = {
   slug: string;
@@ -14,30 +11,6 @@ export type Post = {
   type: string;
   date: Date;
 };
-
-function groupPostsByMonthYear(posts: Post[]) {
-  const grouped: { [key: string]: Post[] } = {};
-  posts.forEach(post => {
-    if (post.date instanceof Date && !isNaN(post.date.getTime())) {
-      // Use startOfMonth to ensure consistent grouping
-      const monthStart = startOfMonth(post.date);
-      const key = format(monthStart, 'MMMM yyyy');
-      if (!grouped[key]) {
-        grouped[key] = [];
-      }
-      grouped[key].push(post);
-    } else {
-      console.error(`Invalid date for post: ${post.slug}`);
-    }
-  });
-  // Sort posts within each month
-  Object.values(grouped).forEach(monthPosts => {
-    monthPosts.sort((a, b) => b.date.getTime() - a.date.getTime());
-  });
-  return Object.entries(grouped).sort((a, b) => 
-    parseISO(b[0]).getTime() - parseISO(a[0]).getTime()
-  );
-}
 
 export default function BlogPage() {
   const blogDir = path.join(process.cwd(), 'src/app/blog');
@@ -50,9 +23,7 @@ export default function BlogPage() {
     const { data } = matter(fileContents);
     let date = new Date(0);
     if (data.date) {
-      // Convert the date string to a Date object
       date = new Date(data.date);
-      // If the date is invalid, log an error
       if (isNaN(date.getTime())) {
         console.error(`Invalid date for ${filename}: ${data.date}`);
         date = new Date(0);
@@ -67,42 +38,27 @@ export default function BlogPage() {
   }).filter(post => post.type === 'post' && !isNaN(post.date.getTime()));
 
   const sortedPosts = posts.sort((a, b) => b.date.getTime() - a.date.getTime());
-  const groupedBlogPosts = groupPostsByMonthYear(sortedPosts);
-
-  console.log('Parsed posts:', posts);
-  console.log('Grouped posts:', groupedBlogPosts);
 
   return (
     <>
-      <div className="w-full">
-        <div className="content-border border-b">
-          <div className="max-w-[650px] mx-auto px-6">
-            <header className="blog-header w-full pt-6 pb-3">
-              <div className="flex flex-col items-center sm:flex-row sm:justify-between w-full">
-                <h1 className="text-2xl font-bold mb-4 sm:mb-0">
-                  The Signal
-                </h1>
-                <div className="flex items-center gap-2">
-                  <Link 
-                    href="/" 
-                    className="text-sm px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600 
-                              hover:border-gray-400 dark:hover:border-gray-500 
-                              transition-all duration-200 nav-button"
-                  >
-                    About
-                  </Link>
-                  <ThemeToggle />
-                </div>
-              </div>
-            </header>
-          </div>
+      <MinimalHeader />
+      <main className="w-full max-w-2xl mx-auto px-4">
+        <div className="space-y-5">
+          {sortedPosts.map((post) => (
+            <div key={post.slug} className="flex items-baseline">
+              <span className="text-gray-500 dark:text-gray-400 w-28 flex-shrink-0">
+                {format(post.date, 'dd MMM yyyy')}
+              </span>
+              <Link 
+                href={`/blog/${post.slug}`} 
+                className="hover:underline text-blue-600 dark:text-blue-400"
+              >
+                {post.title}
+              </Link>
+            </div>
+          ))}
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-[650px] mx-auto px-6 pt-3">
-        <BlogContent blogPosts={groupedBlogPosts} />
-      </div>
+      </main>
     </>
   );
 }

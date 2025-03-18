@@ -3,8 +3,7 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { ThemeToggle } from './ThemeToggle';
-import SubscribeButton from './SubscribeButton';
+import MinimalThemeToggle from './MinimalThemeToggle';
 
 interface BlogPostHeaderProps {
   title: string;
@@ -16,6 +15,7 @@ interface BlogPostHeaderProps {
 
 export default function BlogPostHeader({ title, type, formattedDate, location, readTime }: BlogPostHeaderProps) {
   const [mounted, setMounted] = useState(false);
+  const pathname = '/blog';
 
   useEffect(() => {
     setMounted(true);
@@ -23,14 +23,10 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
 
   if (!mounted) {
     return (
-      <div className="w-full">
-        <div className="max-w-[650px] mx-auto px-4 sm:px-8">
-          <div className="pt-6 pb-4 blog-header border-b border-black dark:border-white">
-            <div className="flex items-center justify-between gap-2">
-              <div className="h-8 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-              <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-            </div>
-          </div>
+      <div className="w-full max-w-2xl mx-auto pt-6 px-4">
+        <div className="flex items-center justify-between gap-2">
+          <div className="h-8 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
         </div>
       </div>
     );
@@ -38,36 +34,49 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
 
   return (
     <>
-      <div className="w-full">
-        <div className="max-w-[650px] mx-auto px-4 sm:px-8">
-          <div className="pt-6 pb-4 blog-header border-b border-black dark:border-white">
-            <div className="flex items-center justify-between w-full">
+      <header className="w-full max-w-2xl mx-auto pt-6 px-4">
+        <div>
+          <h3 className="text-xl font-bold mb-4">
+            <Link href="/" className="text-black dark:text-white hover:no-underline">
+              maxforsey.com
+            </Link>
+          </h3>
+          <div className="flex justify-between items-center mb-4">
+            <nav className="flex space-x-4">
               <Link 
                 href="/" 
-                className="custom-button"
+                className="text-blue-600 dark:text-blue-400"
               >
-                <div className="button-outter">
-                  <div className="button-inner">
-                    <span>The Signal</span>
-                  </div>
-                </div>
+                home
               </Link>
-              <div className="flex items-center gap-6">
-                <div className="text-lg">
-                  <SubscribeButton variant="link" />
-                </div>
-                <ThemeToggle />
-              </div>
-            </div>
+              <Link 
+                href="/blog" 
+                className="font-bold text-blue-600 dark:text-blue-400"
+              >
+                blog
+              </Link>
+              <Link 
+                href="/about" 
+                className="text-blue-600 dark:text-blue-400"
+              >
+                about
+              </Link>
+              <Link 
+                href="/projects" 
+                className="text-blue-600 dark:text-blue-400"
+              >
+                projects
+              </Link>
+            </nav>
+            <MinimalThemeToggle />
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-[650px] mx-auto px-4 sm:px-8 mt-6 mb-6">
-        <h2 className="text-3xl font-bold mb-4">{title}</h2>
-        <p className="text-sm text-gray-500">
-          {formattedDate && location ? `${formattedDate}, ${location} • ` : ''}
-          {type !== 'ongoing' && (formattedDate && location ? ` ${readTime} min read` : `${readTime} min read`)}
+      <div className="max-w-2xl mx-auto px-4">
+        <h2 className="text-2xl font-bold mb-4">{title}</h2>
+        <p className="text-gray-500 dark:text-gray-400">
+          {formattedDate && location ? `${formattedDate}, ${location}` : formattedDate}
         </p>
       </div>
     </>

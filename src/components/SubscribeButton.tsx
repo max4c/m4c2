@@ -52,7 +52,7 @@ const SubscribeButton = forwardRef<SubscribeButtonRef, SubscribeButtonProps>((
   // Default styles for link variant
   let buttonContent;
   if (variant === 'link') {
-    buttonContent = <span className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors">{children}</span>;
+    buttonContent = <span className="text-blue-600 dark:text-blue-400 hover:underline">{children}</span>;
   } else if (variant === 'button') {
     buttonContent = <span className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors">{children}</span>;
   } else if (variant === 'custom-button') {

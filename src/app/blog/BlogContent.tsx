@@ -1,34 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import { Post } from './page';
+import { MDXRemote } from 'next-mdx-remote';
+import { components } from '@/components/MDXComponents';
+import MinimalHeader from '@/components/MinimalHeader';
 
-type BlogContentProps = {
-  blogPosts: [string, Post[]][];
-};
-
-const BlogContent: React.FC<BlogContentProps> = ({ blogPosts }) => {
+export default function BlogContent({ 
+  source, 
+  title, 
+  date 
+}: { 
+  source: any; 
+  title: string;
+  date: Date;
+}) {
   return (
-    <div className="w-full blog-content">
-      {blogPosts.map(([monthYear, posts]) => (
-        <div key={monthYear} className="mb-4 w-full">
-          <h2 className="mb-2 w-full font-bold">{monthYear}</h2>
-          <div className="space-y-2 w-full">
-            {posts.map(post => (
-              <div key={post.slug}>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors block w-full"
-                >
-                  {post.title}
-                </Link>
-              </div>
-            ))}
-          </div>
+    <>
+      <MinimalHeader />
+      <article className="w-full max-w-2xl mx-auto px-4">
+        <header className="mb-6">
+          <h1 className="text-2xl font-bold mb-2">{title}</h1>
+          {date && (
+            <p className="text-gray-500 dark:text-gray-400">
+              {date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </p>
+          )}
+        </header>
+        <div className="prose dark:prose-invert prose-img:rounded-lg max-w-none prose-a:text-blue-600 dark:prose-a:text-blue-400">
+          <MDXRemote {...source} components={components} />
         </div>
-      ))}
-    </div>
+      </article>
+    </>
   );
-};
-
-export default BlogContent;
+}

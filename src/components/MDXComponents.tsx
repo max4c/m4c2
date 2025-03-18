@@ -112,6 +112,12 @@ export const components: MDXComponents = {
   Image,
   code: InlineCode,
   p: Paragraph,
+  h1: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
+  h2: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
+  h3: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
+  h4: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
+  h5: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
+  h6: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
   pre: ({ children, ...props }) => {
     const childrenArray = React.Children.toArray(children);
     const code = childrenArray[0] as React.ReactElement;
@@ -124,15 +130,16 @@ export const components: MDXComponents = {
     );
   },
   a: ({ href, ...props }: any) => {
-    if (href.startsWith('http')) {
-      return <a href={href} target="_blank" rel="noopener noreferrer" {...props} />
+    if (href?.startsWith('http')) {
+      return <a href={href} target="_blank" rel="noopener noreferrer" {...props} className="text-blue-600 dark:text-blue-400 hover:underline" />
     }
-    return <Link href={href} {...props} />
+    return <Link href={href} {...props} className="text-blue-600 dark:text-blue-400 hover:underline" />
   },
   img: ({ src, alt, ...props }: any) => (
     <div className="relative w-full my-8">
       <Image
         {...props}
+        src={src}
         alt={alt || ''}
         width={800}
         height={500}

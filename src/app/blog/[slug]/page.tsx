@@ -42,15 +42,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         />
       </MDXContent>
       
-      <div>
-        <div className="mt-8 pb-8 text-center">
-          <Link 
-            href="/"
-            className="text-[#0957D0] dark:text-[#F7C217] hover:text-[#e97319] dark:hover:text-[#e97319] transition-colors"
-          >
-            ← Back to home
-          </Link>
-        </div>
+      <div className="max-w-2xl mx-auto px-4 mt-8 pb-8 text-center">
+        <Link 
+          href="/blog"
+          className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          ← Back to blog
+        </Link>
       </div>
     </article>
   );
