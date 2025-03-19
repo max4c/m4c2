@@ -84,22 +84,22 @@ const SubscribeButton = forwardRef<SubscribeButtonRef, SubscribeButtonProps>((
           onClick={closeModal}
         >
           <div 
-            className="bg-white dark:bg-[#171717] shadow-xl max-w-md w-full relative border border-black dark:border-white"
+            className="bg-white dark:bg-black w-full max-w-md border border-black dark:border-white"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              aria-label="Close subscription form"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <div className="flex justify-between items-center p-4">
+              <h3 className="text-xl font-bold">Subscribe</h3>
+              <button
+                onClick={closeModal}
+                className="text-black dark:text-white"
+                aria-label="Close subscription form"
+              >
+                ✕
+              </button>
+            </div>
             
-            <div className="p-6">
-              <h3 className="text-2xl font-bold mb-2 text-center">The Signal</h3>
-              <SubscriptionForm className="shadow-none bg-transparent dark:bg-transparent" defaultEmail={email} />
+            <div className="p-4 pt-0">
+              <SubscriptionForm className="bg-transparent" defaultEmail={email} />
             </div>
           </div>
         </div>

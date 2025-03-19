@@ -23,7 +23,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const { content, data } = matter(fileContent);
   const title = data.title || slug;
   const readTime = calculateReadTime(content);
-  const formattedDate = data.date ? format(new Date(data.date), 'MMMM yyyy') : '';
+  const formattedDate = data.date ? format(new Date(data.date), 'dd MMM yyyy') : '';
   const location = data.location || '';
 
   return (

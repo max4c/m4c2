@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import SubscribeButton from './SubscribeButton';
 
 interface BlogPostHeaderProps {
   title: string;
@@ -20,17 +21,6 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="w-full max-w-2xl mx-auto pt-6 px-4">
-        <div className="flex items-center justify-between gap-2">
-          <div className="h-8 w-40 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-          <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <header className="w-full max-w-2xl mx-auto pt-6 px-4">
@@ -40,7 +30,7 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
               maxforsey.com
             </Link>
           </h3>
-          <div className="mb-4">
+          <div className="flex justify-between items-center mb-4">
             <nav className="flex space-x-4">
               <Link 
                 href="/" 
@@ -67,6 +57,9 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
                 projects
               </Link>
             </nav>
+            <SubscribeButton variant="link">
+              subscribe
+            </SubscribeButton>
           </div>
         </div>
       </header>

@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import SubscribeButton from './SubscribeButton';
 
 export default function MinimalHeader() {
   const pathname = usePathname() || '';
+  const isBlogPage = pathname.startsWith('/blog');
   
   return (
     <header className="w-full max-w-2xl mx-auto pt-6 px-4">
@@ -14,7 +16,7 @@ export default function MinimalHeader() {
             maxforsey.com
           </Link>
         </h3>
-        <div className="mb-4">
+        <div className="flex justify-between items-center mb-4">
           <nav className="flex space-x-4">
             <Link 
               href="/" 
@@ -41,6 +43,11 @@ export default function MinimalHeader() {
               projects
             </Link>
           </nav>
+          {isBlogPage && (
+            <SubscribeButton variant="link">
+              subscribe
+            </SubscribeButton>
+          )}
         </div>
       </div>
     </header>
