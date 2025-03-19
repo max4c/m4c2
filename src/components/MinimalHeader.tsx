@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import MinimalThemeToggle from './MinimalThemeToggle';
 
 export default function MinimalHeader() {
   const pathname = usePathname() || '';
@@ -15,7 +14,7 @@ export default function MinimalHeader() {
             maxforsey.com
           </Link>
         </h3>
-        <div className="flex justify-between items-center mb-4">
+        <div className="mb-4">
           <nav className="flex space-x-4">
             <Link 
               href="/" 
@@ -42,7 +41,6 @@ export default function MinimalHeader() {
               projects
             </Link>
           </nav>
-          <MinimalThemeToggle />
         </div>
       </div>
     </header>

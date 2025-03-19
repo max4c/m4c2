@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import MinimalThemeToggle from './MinimalThemeToggle';
 
 interface BlogPostHeaderProps {
   title: string;
@@ -41,7 +40,7 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
               maxforsey.com
             </Link>
           </h3>
-          <div className="flex justify-between items-center mb-4">
+          <div className="mb-4">
             <nav className="flex space-x-4">
               <Link 
                 href="/" 
@@ -68,7 +67,6 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
                 projects
               </Link>
             </nav>
-            <MinimalThemeToggle />
           </div>
         </div>
       </header>

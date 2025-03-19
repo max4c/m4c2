@@ -7,7 +7,6 @@ export default function ProjectsPage() {
     <>
       <MinimalHeader />
       <main className="w-full max-w-2xl mx-auto px-4 pb-8">
-        <h2 className="text-2xl font-bold mb-4">projects</h2>
         <div className="space-y-8">
           {/* Paper Project */}
           <div>

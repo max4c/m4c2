@@ -1,9 +1,9 @@
+import './globals.css'
+import { Inter } from 'next/font/google'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import { Metadata } from 'next'
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maxforsey.com'),
@@ -22,17 +22,17 @@ export const metadata: Metadata = {
     title: 'Max Forsey',
     description: 'I like to research AI and build helpful tools',
   },
-};
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
       <head />
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-white text-black dark:bg-black dark:text-[rgba(255,255,255,0.87)]`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -47,5 +47,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
