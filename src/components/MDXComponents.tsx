@@ -105,6 +105,57 @@ const Paragraph = ({ children, ...rest }: ParagraphProps) => {
   return <p {...rest}>{processedChildren}</p>;
 };
 
+// Custom Image component that uses Next.js Image for optimization
+function OptimizedImage({
+  src,
+  alt,
+  width,
+  height,
+  className = '',
+  ...props
+}: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) {
+  // Handle undefined src (return null or empty div)
+  if (!src) return null;
+  
+  // Convert string width/height to numbers if they exist
+  const imgWidth = width ? Number(width) : 800;
+  const imgHeight = height ? Number(height) : 600;
+  
+  // Check if the image is an external URL
+  const isExternal = src.startsWith('http');
+  
+  if (isExternal) {
+    // For external images, we still use Next.js Image but with different props
+    return (
+      <div className={`my-6 ${className || ''}`}>
+        <Image
+          src={src}
+          alt={alt || ''}
+          width={imgWidth}
+          height={imgHeight}
+          className="rounded-lg mx-auto"
+          style={{ maxWidth: '100%', height: 'auto' }}
+          unoptimized={false}
+        />
+      </div>
+    );
+  }
+  
+  // For local images
+  return (
+    <div className={`my-6 ${className || ''}`}>
+      <Image
+        src={src}
+        alt={alt || ''}
+        width={imgWidth}
+        height={imgHeight}
+        className="rounded-lg mx-auto"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+    </div>
+  );
+}
+
 export const components: MDXComponents = {
   Video,
   Iframe,
@@ -112,12 +163,12 @@ export const components: MDXComponents = {
   Image,
   code: InlineCode,
   p: Paragraph,
-  h1: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
-  h2: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
-  h3: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
-  h4: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
-  h5: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
-  h6: ({ children, ...props }) => <h4 className="text-xl font-bold my-4" {...props}>{children}</h4>,
+  h1: ({ children, ...props }) => <h1 className="text-3xl font-bold mt-8 mb-4" {...props}>{children}</h1>,
+  h2: ({ children, ...props }) => <h2 className="text-2xl font-bold mt-8 mb-3" {...props}>{children}</h2>,
+  h3: ({ children, ...props }) => <h3 className="text-xl font-bold mt-6 mb-3" {...props}>{children}</h3>,
+  h4: ({ children, ...props }) => <h4 className="text-lg font-bold mt-6 mb-2" {...props}>{children}</h4>,
+  h5: ({ children, ...props }) => <h5 className="text-base font-bold mt-4 mb-2" {...props}>{children}</h5>,
+  h6: ({ children, ...props }) => <h6 className="text-sm font-bold mt-4 mb-2" {...props}>{children}</h6>,
   pre: ({ children, ...props }) => {
     const childrenArray = React.Children.toArray(children);
     const code = childrenArray[0] as React.ReactElement;
@@ -135,19 +186,7 @@ export const components: MDXComponents = {
     }
     return <Link href={href} {...props} className="text-blue-600 dark:text-blue-400 hover:underline" />
   },
-  img: ({ src, alt, ...props }: any) => (
-    <div className="relative w-full my-8">
-      <Image
-        {...props}
-        src={src}
-        alt={alt || ''}
-        width={800}
-        height={500}
-        className="rounded-lg mx-auto"
-        style={{ maxWidth: '100%', height: 'auto' }}
-      />
-    </div>
-  ),
+  img: OptimizedImage,
   LatexEquation,
   Table: MDXTable,
 };

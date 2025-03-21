@@ -1,96 +1,62 @@
-# MINIMAL WEBSITE CONVERSION PLAN
+# WEBSITE SEO & BLOG POST ORGANIZATION TO-DO LIST
 
-## OVERVIEW
-Convert current Next.js website to an ultra-minimal design with:
-- Header: "Max Forsey"
-- Navigation: Home, Blog, About
-- Clean, simple presentation with minimal styling
+## PHASE 1: CONTENT RESTRUCTURING ✅
+- [x] Create `/src/content/blog/` directory structure
+- [x] Create `scripts/analyze-blog-posts.js` for migration planning
+- [x] Create `scripts/migrate-blog-posts.js` for content migration
+- [x] Use three-letter month names for directories (jan, feb, mar)
+- [x] Generate descriptive slugs from post titles
+- [x] Generate SEO descriptions from content when missing
+- [x] Suggest tags based on post content analysis
+- [x] Update frontmatter with enhanced metadata
+- [x] Generate `/public/_redirects` file for backward compatibility
+- [x] Migrate all blog posts to new structure
 
-## PAGES TO CREATE/MODIFY
-1. Home Page ✓
-   - Keep header "Max Forsey"
-   - Add simple navigation
-   - Display text: "I like to research AI and build helpful tools"
-   - Remove other content
+## PHASE 2: URL & ROUTING UPDATES ✅
+- [x] Create TypeScript library `/src/lib/blog.ts` with proper types
+- [x] Update blog listing page to use new content structure
+- [x] Implement year/month filtering of blog posts
+- [x] Implement tag-based filtering pages
+- [x] Update dynamic blog post page to use new content structure
+- [x] Add breadcrumb navigation to blog posts
+- [x] Set up proper canonical URLs in headers
 
-2. Blog Page ✓
-   - Ultra minimal list of blog posts
-   - No extra styling or features
-   - Just title and date for each post
+## PHASE 3: SEO ENHANCEMENTS ✅
+- [x] Add dynamic sitemap.xml generation
+- [x] Add Open Graph metadata to blog posts
+- [x] Add Twitter card metadata to blog posts
+- [x] Set up proper meta descriptions for all content
+- [x] Add structured data (JSON-LD) to blog posts
+- [x] Add robots.txt configuration
+- [x] Add canonical URL meta tags
 
-3. About Page (New) ✓
-   - Simple list of highlights (one per line, no bullet points)
-   - Include projects section from homepage
+## PHASE 4: SEARCH & DISCOVERY ✅
+- [x] Add tag navigation to blog page
+- [x] Create tag cloud visualization
+- [x] Implement year-based archive page
+- [x] Add month-based archive page
+- [ ] ~~Add search functionality for blog content~~ (removed)
+- [x] Add related posts section based on tags
+- [x] Create "series" functionality for post sequences
 
-## TASKS
+## PHASE 5: VISUAL & USABILITY IMPROVEMENTS ✅
+- [x] Add image optimization with Next.js Image
+- [x] Implement responsive images in MDX content
+- [x] Fix date parsing bug in blog post pages
+- [x] Clean up breadcrumbs and related posts UI
+- [x] Fix mobile UI issues
 
-### 1. File Structure
-- [✓] Review current structure in src/app and src/components
-- [✓] Plan new simplified file structure
-
-### 2. Components
-- [✓] Create simple Header component with navigation
-- [✓] Extract Highlights content for About page
-- [✓] Simplify BlogPagination for Blog page
-
-### 3. Pages
-- [✓] Modify Home page (app/page.tsx)
-- [✓] Create/modify Blog page (app/blog/page.tsx)
-- [✓] Create About page (app/about/page.tsx)
-
-### 4. Styling
-- [✓] Maintain minimal styling
-- [✓] Review globals.css and remove unnecessary styles
-- [✓] Ensure consistent styling across pages
-
-### 5. Testing
-- [✓] Test all page navigation
-- [✓] Verify content displays correctly
-- [✓] Check responsiveness
-
-## COMPLETION CRITERIA
-- [✓] Ultra minimal design with just essential content
-- [✓] Working navigation between Home, Blog, and About
-- [✓] Projects section moved to About page
-- [✓] All links functioning properly
-
-## COMPLETED CHANGES
-1. Created MinimalHeader component with navigation
-2. Updated Home page to show minimal content
-3. Created minimal About page with highlights list and projects
-4. Simplified Blog page to show just a list of posts with dates
-5. Applied consistent styling across all pages
-6. Updated layout.tsx to remove unnecessary components
-7. Created BlogContent component for individual blog posts
-8. Fixed imports and ensured all components work together
-9. Updated blog post formatting:
-   - Changed blog post title to text-2xl font-bold mb-4
-   - Made section headings match the site header (text-xl font-bold)
-   - Applied these changes to all MDX components
-   - Modified all heading elements to render as h4 elements
-   - Changed date text to normal size (removed text-sm) while keeping it gray
-10. Changed "Back to home" link to "Back to blog" at the bottom of blog posts
-11. Refined column width to max-w-2xl to better match desired design:
-    - Updated width in all components (MinimalHeader, BlogPostHeader, MDXContent)
-    - Updated width in all page layouts to maintain consistency
-    - Ensured consistent width on about, blog listing, and projects pages
-    - This provides a more comfortable reading width with improved readability
-
-## RESULT
-A very minimal, clean website with three main sections:
-- Home: Just the header and minimal text
-- Blog: Simple list of blog posts with dates
-- About: List of highlights and projects
-
-The design is clean, focused on content, and easy to navigate.
-
-## BLOG POST FORMATTING
-- [✓] Updated BlogPostHeader component for consistent title styling
-- [✓] Modified MDXComponents to make all heading elements (h1-h6) use text-xl size with bold styling
-- [✓] Removed the prose scaling for headings to keep text at normal size
-- [✓] Applied margin spacing (my-4) to ensure proper vertical rhythm
-- [✓] Changed all heading elements (h1-h6) to render as h4 elements
-- [✓] Changed "Back to home" link to "Back to blog" with appropriate href
-- [✓] Updated date text to use normal font size while maintaining gray color
-- [✓] Adjusted column width to max-w-2xl (42rem / 672px) for improved readability
-- [✓] Ensured consistent width across all pages (home, blog, about, projects)
+## NEXT ACTIONS (PRIORITIZED)
+1. [x] Fix any TypeScript errors in current implementation
+2. [x] Test all routes to ensure correct functionality
+3. [x] Implement breadcrumb navigation
+4. [x] Add structured data (JSON-LD) to blog posts
+5. [x] Set up canonical URLs to improve SEO
+6. [x] Add year/month filtering capability
+7. [x] Add robots.txt configuration
+8. [x] Create tag cloud visualization
+9. [ ] ~~Add search functionality for blog content~~ (removed)
+10. [x] Add related posts section based on tags
+11. [x] Create "series" functionality for post sequences
+12. [x] Add image optimization with Next.js Image
+13. [ ] Implement accessibility improvements

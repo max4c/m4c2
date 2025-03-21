@@ -2,6 +2,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Metadata } from 'next'
+import UmamiAnalytics from '@/components/UmamiAnalytics'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -33,6 +34,7 @@ export default function RootLayout({
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
       <head />
       <body className={`${inter.className} bg-white text-black dark:bg-black dark:text-[rgba(255,255,255,0.87)]`}>
+        <UmamiAnalytics />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

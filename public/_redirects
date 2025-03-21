@@ -1,0 +1,16 @@
+# Redirects from old blog URLs to new structure
+
+/blog/books /blog/books 301
+/blog/films /blog/films 301
+/blog/longevity /blog/longevity 301
+/blog/music /blog/music 301
+/blog/post1 /blog/objectivity-in-design 301
+/blog/post2 /blog/fitness-wearables 301
+/blog/post3 /blog/sparse-autoencoders-and-tmux 301
+/blog/post4 /blog/longevity-the-new-compound-interest 301
+/blog/post5 /blog/i-am-becuase-we-are 301
+/blog/post6 /blog/from-apis-to-model-training-a-deep-learning-guide 301
+/blog/post7 /blog/uv-add-greater-pip-install 301
+/blog/post8 /blog/chronotype-based-scheduling 301
+/blog/quotes /blog/quotes 301
+/blog/tools /blog/tools 301

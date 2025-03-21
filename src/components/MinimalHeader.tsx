@@ -17,7 +17,7 @@ export default function MinimalHeader() {
           </Link>
         </h3>
         <div className="flex justify-between items-center mb-4">
-          <nav className="flex space-x-4">
+          <nav className="flex space-x-4 items-center">
             <Link 
               href="/" 
               className={pathname === '/' ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-blue-600 dark:text-blue-400'}
@@ -43,6 +43,7 @@ export default function MinimalHeader() {
               projects
             </Link>
           </nav>
+          
           {isBlogPage && (
             <SubscribeButton variant="link">
               subscribe

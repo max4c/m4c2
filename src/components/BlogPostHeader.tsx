@@ -8,7 +8,7 @@ import SubscribeButton from './SubscribeButton';
 interface BlogPostHeaderProps {
   title: string;
   type: string;
-  formattedDate: string;
+  formattedDate?: string;
   location: string;
   readTime: number;
 }
