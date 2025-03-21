@@ -98,7 +98,7 @@ const SubscribeButton = forwardRef<SubscribeButtonRef, SubscribeButtonProps>((
               </button>
             </div>
             
-            <div className="p-4 pt-0">
+            <div className="p-4 pt-0 text-left">
               <SubscriptionForm className="bg-transparent" defaultEmail={email} />
             </div>
           </div>

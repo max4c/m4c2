@@ -63,7 +63,7 @@ export default function SubscriptionForm({ className = '', defaultEmail = '' }: 
 
   return (
     <div className={`w-full ${className}`}>
-      <p className="text-sm mb-4">
+      <p className="text-sm mb-4 text-left">
         get an email when new content is published
       </p>
       
