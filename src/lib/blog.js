@@ -52,7 +52,8 @@ export function getAllPosts() {
           type: data.type || 'post',
           location: data.location || '',
           lastModified: data.lastModified || data.date,
-          path: `/${year}/${month}/${file.replace('.mdx', '')}`
+          path: `/${year}/${month}/${file.replace('.mdx', '')}`,
+          series: data.series || undefined
         });
       }
     }
@@ -142,4 +143,70 @@ export function getAllYears() {
   
   // Sort years in descending order (newest first)
   return yearDirs.sort((a, b) => b - a);
+}
+
+/**
+ * Get all posts that belong to a specific series
+ */
+export function getSeriesPosts(seriesName) {
+  const posts = getAllPosts();
+  
+  return posts
+    .filter(post => post.series && post.series.name === seriesName)
+    .sort((a, b) => {
+      // Sort by part number
+      return (a.series?.part || 0) - (b.series?.part || 0);
+    });
+}
+
+/**
+ * Get all unique series names with post counts
+ */
+export function getAllSeries() {
+  const posts = getAllPosts();
+  const seriesMap = new Map();
+  
+  posts.forEach(post => {
+    if (post.series && post.series.name) {
+      seriesMap.set(
+        post.series.name, 
+        (seriesMap.get(post.series.name) || 0) + 1
+      );
+    }
+  });
+  
+  return Array.from(seriesMap.entries())
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Get next and previous posts in a series
+ */
+export function getSeriesNavigation(currentPost) {
+  if (!currentPost.series) {
+    return { series: null, prev: null, next: null };
+  }
+  
+  const seriesPosts = getSeriesPosts(currentPost.series.name);
+  const totalParts = seriesPosts.length;
+  
+  const currentIndex = seriesPosts.findIndex(post => post.slug === currentPost.slug);
+  
+  if (currentIndex === -1) {
+    return { 
+      series: { name: currentPost.series.name, totalParts }, 
+      prev: null, 
+      next: null 
+    };
+  }
+  
+  const prev = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
+  const next = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
+  
+  return {
+    series: { name: currentPost.series.name, totalParts },
+    prev,
+    next
+  };
 } 
