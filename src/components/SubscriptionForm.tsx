@@ -64,7 +64,7 @@ export default function SubscriptionForm({ className = '', defaultEmail = '' }: 
   return (
     <div className={`w-full ${className}`}>
       <p className="text-sm mb-4 text-left">
-        get an email when new content is published
+        get an email when a new post is published
       </p>
       
       <form onSubmit={handleSubmit} className="space-y-4">
