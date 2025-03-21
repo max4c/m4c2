@@ -8,6 +8,30 @@ export default function ProjectsPage() {
       <MinimalHeader />
       <main className="w-full max-w-2xl mx-auto px-4 pb-8">
         <div className="space-y-8">
+          {/* JustBuild Community Project */}
+          <div>
+            <div className="flex items-center mb-2">
+              <p className="mr-2">JustBuild</p>
+              <Link href="https://justbuild.ing" className="text-blue-600 dark:text-blue-400">
+                view community →
+              </Link>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-2">
+              We host selective hackathons with thousands in prizes, plus weekly coworking sessions where we build projects together. 
+            </p>
+            <div className="w-full flex justify-center">
+              <div className="w-3/4">
+                <Image
+                  src="/thats-me.png"
+                  alt="That's me at JustBuild community event"
+                  width={600}
+                  height={300}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Paper Project */}
           <div>
             <div className="flex items-center mb-2">

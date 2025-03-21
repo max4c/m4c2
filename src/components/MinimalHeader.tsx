@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import SubscribeButton from './SubscribeButton';
+import ThemeToggle from './ThemeToggle';
 
 export default function MinimalHeader() {
   const pathname = usePathname() || '';
@@ -11,11 +12,14 @@ export default function MinimalHeader() {
   return (
     <header className="w-full max-w-2xl mx-auto pt-6 px-4">
       <div>
-        <h3 className="text-xl font-bold mb-4">
-          <Link href="/" className="text-black dark:text-white hover:no-underline">
-            maxforsey.com
-          </Link>
-        </h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-bold">
+            <Link href="/" className="text-black dark:text-white hover:no-underline">
+              maxforsey.com
+            </Link>
+          </h3>
+          <ThemeToggle />
+        </div>
         <div className="flex justify-between items-center mb-4">
           <nav className="flex space-x-4">
             <Link 

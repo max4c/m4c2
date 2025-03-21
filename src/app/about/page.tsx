@@ -19,10 +19,12 @@ const highlights: Highlight[] = [
   { text: "Cofounded Sameday AI going through AI Grant and YC", 
     links: [
       { url: "https://www.gosameday.com/", text: "Sameday AI" },
-      { url: "https://aigrant.com/", text: "AI Grant" }
+      { url: "https://aigrant.com/", text: "AI Grant" },
+      { url: "https://www.ycombinator.com/", text: "YC" }
     ] 
   },
-  { text: "Recently lived in San Francisco, currently in Provo", links: null },
+  { text: "Currently in Provo", links: null },
+  { text: "Frequently in San Francisco", links: null },
   { text: "Hiked the Grand Canyon rim to rim", links: null },
   { text: "Type in Colemak", links: [{ url: "https://colemak.com/", text: "Colemak" }] },
   { text: "Have fun experimenting with longevity", links: [{ url: "https://www.maxforsey.com/blog/longevity", text: "longevity" }] },
