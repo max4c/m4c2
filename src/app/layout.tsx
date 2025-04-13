@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
       <head />
-      <body className={`${inter.className} bg-white text-black dark:bg-black dark:text-[rgba(255,255,255,0.87)]`}>
+      <body className={`${inter.className}`}>
         <UmamiAnalytics />
         <ThemeProvider
           attribute="class"

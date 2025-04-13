@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import SubscribeButton from './SubscribeButton';
 
 export default function MinimalHeader() {
   const pathname = usePathname() || '';
@@ -43,12 +42,6 @@ export default function MinimalHeader() {
               projects
             </Link>
           </nav>
-          
-          {isBlogPage && (
-            <SubscribeButton variant="link">
-              subscribe
-            </SubscribeButton>
-          )}
         </div>
       </div>
     </header>

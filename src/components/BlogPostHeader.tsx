@@ -3,17 +3,16 @@
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import SubscribeButton from './SubscribeButton';
+import Image from 'next/image';
 
 interface BlogPostHeaderProps {
   title: string;
   type: string;
   formattedDate?: string;
-  location: string;
-  readTime: number;
+  location?: string;
 }
 
-export default function BlogPostHeader({ title, type, formattedDate, location, readTime }: BlogPostHeaderProps) {
+export default function BlogPostHeader({ title, type, formattedDate, location }: BlogPostHeaderProps) {
   const [mounted, setMounted] = useState(false);
   const pathname = '/blog';
 
@@ -57,18 +56,23 @@ export default function BlogPostHeader({ title, type, formattedDate, location, r
                 projects
               </Link>
             </nav>
-            <SubscribeButton variant="link">
-              subscribe
-            </SubscribeButton>
           </div>
         </div>
       </header>
 
+      <div className="w-full max-w-2xl mx-auto px-4 my-6">
+        <Image 
+          src="/images/blog-banners/banner.png"
+          alt={`${title} banner image`}
+          width={1200}
+          height={600}
+          className="w-full h-auto object-cover rounded-md shadow-md"
+          priority
+        />
+      </div>
+
       <div className="max-w-2xl mx-auto px-4">
         <h2 className="text-2xl font-bold mb-4">{title}</h2>
-        <p className="text-gray-500 dark:text-gray-400">
-          {formattedDate && location ? `${formattedDate}, ${location}` : formattedDate}
-        </p>
       </div>
     </>
   );

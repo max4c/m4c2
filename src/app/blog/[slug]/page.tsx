@@ -5,11 +5,12 @@ import { components as MDXComponents } from '@/components/MDXComponents';
 import { format } from 'date-fns';
 import BlogPostHeader from '@/components/BlogPostHeader';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getPostBySlug, getAllPosts, getSeriesNavigation } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import JsonLd from '@/components/JsonLd';
 import SeriesNavigation from '@/components/SeriesNavigation';
-import SubscribeButton from '@/components/SubscribeButton';
+import SubscribeInput from '@/components/SubscribeInput';
 
 // Generate static params for static generation
 export async function generateStaticParams() {
@@ -17,13 +18,6 @@ export async function generateStaticParams() {
   return posts.map((post) => ({
     slug: post.slug,
   }));
-}
-
-// Calculate read time based on word count (average reading speed: 200 words per minute)
-function calculateReadTime(content: string) {
-  const wordCount = content.trim().split(/\s+/).length;
-  const readTime = Math.ceil(wordCount / 200);
-  return readTime;
 }
 
 // Ensure date is always a Date object
@@ -79,20 +73,15 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     notFound();
   }
   
-  // Ensure content exists (TypeScript safety)
   if (!post.content) {
     notFound();
   }
   
-  // Check if this is an ongoing post
   const isOngoing = post.type === 'ongoing';
-  
-  // Get series information if this post is part of a series
   const seriesInfo = post.series ? getSeriesNavigation(post) : null;
   
-  const readTime = calculateReadTime(post.content);
   const postDate = ensureDate(post.date);
-  const formattedDate = format(postDate, 'dd MMM yyyy');
+  const formattedDate = format(postDate, 'MM/dd/yyyy');
   
   // Prepare JSON-LD structured data
   const websiteUrl = 'https://www.maxforsey.com';
@@ -126,7 +115,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   
   return (
     <article>
-      {/* Add JSON-LD structured data */}
       <JsonLd data={structuredData} />
       
       <BlogPostHeader 
@@ -134,12 +122,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         type={post.type}
         formattedDate={!isOngoing ? formattedDate : undefined}
         location={post.location || ''}
-        readTime={readTime}
       />
       
-      {/* Display series navigation at the top if part of a series */}
       {seriesInfo && seriesInfo.series && (
-        <div className="max-w-2xl mx-auto px-4">
+        <div className="max-w-2xl mx-auto px-4 mb-8">
           <SeriesNavigation 
             seriesName={seriesInfo.series.name}
             currentPart={post.series!.part}
@@ -157,9 +143,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         />
       </MDXContent>
       
-      {/* Display series navigation at the bottom if part of a series */}
       {seriesInfo && seriesInfo.series && (
-        <div className="max-w-2xl mx-auto px-4">
+        <div className="max-w-2xl mx-auto px-4 mb-8">
           <SeriesNavigation 
             seriesName={seriesInfo.series.name}
             currentPart={post.series!.part}
@@ -170,21 +155,28 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </div>
       )}
       
-      <div className="max-w-2xl mx-auto px-4 mt-8 pb-4 text-center">
-        <div className="flex justify-center items-center space-x-4">
-          <Link 
-            href="/blog"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            ← back to blog
-          </Link>
-          
-          <span className="text-gray-300 dark:text-gray-600">•</span>
-          
-          <SubscribeButton variant="link">
-            subscribe
-          </SubscribeButton>
+      <div className="max-w-2xl mx-auto px-4 mt-8 pb-8 space-y-4">
+        
+        {/* Display Date */} 
+        {formattedDate && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {formattedDate}
+          </p>
+        )}
+
+        {/* Back to blog link */} 
+        <Link 
+          href="/blog"
+          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          back to blog
+        </Link>
+
+        {/* Subscribe Input */} 
+        <div className="-ml-2"> 
+          <SubscribeInput />
         </div>
+        
       </div>
     </article>
   );

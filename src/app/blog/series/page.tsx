@@ -37,7 +37,7 @@ export default function SeriesPage() {
       <MinimalHeader />
       <main className="w-full max-w-2xl mx-auto px-4">
         <div className="mb-8 mt-4">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="gap-2 mb-4">
             <Link 
               href="/blog"
               className="text-blue-600 dark:text-blue-400 hover:underline"
