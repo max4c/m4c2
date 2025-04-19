@@ -109,50 +109,33 @@ const Paragraph = ({ children, ...rest }: ParagraphProps) => {
 function OptimizedImage({
   src,
   alt,
-  width,
-  height,
-  className = '',
+  width, // Allow overriding defaults from MDX if needed, but default to 600
+  height, // Allow overriding defaults from MDX if needed, but default to 300
+  className = '', // Allow passing other classes like rounded-lg etc.
   ...props
 }: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) {
   // Handle undefined src (return null or empty div)
   if (!src) return null;
   
-  // Convert string width/height to numbers if they exist
-  const imgWidth = width ? Number(width) : 800;
-  const imgHeight = height ? Number(height) : 600;
+  // Set desired aspect ratio (2:1 like Projects page), allowing overrides
+  const imgWidth = width ? Number(width) : 600;
+  const imgHeight = height ? Number(height) : 300;
   
   // Check if the image is an external URL
   const isExternal = src.startsWith('http');
   
-  if (isExternal) {
-    // For external images, we still use Next.js Image but with different props
-    return (
-      <div className={`my-6 ${className || ''}`}>
-        <Image
-          src={src}
-          alt={alt || ''}
-          width={imgWidth}
-          height={imgHeight}
-          className="rounded-lg mx-auto"
-          style={{ maxWidth: '100%', height: 'auto' }}
-          unoptimized={false}
-        />
-      </div>
-    );
-  }
-  
-  // For local images
+  // Render the Image directly, applying centering, max-width, and vertical spacing
   return (
-    <div className={`my-6 ${className || ''}`}>
-      <Image
-        src={src}
-        alt={alt || ''}
-        width={imgWidth}
-        height={imgHeight}
-        className="rounded-lg mx-auto"
-        style={{ maxWidth: '100%', height: 'auto' }}
-      />
-    </div>
+    <Image
+      src={src}
+      alt={alt || ''}
+      width={imgWidth}
+      height={imgHeight}
+      // Apply max-width directly, center with mx-auto, add vertical margin
+      className={`max-w-xl mx-auto my-6 rounded-lg ${className || ''}`}
+      unoptimized={isExternal ? false : undefined}
+      {...props} // Pass down any other props from the <img> tag
+    />
   );
 }
 

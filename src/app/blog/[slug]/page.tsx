@@ -122,6 +122,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         type={post.type}
         formattedDate={!isOngoing ? formattedDate : undefined}
         location={post.location || ''}
+        banner={post.banner}
       />
       
       {seriesInfo && seriesInfo.series && (

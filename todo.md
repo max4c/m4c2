@@ -66,10 +66,11 @@ This file tracks the implementation progress of iterating on the blog aesthetics
 5.3 [x] Display status messages (loading, success, error) next to the button in `SubscribeInput`, replacing the old placeholder/alert.
 
 #### Testing Tasks
-5.4 [ ] Test successful subscription: Enter valid email, click subscribe, verify 'Subscribed!' message appears, verify input clears.
+5.4 [ ] Test successful subscription: Enter valid email, click subscribe, verify 'Subscribed!' message appears, verify input clears, verify minimal welcome email received.
 5.5 [ ] Test duplicate subscription: Enter same email again, click subscribe, verify 'already subscribed' message appears.
 5.6 [ ] Test invalid email: Enter invalid email format, click subscribe, verify error message appears.
 5.7 [ ] Test API error: Simulate server error, verify generic error message appears.
+5.8 [ ] Simplify welcome email HTML in `/api/subscribe` route.
 
 ## Implementation Locations
 - [x] `src/app/blog/series/page.tsx`
@@ -98,5 +99,6 @@ This file tracks the implementation progress of iterating on the blog aesthetics
 - Adjusted home page social link size and intro paragraph spacing.
 - Reordered elements in blog post footer.
 - Implemented Resend API call and status feedback in SubscribeInput component.
+- Simplified Resend welcome email HTML.
 
 Last Updated: 2024-07-26 

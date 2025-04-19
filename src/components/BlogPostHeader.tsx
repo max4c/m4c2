@@ -10,15 +10,18 @@ interface BlogPostHeaderProps {
   type: string;
   formattedDate?: string;
   location?: string;
+  banner?: string;
 }
 
-export default function BlogPostHeader({ title, type, formattedDate, location }: BlogPostHeaderProps) {
+export default function BlogPostHeader({ title, type, formattedDate, location, banner }: BlogPostHeaderProps) {
   const [mounted, setMounted] = useState(false);
   const pathname = '/blog';
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const bannerSrc = banner || "/images/blog-banners/banner.png";
 
   return (
     <>
@@ -62,11 +65,11 @@ export default function BlogPostHeader({ title, type, formattedDate, location }:
 
       <div className="w-full max-w-2xl mx-auto px-4 my-6">
         <Image 
-          src="/images/blog-banners/banner.png"
+          src={bannerSrc}
           alt={`${title} banner image`}
           width={1200}
           height={600}
-          className="w-full h-auto object-cover rounded-md shadow-md"
+          className="w-full object-cover rounded-md shadow-md"
           priority
         />
       </div>

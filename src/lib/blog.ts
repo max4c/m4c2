@@ -19,6 +19,7 @@ export interface Post {
   keywords: string[];
   type: string;
   location?: string;
+  banner?: string;
   lastModified?: string;
   path: string;
   content?: string;
@@ -71,6 +72,7 @@ export function getAllPosts(): Post[] {
           keywords: data.keywords || [],
           type: data.type || 'post',
           location: data.location || '',
+          banner: data.banner || undefined,
           lastModified: data.lastModified || data.date,
           path: `/${year}/${month}/${file.replace('.mdx', '')}`,
           series: data.series || undefined
