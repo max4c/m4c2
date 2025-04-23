@@ -1,6 +1,6 @@
 ---
 title: How to Build with AI
-date: '2025-04-18'
+date: '2025-04-22'
 banner: /images/blog-banners/how-to-build-with-ai.png
 ---
 The intent of this post is to lay out principles and practices to accelerate building. I define building broadly as the act of putting things together to create something new. This can span from gathering data, to writing a blog post to building a web app. The best way to build with AI is to learn the principles of AI, delegation, and building.
@@ -19,7 +19,7 @@ The intent of this post is to lay out principles and practices to accelerate bui
 
 #### Principles of Building
 
-Building is made up of 4 steps.
+Building upon what the CEO of Windsurf said [on X](https://x.com/vitrupo/status/1913973939011026986), building is made up of 4 steps:
 
 <img src="/building-steps.png" alt="Building Steps" width="50%" />
 
@@ -30,19 +30,20 @@ Every artist, writer, engineer, researcher, and creator uses these steps more or
 **Almost every model you work with now is multimodal.** With this in mind, you need to be using the right tools to give the best data to the model you are working with to get the best response. Instead of just copy/pasting everything or writing long prompts, look into these tools:
 
 - screenshot tool - I prefer using [shottr.cc](http://shottr.cc/) because I can cmd+c and cmd+v each screenshot
-- OCR tool - I also use [shottr.cc](http://shottr.cc/) for this as it does a good good at scanning text when I can't select text.
+- OCR tool - I also use [shottr.cc](http://shottr.cc/) for this as it does a good job at scanning text when I can't select text. See example below:
   <Video src="/ocr.mov" />
-- speaking tool - Do you have a super long prompt you need to give AI. Instead of typing out the prompt, speak it. It is 3x faster. I personally use [superwhisper.com](http://superwhisper.com/) but wispr flow is also great from I've heard
+- speaking tool - Do you have a super long prompt you need to give AI? Instead of typing out the prompt, speak it. It is 3x faster. I personally use [superwhisper.com](http://superwhisper.com/) but wispr flow is also great from I've heard
+- Provide minimal, working code snippets: Especially for specific libraries or APIs, give the AI a small, functional example to reduce errors.
 
-#### How to Ideate with AI
+#### What to solve with AI
 
 **Identify what you want to build.** Dump your thoughts, ideas, directions, screeshots, and files into a prompt. Deep research from really any major model provider is a great way to do this given the task is large enough. There has been multiple times where I try to go straight to executing and then realizing I don't have a clear idea of what I even want.
 
-#### How to Plan with AI
+#### How to solve it with AI
 
-**Verify you have the tools to build what you want and confirm it with AI.** The thing you are building likely will become apart of a larger environment and will interact with other things. Are you choosing the right tools for that environment? For example, in coding you need to make sure you are building with the tech stack that is right for the job and make sure the model is aware of that. what will the micro loops look like? what kind of the tests will I use?
+**Verify you have the tools to build what you want and confirm it with AI.** The thing you are building likely will become apart of a larger environment and will interact with other things. Are you choosing the right tools for that environment? For example, in coding you need to make sure you are building with the tech stack that is right for the job and make sure the model is aware of that. Choosing a mainstream stack (like Next.js, Python, etc.) that AI models know well often accelerates development. Think about how you will iterate on the work and how you will verify the results.
 
-#### How to Execute with AI
+#### Doing the work with AI
 
 **Execute on the plan.** At this point you have amassed quite a large amount of data from the ideation and planning phases. It will be tempting to paste all of that raw data you have gathered into cursor or lovable or another tool to do the building.
 
@@ -50,12 +51,20 @@ Every artist, writer, engineer, researcher, and creator uses these steps more or
 
 In many cases it is worth it to synthesize that data into a clear small steps that you can test and verify. I was in a 2 hour hackathon recently where you were able to prepare prompts beforehand to accelerate building. I really wanted to win so I spend 3 hours crafting this mega prompt with AI with the hopes of being able to one-shot the whole app I wanted to build. The result? I didn't even demo because it never worked. I instead spent the entire 2 hours trying to fix the massive amount of files that it generated at once.
 
-On the contrary, It is much better to do initial macro ideation and macro planning and then a series of micro loops of ideation->planning->building->testing. If you are coding, a great way to keep track of this is to create a [todo.md](http://todo.md/) file where you can have all of the milestones you are hoping to accomplish and relevant links which your coding agent can update. Reach a milestone, do a git commit so you can easily revert back to the latest working milestone.
+On the contrary, It is much better to do initial macro ideation and macro planning and then a series of micro loops of what to solve->how to solve->doing the work->verifying the work. If you are coding, a great way to keep track of this is to create a todo.md file where you can have all of the milestones you are hoping to accomplish and relevant links which your coding agent can update. Reach a milestone, do a git commit so you can easily revert back to the latest working milestone, especially crucial as AI can sometimes introduce unexpected issues.
+<img src="/building-loop.png" alt="Building Loop" width="50%" />
 
-#### How to Test with AI
+#### Verifying the work with AI
 
-**Rigorously test.** After each milestone, the last part of a building phase is to test. With AI, you can **u**se a different model or different conversation to test what you have built. Always find a way to manually inspect the tests AI has helped write such as checking the design visually or writing your own test cases by hand.
+**Rigorously test.** After each milestone, the last part of a building phase is to test. With AI, you can use a different model or different conversation to test what you have built. Always find a way to manually inspect the tests AI has helped write such as checking the design visually or writing your own test cases by hand.
+
+#### Need specific Cursor tips?
+Read Ryo's guide [here](https://x.com/ryolu_/status/1914384195138511142)
+
+#### Not sure what models to use?
+Use o3 for figuring out what & how to build and gemini 2.5 pro or claude 3.7 sonnet thinking for doing & verifying the work.
 
 #### Looking for an Example?
+Watch this video of me building a full web app from scratch to try to win a hackathon in 3.5 hours:
 
-Subscribe to be notified about the upcoming livestream to see how I apply these principles by building a full web app from scratch to try to win a hackathon in 5 hours.
+[How I Build with AI (Building a Full App in 3.5 hours)](https://www.youtube.com/watch?v=JWGJUfGx7kw)
