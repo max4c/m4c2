@@ -29,7 +29,7 @@ export default function CopyButton({ code, label }: CopyButtonProps) {
       aria-label={label ? undefined : "Copy code"}
       title={label ? "Copy markdown" : undefined}
     >
-      {label && <span className="italic flex-grow pr-1 text-left">{label}</span>}
+      {label && <span className="italic pr-1 text-left">{label}</span>}
       <div className="flex-shrink-0">
         {copied ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

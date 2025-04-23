@@ -127,7 +127,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       />
       
       {/* Humorous Copy Button - Layout Adjusted */}
-      <div className="max-w-2xl mx-auto px-4 mt-2 mb-6">
+      <div className="max-w-2xl mx-auto mt-2 px-2 mb-6">
         <CopyButton 
           code={post.content} 
           label="Do you have a TikTok level attention span? Copy the markdown of this blog post so an LLM can summaize it you so you don't have to read the writing that I worked so hard on."
