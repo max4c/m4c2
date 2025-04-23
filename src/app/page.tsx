@@ -31,6 +31,19 @@ export default function Home() {
             <SubscribeInput />
           </div>
         </div>
+
+        <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+          Too busy to check out the website I worked so hard on? Give the entire website to an LLM{' '}
+          <a
+            href="https://uithub.com/max4c/m4c2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gray-900 dark:hover:text-gray-100"
+          >
+            here
+          </a>
+          .
+        </div>
       </main>
     </>
   );

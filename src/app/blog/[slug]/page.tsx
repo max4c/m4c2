@@ -11,6 +11,7 @@ import { notFound } from 'next/navigation';
 import JsonLd from '@/components/JsonLd';
 import SeriesNavigation from '@/components/SeriesNavigation';
 import SubscribeInput from '@/components/SubscribeInput';
+import CopyButton from '@/components/CopyButton';
 
 // Generate static params for static generation
 export async function generateStaticParams() {
@@ -124,6 +125,14 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         location={post.location || ''}
         banner={post.banner}
       />
+      
+      {/* Humorous Copy Button - Layout Adjusted */}
+      <div className="max-w-2xl mx-auto px-4 mt-2 mb-6">
+        <CopyButton 
+          code={post.content} 
+          label="Do you have a TikTok level attention span? Copy the markdown of this blog post so an LLM can summaize it you so you don't have to read the writing that I worked so hard on."
+        />
+      </div>
       
       {seriesInfo && seriesInfo.series && (
         <div className="max-w-2xl mx-auto px-4 mb-8">
