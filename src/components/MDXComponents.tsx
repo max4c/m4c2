@@ -154,12 +154,32 @@ export const components: MDXComponents = {
   h6: ({ children, ...props }) => <h6 className="text-sm font-bold mt-4 mb-2" {...props}>{children}</h6>,
   pre: ({ children, ...props }) => {
     const childrenArray = React.Children.toArray(children);
-    const code = childrenArray[0] as React.ReactElement;
-    
+    // Check if the first child is a valid React element representing the <code> tag
+    const codeElement = React.isValidElement(childrenArray[0]) ? childrenArray[0] : null;
+
+    // Ensure we have a valid code element with props and children
+    if (!codeElement || !codeElement.props || !codeElement.props.children) {
+      // Fallback: Render the original pre tag if structure is unexpected
+      return <pre {...props}>{children}</pre>; 
+    }
+
+    // Extract the actual code string
+    const codeString = codeElement.props.children;
+
     return (
-      <div className="relative">
-        <pre {...props}>{code}</pre>
-        <CopyButton code={code.props.children} />
+      // Use relative positioning for the wrapper
+      <div className="relative group"> 
+        {/* Render the original <pre> tag with its props */}
+        <pre {...props}> 
+           {/* Render the original children (the <code> element) */}
+          {codeElement}
+        </pre>
+        {/* Position the CopyButton absolutely in the top-right corner */}
+        {/* Make it appear on hover using group-hover */}
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            {/* Pass the extracted code string to the CopyButton */}
+            <CopyButton code={codeString} /> 
+        </div>
       </div>
     );
   },
