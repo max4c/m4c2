@@ -12,8 +12,10 @@ type Highlight = {
 };
 
 const highlights: Highlight[] = [
-  { text: "Researching AI in the PCC Lab", links: null },
-  { text: "Studying machine learning at BYU", links: null },
+  { text: "Head of DevRel at RunPod", links: [{ url: "https://www.runpod.io/", text: "RunPod" }] },
+  { text: "Currently in Provo", links: null },
+  { text: "Researched Mechanistic Interpretability in the PCC Lab", links: null },
+  { text: "Studied machine learning at BYU (ended up dropping out)", links: null },
   { text: "Co-founder of justbuild, the builder community", links: [{ url: "https://justbuild.ing/", text: "justbuild" }] },
   { text: "Venture Partner at Contrary", links: [{ url: "https://contrary.com", text: "Contrary" }] },
   { text: "Cofounded Sameday AI going through AI Grant and YC", 
@@ -23,7 +25,6 @@ const highlights: Highlight[] = [
       { url: "https://www.ycombinator.com/", text: "YC" }
     ] 
   },
-  { text: "Currently in Provo", links: null },
   { text: "Frequently in San Francisco", links: null },
   { text: "Hiked the Grand Canyon rim to rim", links: null },
   { text: "Type in Colemak", links: [{ url: "https://colemak.com/", text: "Colemak" }] },
