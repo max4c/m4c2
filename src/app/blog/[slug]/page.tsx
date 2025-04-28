@@ -164,8 +164,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       
       <div className="max-w-2xl mx-auto px-4 mt-8 pb-8 space-y-4">
         
-        {/* Display Date */} 
-        {formattedDate && (
+        {/* Display Date only if not ongoing */} 
+        {!isOngoing && formattedDate && (
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {formattedDate}
           </p>

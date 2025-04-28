@@ -37,7 +37,7 @@ export default function PerplexityLink() {
       className="inline-flex items-center gap-1 px-2 py-1 rounded text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 ease-in-out"
       title="Summarize this post with Perplexity AI"
     >
-      <span className="italic pr-0.5 text-left">TikTok level attention span? Get a summary</span>
+      <span className="italic pr-0.5 text-left">Too busy to read? Get a summary</span>
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.004A3 3 0 0 0 12 5Z"/><path d="M12 19a3 3 0 1 0 5.998-.005 3.002 3.002 0 0 0-6-.003Z"/><path d="M6 12a3 3 0 1 0 .003 5.998A3 3 0 0 0 6 12Z"/><path d="M18 12a3 3 0 1 0-.003-5.997A3 3 0 0 0 18 12Z"/><path d="M12 9.01V8M6.01 15H5M18.01 9H19M12 16.01V15M9.007 12.004H7.993M16.007 11.996H14.993"/></svg>
     </a>
   );

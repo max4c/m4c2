@@ -38,7 +38,7 @@ export default function Home() {
             href="https://uithub.com/max4c/m4c2"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline hover:text-gray-900 dark:hover:text-gray-100"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
           >
             here
           </a>
