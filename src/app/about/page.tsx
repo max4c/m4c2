@@ -35,7 +35,7 @@ const highlights: Highlight[] = [
       { url: "https://www.logitech.com/en-us/products/mice/lift-vertical-ergonomic-mouse.html", text: "vertical mouse" }
     ] 
   },
-  { text: "Daily driver is a flip phone", links: [{ url: "https://sunbeamwireless.com/", text: "flip phone" }] }
+  { text: "Daily driver is a light phone III", links: [{ url: "https://www.thelightphone.com/shop/products/light-phone-iii", text: "light phone III" }] }
 ];
 
 export default function AboutPage() {
