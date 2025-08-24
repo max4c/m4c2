@@ -1,8 +1,27 @@
 import MinimalHeader from '@/components/MinimalHeader';
 import SubscribeInput from '@/components/SubscribeInput';
 import Link from 'next/link';
+import { execSync } from 'child_process';
 
-export default function Home() {
+async function getLastCommitDate() {
+  try {
+    const date = execSync('git log -1 --format="%ci"', { encoding: 'utf-8' }).trim();
+    const commitDate = new Date(date);
+    return commitDate.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (error) {
+    return 'Unknown';
+  }
+}
+
+export default async function Home() {
+  const lastUpdated = await getLastCommitDate();
   return (
     <>
       <MinimalHeader />
@@ -33,16 +52,7 @@ export default function Home() {
         </div>
 
         <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-          Too busy to check out the website? Give the entire website to an LLM{' '}
-          <a
-            href="https://uithub.com/max4c/m4c2"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            here
-          </a>
-          .
+          last updated: {lastUpdated}
         </div>
       </main>
     </>
