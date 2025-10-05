@@ -16,7 +16,7 @@ const highlights: Highlight[] = [
   { text: "Currently in San Francisco", links: null },
   { text: "Researched Mechanistic Interpretability in the PCC Lab", links: null },
   { text: "Studied machine learning at BYU (ended up dropping out)", links: null },
-  { text: "Co-founder of JustBuild, the builder community", links: [{ url: "https://justbuild.ing/", text: "justbuild" }] },
+  { text: "Co-founder of JustBuild, the builder community", links: [{ url: "https://justbuild.ing/", text: "JustBuild" }] },
   { text: "Venture Partner at Contrary", links: [{ url: "https://contrary.com", text: "Contrary" }] },
   { text: "Cofounded Sameday AI going through AI Grant and YC", 
     links: [
