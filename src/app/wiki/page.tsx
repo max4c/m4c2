@@ -23,14 +23,7 @@ export default function WikiIndexPage() {
     <>
       <MinimalHeader />
       <main className="w-full max-w-2xl mx-auto px-4">
-        <div className="mb-8 mt-4">
-          <h1 className="text-2xl font-bold mb-2">Wiki</h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Notes and lists I come back to.
-          </p>
-        </div>
-
-        <div className="space-y-4">
+        <div className="space-y-4 mt-4">
           {WIKI_PAGES.map((page) => (
             <div key={page.href}>
               <Link
