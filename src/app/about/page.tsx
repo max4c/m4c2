@@ -28,7 +28,7 @@ const highlights: Highlight[] = [
   { text: "Frequently in Utah", links: null },
   { text: "Hiked the Grand Canyon rim to rim", links: null },
   { text: "Type in Colemak", links: [{ url: "https://colemak.com/", text: "Colemak" }] },
-  { text: "Have fun experimenting with longevity", links: [{ url: "https://www.maxforsey.com/blog/longevity", text: "longevity" }] },
+  { text: "Have fun experimenting with longevity", links: [{ url: "/wiki/longevity", text: "longevity" }] },
   { text: "Use a split keyboard and vertical mouse", 
     links: [
       { url: "https://www.zsa.io/moonlander/", text: "split keyboard" },
@@ -68,16 +68,6 @@ export default function AboutPage() {
               )}
             </p>
           ))}
-        </div>
-        
-        <p className="font-bold mb-4">interests</p>
-        <div className="space-y-2">
-          <p><Link href="/blog/books" className="text-blue-600 dark:text-blue-400">books</Link></p>
-          <p><Link href="/blog/films" className="text-blue-600 dark:text-blue-400">films</Link></p>
-          <p><Link href="/blog/music" className="text-blue-600 dark:text-blue-400">music</Link></p>
-          <p><Link href="/blog/longevity" className="text-blue-600 dark:text-blue-400">longevity</Link></p>
-          <p><Link href="/blog/tools" className="text-blue-600 dark:text-blue-400">tools</Link></p>
-          <p><Link href="/blog/quotes" className="text-blue-600 dark:text-blue-400">quotes</Link></p>
         </div>
       </main>
     </>
