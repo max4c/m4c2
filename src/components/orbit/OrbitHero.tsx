@@ -51,7 +51,7 @@ const getObjectImageSrc = (objectId: string) => {
 const ORBIT_OBJECTS: OrbitObject[] = [
   { id: 'art', label: 'Art', href: '/wiki/art', order: 1 },
   { id: 'projects', label: 'Projects', href: '/blog', order: 2 },
-  { id: 'writing', label: 'Blog', href: '/blog', order: 3 },
+  { id: 'writing', label: 'Writing', href: '/blog', order: 3 },
   { id: 'longevity', label: 'Longevity', href: '/wiki/longevity', order: 4 },
   { id: BIRD_OBJECT_ID, label: 'Ambience', href: '/wiki/ambience', order: 5 },
   { id: 'quotes', label: 'Quotes', href: '/wiki/quotes', order: 6 },
