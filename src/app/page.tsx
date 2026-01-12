@@ -1,7 +1,9 @@
 import OrbitHero from '@/components/orbit/OrbitHero';
-import { getAllPosts } from '@/lib/blog';
+import { getAllPosts, type Post } from '@/lib/blog';
 import Link from 'next/link';
 import { format } from 'date-fns';
+
+const isPost = (value: Post | undefined): value is Post => Boolean(value);
 
 export default function Home() {
   const allPosts = getAllPosts().filter((post) => post.type !== 'ongoing');
@@ -13,7 +15,7 @@ export default function Home() {
   ];
   const selectedWriting = selectedSlugs
     .map((slug) => essayPosts.find((post) => post.slug === slug))
-    .filter(Boolean)
+    .filter(isPost)
     .slice(0, 3);
   const recentWriting = essayPosts.slice(0, 5);
 
