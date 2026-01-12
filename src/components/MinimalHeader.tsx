@@ -5,7 +5,13 @@ import { usePathname } from 'next/navigation';
 
 export default function MinimalHeader() {
   const pathname = usePathname() || '';
-  const isBlogPage = pathname.startsWith('/blog');
+  const linkClass = (isActive: boolean) =>
+    [
+      'text-blue-600 dark:text-blue-400',
+      isActive ? 'font-bold' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
   
   return (
     <header className="w-full max-w-2xl mx-auto pt-6 px-4">
@@ -16,30 +22,33 @@ export default function MinimalHeader() {
           </Link>
         </h3>
         <div className="flex justify-between items-center mb-4">
-          <nav className="flex space-x-4 items-center">
+          <nav className="flex flex-wrap items-center gap-2">
             <Link 
               href="/" 
-              className={pathname === '/' ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-blue-600 dark:text-blue-400'}
+              className={linkClass(pathname === '/')}
             >
               home
             </Link>
+            <span className="opacity-30">·</span>
             <Link 
               href="/blog" 
-              className={pathname.startsWith('/blog') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-blue-600 dark:text-blue-400'}
+              className={linkClass(pathname.startsWith('/blog'))}
             >
               blog
             </Link>
+            <span className="opacity-30">·</span>
+            <Link 
+              href="/wiki" 
+              className={linkClass(pathname.startsWith('/wiki'))}
+            >
+              wiki
+            </Link>
+            <span className="opacity-30">·</span>
             <Link 
               href="/about" 
-              className={pathname.startsWith('/about') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-blue-600 dark:text-blue-400'}
+              className={linkClass(pathname.startsWith('/about'))}
             >
               about
-            </Link>
-            <Link 
-              href="/projects" 
-              className={pathname.startsWith('/projects') ? 'font-bold text-blue-600 dark:text-blue-400' : 'text-blue-600 dark:text-blue-400'}
-            >
-              projects
             </Link>
           </nav>
         </div>
