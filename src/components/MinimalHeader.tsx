@@ -12,13 +12,13 @@ export default function MinimalHeader() {
   
   return (
     <header className="w-full max-w-2xl mx-auto pt-6 px-4">
-      <div className="grid grid-cols-[auto,1fr] items-baseline gap-x-6 gap-y-2">
+      <div className="flex flex-col gap-2 sm:grid sm:grid-cols-[auto,1fr] sm:items-baseline sm:gap-x-6 sm:gap-y-2">
         <h3 className="text-xl font-bold leading-none">
           <Link href="/" className="text-black dark:text-white hover:no-underline">
             maxforsey.com
           </Link>
         </h3>
-        <nav className="justify-self-end flex flex-wrap items-center justify-end gap-2">
+        <nav className="flex flex-wrap items-center justify-start gap-2 sm:justify-self-end sm:justify-end">
           <Link href="/" className={linkClass(pathname === '/')}>
             home
           </Link>
