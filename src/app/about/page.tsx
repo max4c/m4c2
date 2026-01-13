@@ -27,6 +27,7 @@ const highlights: Highlight[] = [
   },
   { text: "Frequently in Utah", links: null },
   { text: "Hiked the Grand Canyon rim to rim", links: null },
+  { text: "Ran the Moab Trail Marathon", links: null },
   { text: "Type in Colemak", links: [{ url: "https://colemak.com/", text: "Colemak" }] },
   { text: "Have fun experimenting with longevity", links: [{ url: "/wiki/longevity", text: "longevity" }] },
   { text: "Use a split keyboard and vertical mouse", 
