@@ -12,6 +12,16 @@ const contentDir = path.join(process.cwd(), 'src/content/blog');
  * Get all blog posts with their metadata
  */
 export function getAllPosts() {
+  const parseFrontmatterBoolean = (value) => {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      if (normalized === 'true') return true;
+      if (normalized === 'false') return false;
+    }
+    return undefined;
+  };
+
   // Get all year directories
   const yearDirs = fs.readdirSync(contentDir).filter(dir => {
     return fs.statSync(path.join(contentDir, dir)).isDirectory();
@@ -40,6 +50,15 @@ export function getAllPosts() {
         const filePath = path.join(monthPath, file);
         const fileContents = fs.readFileSync(filePath, 'utf8');
         const { data } = matter(fileContents);
+
+        const draft = parseFrontmatterBoolean(data.draft) ?? false;
+        const unlisted = parseFrontmatterBoolean(data.unlisted) ?? false;
+        const published = parseFrontmatterBoolean(data.published);
+        const isHidden = draft || unlisted || published === false;
+
+        if (isHidden) {
+          continue;
+        }
         
         // Create post object
         posts.push({
@@ -50,6 +69,9 @@ export function getAllPosts() {
           tags: data.tags || [],
           keywords: data.keywords || [],
           type: data.type || 'post',
+          draft,
+          unlisted,
+          published,
           location: data.location || '',
           lastModified: data.lastModified || data.date,
           path: `/${year}/${month}/${file.replace('.mdx', '')}`,
