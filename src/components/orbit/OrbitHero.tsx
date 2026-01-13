@@ -11,12 +11,14 @@ import {
   useState,
 } from 'react';
 import styles from './OrbitHero.module.css';
+import { useAmbience } from '@/components/AmbienceProvider';
 
 type OrbitObject = {
   id: string;
   label: string;
-  href: string;
+  href?: string;
   order: number;
+  kind?: 'link' | 'ambience';
 };
 
 const DRIFT_PER_MS = 0.0028; // degrees per ms for gentle auto-spin
@@ -53,7 +55,7 @@ const ORBIT_OBJECTS: OrbitObject[] = [
   { id: 'projects', label: 'Projects', href: '/blog', order: 2 },
   { id: 'writing', label: 'Writing', href: '/blog', order: 3 },
   { id: 'longevity', label: 'Longevity', href: '/wiki/longevity', order: 4 },
-  { id: BIRD_OBJECT_ID, label: 'Ambience', href: '/wiki/ambience', order: 5 },
+  { id: BIRD_OBJECT_ID, label: 'Ambience', order: 5, kind: 'ambience' },
   { id: 'quotes', label: 'Quotes', href: '/wiki/quotes', order: 6 },
   { id: 'tools', label: 'Tools', href: '/wiki/tools', order: 7 },
 ];
@@ -68,6 +70,7 @@ const angleDifference = (current: number, previous: number) => {
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 export default function OrbitHero() {
+  const { isPlaying, toggle } = useAmbience();
   const [activeObjectId, setActiveObjectId] = useState<string | null>(null);
   const [tabHidden, setTabHidden] = useState(false);
 
@@ -348,6 +351,16 @@ export default function OrbitHero() {
                 .filter(Boolean)
                 .join(' ');
 
+              const notes =
+                object.id === BIRD_OBJECT_ID ? (
+                  <span className={styles.audioNotes} aria-hidden>
+                    <span className={styles.note} data-note="one" />
+                    <span className={styles.note} data-note="two" />
+                    <span className={styles.note} data-note="three" />
+                    <span className={styles.note} data-note="four" />
+                  </span>
+                ) : null;
+
               const content = (
                 <>
                   <span className={styles.objectHalo} aria-hidden />
@@ -363,6 +376,7 @@ export default function OrbitHero() {
                         className={imageClassName}
                       />
                     </span>
+                    {notes}
                     <span
                       className={`${styles.objectLabel} ${
                         activeObjectId === object.id ? styles.labelVisible : ''
@@ -374,33 +388,61 @@ export default function OrbitHero() {
                 </>
               );
 
+              const commonProps = {
+                className: styles.object,
+                style,
+                'data-audio': object.id === BIRD_OBJECT_ID ? 'true' : undefined,
+                'data-playing':
+                  object.id === BIRD_OBJECT_ID && isPlaying ? 'true' : undefined,
+                onMouseEnter: () => {
+                  setActiveObjectId(object.id);
+                },
+                onMouseLeave: () => {
+                  setActiveObjectId(null);
+                },
+                onFocus: () => {
+                  setActiveObjectId(object.id);
+                },
+                onBlur: () => {
+                  setActiveObjectId(null);
+                },
+                onPointerDown: () => showLabel(object.id),
+              } as const;
+
               return (
-                <Link
-                  key={object.id}
-                  href={object.href}
-                  className={styles.object}
-                  style={style}
-                  onMouseEnter={() => {
-                    setActiveObjectId(object.id);
-                  }}
-                  onMouseLeave={() => {
-                    setActiveObjectId(null);
-                  }}
-                  onFocus={() => {
-                    setActiveObjectId(object.id);
-                  }}
-                  onBlur={() => {
-                    setActiveObjectId(null);
-                  }}
-                  onPointerDown={() => showLabel(object.id)}
-                  onClick={(event) => {
-                    if (!preventClickRef.current) return;
-                    event.preventDefault();
-                    event.stopPropagation();
-                  }}
-                >
-                  {content}
-                </Link>
+                object.kind === 'ambience' ? (
+                  <button
+                    key={object.id}
+                    type="button"
+                    {...commonProps}
+                    aria-pressed={isPlaying}
+                    onClick={(event) => {
+                      if (preventClickRef.current) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return;
+                      }
+                      event.preventDefault();
+                      event.stopPropagation();
+                      toggle();
+                    }}
+                  >
+                    {content}
+                  </button>
+                ) : (
+                  <Link
+                    key={object.id}
+                    href={object.href ?? '/'}
+                    {...commonProps}
+                    onClick={(event) => {
+                      if (!preventClickRef.current) return;
+                      event.preventDefault();
+                      event.stopPropagation();
+                    }}
+                  >
+                    {content}
+                  </Link>
+                )
               );
             })}
           </div>
@@ -414,11 +456,13 @@ export default function OrbitHero() {
           <div className={styles.noScript}>
             <p>JavaScript is off — the orbit is still, but everything stays readable.</p>
             <ul>
-              {sortedObjects.map((object) => (
-                <li key={object.id}>
-                  <Link href={object.href}>{object.label}</Link>
-                </li>
-              ))}
+              {sortedObjects
+                .filter((object) => object.kind !== 'ambience')
+                .map((object) => (
+                  <li key={object.id}>
+                    <Link href={object.href ?? '/'}>{object.label}</Link>
+                  </li>
+                ))}
             </ul>
           </div>
         </noscript>

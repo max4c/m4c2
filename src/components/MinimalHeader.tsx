@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAmbience } from '@/components/AmbienceProvider';
 
 export default function MinimalHeader() {
   const pathname = usePathname() || '';
+  const { isPlaying, toggle } = useAmbience();
   const linkClass = (isActive: boolean) =>
     ['text-blue-600 dark:text-blue-400', isActive ? 'font-bold' : '']
       .filter(Boolean)
@@ -18,7 +20,7 @@ export default function MinimalHeader() {
             maxforsey.com
           </Link>
         </h3>
-        <nav className="flex flex-wrap items-center justify-start gap-2 sm:justify-self-end sm:justify-end">
+        <nav className="flex flex-wrap items-center justify-start gap-3 sm:justify-self-end sm:justify-end">
           <Link href="/" className={linkClass(pathname === '/')}>
             home
           </Link>
@@ -31,6 +33,15 @@ export default function MinimalHeader() {
           <Link href="/about" className={linkClass(pathname.startsWith('/about'))}>
             about
           </Link>
+          <button
+            type="button"
+            onClick={toggle}
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+            aria-pressed={isPlaying}
+            title={isPlaying ? 'Pause ambience' : 'Play ambience'}
+          >
+            {isPlaying ? 'pause' : 'play'}
+          </button>
         </nav>
       </div>
     </header>

@@ -1,6 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { AmbienceProvider } from '@/components/AmbienceProvider'
 import { Metadata } from 'next'
 import UmamiAnalytics from '@/components/UmamiAnalytics'
 
@@ -41,11 +42,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="min-h-screen flex flex-col">
-            <main className="flex-grow">
-              {children}
-            </main>
-          </div>
+          <AmbienceProvider>
+            <div className="min-h-screen flex flex-col">
+              <main className="flex-grow">{children}</main>
+            </div>
+          </AmbienceProvider>
         </ThemeProvider>
       </body>
     </html>
