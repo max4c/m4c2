@@ -22,15 +22,12 @@ export default function MinimalHeader() {
           <Link href="/" className={linkClass(pathname === '/')}>
             home
           </Link>
-          <span className="opacity-30">·</span>
           <Link href="/blog" className={linkClass(pathname.startsWith('/blog'))}>
             blog
           </Link>
-          <span className="opacity-30">·</span>
           <Link href="/wiki" className={linkClass(pathname.startsWith('/wiki'))}>
             wiki
           </Link>
-          <span className="opacity-30">·</span>
           <Link href="/about" className={linkClass(pathname.startsWith('/about'))}>
             about
           </Link>
