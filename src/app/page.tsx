@@ -10,8 +10,8 @@ export default function Home() {
   return (
     <>
       <OrbitHero />
-      <section className="w-full px-4 pb-24 pt-16 sm:px-10">
-        <div className="mx-auto w-full max-w-4xl space-y-5">
+      <section className="w-full px-4 pb-24 pt-16">
+        <div className="mx-auto w-full max-w-2xl space-y-5">
           <p className="text-xs font-semibold tracking-[0.26em] uppercase opacity-60">Writing</p>
           <ul className="space-y-4">
             {writing.map((post) => (

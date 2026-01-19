@@ -12,7 +12,7 @@
 
   .dark {
     --background: 23 23 23;
-    --foreground: 255 255 255 0.87;
+    --foreground: 255 255 255;
     --primary: 233 115 25;
     --primary-foreground: 9 87 208;
   }
@@ -72,7 +72,7 @@
     @apply prose-ul:my-4 prose-ul:list-disc prose-ul:pl-5;
     @apply prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-5;
     @apply prose-li:mb-2;
-    @apply prose-img:my-8 prose-img:rounded-lg;
+    @apply prose-img:my-8 prose-img:rounded-lg prose-img:w-full prose-img:h-auto prose-img:max-w-full;
     @apply prose-code:text-primary dark:prose-code:text-blue-400 prose-code:bg-gray-100 prose-code:dark:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded;
     @apply prose-pre:bg-gray-100 prose-pre:dark:bg-[#1a1a1a] prose-pre:p-4 prose-pre:rounded-lg;
     @apply prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-4 prose-blockquote:italic;
@@ -560,4 +560,99 @@ body.modal-open {
 
 .dark table td {
   border-color: #374151; /* gray-700 */
+}
+
+/* In-page Table of Contents - Mobile */
+.toc-mobile {
+  @apply border border-gray-200 dark:border-gray-700;
+  @apply p-4;
+}
+
+.toc-mobile-header {
+  @apply text-xs font-medium uppercase tracking-wider;
+  @apply text-gray-400 dark:text-gray-500;
+  @apply mb-3;
+}
+
+.toc-mobile-list {
+  @apply space-y-1;
+}
+
+.toc-mobile-item {
+  @apply transition-colors duration-150;
+}
+
+.toc-mobile-link {
+  @apply block w-full text-left py-1;
+  @apply text-sm leading-snug;
+  @apply text-gray-500 dark:text-gray-500;
+  @apply hover:text-gray-900 dark:hover:text-gray-300;
+  @apply transition-colors duration-150;
+}
+
+.toc-mobile-link-active {
+  @apply text-[#0957D0] dark:text-blue-400;
+  @apply font-medium;
+}
+
+/* In-page Table of Contents - Desktop Sidebar */
+.toc-sidebar {
+  @apply hidden lg:block;
+  @apply fixed right-8 top-32;
+  @apply w-56;
+  @apply max-h-[calc(100vh-10rem)] overflow-y-auto;
+  z-index: 40;
+}
+
+/* Hide sidebar on screens where content would overlap */
+@media (max-width: 1280px) {
+  .toc-sidebar {
+    @apply hidden;
+  }
+}
+
+.toc-sidebar-inner {
+  @apply border-l border-gray-200 dark:border-gray-700;
+  @apply pl-4;
+}
+
+.toc-sidebar-header {
+  @apply text-xs font-medium uppercase tracking-wider;
+  @apply text-gray-400 dark:text-gray-500;
+  @apply mb-3;
+}
+
+.toc-sidebar-list {
+  @apply space-y-1;
+}
+
+.toc-sidebar-item {
+  @apply transition-colors duration-150;
+}
+
+.toc-sidebar-link {
+  @apply block w-full text-left py-1;
+  @apply text-sm leading-snug;
+  @apply text-gray-500 dark:text-gray-500;
+  @apply hover:text-gray-900 dark:hover:text-gray-300;
+  @apply transition-colors duration-150;
+}
+
+.toc-sidebar-link-active {
+  @apply text-[#0957D0] dark:text-blue-400;
+  @apply font-medium;
+}
+
+/* Scrollbar for sidebar */
+.toc-sidebar::-webkit-scrollbar {
+  width: 3px;
+}
+
+.toc-sidebar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.toc-sidebar::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 dark:bg-gray-700;
+  @apply rounded-full;
 }

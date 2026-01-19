@@ -12,6 +12,7 @@ import {
 } from 'react';
 import styles from './OrbitHero.module.css';
 import { useAmbience } from '@/components/AmbienceProvider';
+import SubscribeInput from '@/components/SubscribeInput';
 
 type OrbitObject = {
   id: string;
@@ -43,6 +44,8 @@ const getObjectImageSrc = (objectId: string) => {
       return '/images/objects/longevity.png';
     case 'quotes':
       return '/images/objects/quotes.png';
+    case 'about':
+      return '/images/objects/about.jpeg';
     case BIRD_OBJECT_ID:
       return BIRD_OBJECT_IMAGE;
     default:
@@ -96,6 +99,16 @@ export default function OrbitHero() {
   const sortedObjects = useMemo(
     () => [...ORBIT_OBJECTS].sort((a, b) => a.order - b.order),
     []
+  );
+
+  // Split objects for mobile floating rows
+  const topRowObjects = useMemo(
+    () => sortedObjects.filter((_, i) => i % 2 === 0),
+    [sortedObjects]
+  );
+  const bottomRowObjects = useMemo(
+    () => sortedObjects.filter((_, i) => i % 2 === 1),
+    [sortedObjects]
   );
 
   const applyRotation = useCallback(() => {
@@ -321,6 +334,114 @@ export default function OrbitHero() {
     >
       <div className={styles.glow} aria-hidden />
       <div className={styles.heroInner}>
+        {/* Mobile floating rows */}
+        <div className={styles.mobileLayout}>
+          <div className={styles.floatingRow} data-direction="left">
+            {[...topRowObjects, ...topRowObjects, ...topRowObjects, ...topRowObjects].map((object, index) => {
+              const isAmbience = object.kind === 'ambience';
+              const imageClassName = [
+                styles.floatingImg,
+                object.id === 'longevity' ? styles.longevitySmall : '',
+              ].filter(Boolean).join(' ');
+
+              return isAmbience ? (
+                <button
+                  key={`${object.id}-${index}`}
+                  type="button"
+                  className={styles.floatingObject}
+                  onClick={toggle}
+                  aria-pressed={isPlaying}
+                  data-playing={isPlaying ? 'true' : undefined}
+                >
+                  <Image
+                    src={getObjectImageSrc(object.id)}
+                    alt={object.label}
+                    width={80}
+                    height={80}
+                    className={imageClassName}
+                  />
+                </button>
+              ) : (
+                <Link
+                  key={`${object.id}-${index}`}
+                  href={object.href ?? '/'}
+                  className={styles.floatingObject}
+                >
+                  <Image
+                    src={getObjectImageSrc(object.id)}
+                    alt={object.label}
+                    width={80}
+                    height={80}
+                    className={imageClassName}
+                  />
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className={styles.mobileCenter}>
+            <Link href="/about" className={styles.avatarLink}>
+              <Image
+                src="/images/objects/about.jpeg"
+                alt="Max Forsey"
+                width={96}
+                height={96}
+                className={styles.avatar}
+                priority
+              />
+            </Link>
+            <h1 className={styles.title}>Max Forsey</h1>
+            <p className={styles.tagline}>Playing with AI, design, and systems.</p>
+            <div className={styles.subscribeWrapper}>
+              <SubscribeInput />
+            </div>
+          </div>
+
+          <div className={styles.floatingRow} data-direction="right">
+            {[...bottomRowObjects, ...bottomRowObjects, ...bottomRowObjects, ...bottomRowObjects].map((object, index) => {
+              const isAmbience = object.kind === 'ambience';
+              const imageClassName = [
+                styles.floatingImg,
+                object.id === 'longevity' ? styles.longevitySmall : '',
+              ].filter(Boolean).join(' ');
+
+              return isAmbience ? (
+                <button
+                  key={`${object.id}-${index}`}
+                  type="button"
+                  className={styles.floatingObject}
+                  onClick={toggle}
+                  aria-pressed={isPlaying}
+                  data-playing={isPlaying ? 'true' : undefined}
+                >
+                  <Image
+                    src={getObjectImageSrc(object.id)}
+                    alt={object.label}
+                    width={80}
+                    height={80}
+                    className={imageClassName}
+                  />
+                </button>
+              ) : (
+                <Link
+                  key={`${object.id}-${index}`}
+                  href={object.href ?? '/'}
+                  className={styles.floatingObject}
+                >
+                  <Image
+                    src={getObjectImageSrc(object.id)}
+                    alt={object.label}
+                    width={80}
+                    height={80}
+                    className={imageClassName}
+                  />
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop orbit */}
         <div
           ref={containerRef}
           className={styles.orbitShell}
@@ -448,7 +569,21 @@ export default function OrbitHero() {
           </div>
 
           <div className={styles.centerCard}>
+            <Link href="/about" className={styles.avatarLink}>
+              <Image
+                src="/images/objects/about.jpeg"
+                alt="Max Forsey"
+                width={96}
+                height={96}
+                className={styles.avatar}
+                priority
+              />
+            </Link>
             <h1 className={styles.title}>Max Forsey</h1>
+            <p className={styles.tagline}>Playing with AI, design, and systems.</p>
+            <div className={styles.subscribeWrapper}>
+              <SubscribeInput />
+            </div>
           </div>
         </div>
 

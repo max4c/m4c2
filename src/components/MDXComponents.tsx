@@ -9,6 +9,26 @@ import LatexEquation from './LatexEquation';
 import Table from './Table';
 import MDXTable from './MDXTable';
 
+// Helper to generate an ID from heading text
+const generateHeadingId = (children: React.ReactNode): string => {
+  const text = React.Children.toArray(children)
+    .map(child => {
+      if (typeof child === 'string') return child;
+      if (React.isValidElement(child) && child.props.children) {
+        return generateHeadingId(child.props.children);
+      }
+      return '';
+    })
+    .join('');
+
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+};
+
 // Types
 type CodeProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
   children?: React.ReactNode;
@@ -146,12 +166,30 @@ export const components: MDXComponents = {
   Image,
   code: InlineCode,
   p: Paragraph,
-  h1: ({ children, ...props }) => <h1 className="text-3xl font-bold mt-8 mb-4" {...props}>{children}</h1>,
-  h2: ({ children, ...props }) => <h2 className="text-2xl font-bold mt-8 mb-3" {...props}>{children}</h2>,
-  h3: ({ children, ...props }) => <h3 className="text-xl font-bold mt-6 mb-3" {...props}>{children}</h3>,
-  h4: ({ children, ...props }) => <h4 className="text-lg font-bold mt-6 mb-2" {...props}>{children}</h4>,
-  h5: ({ children, ...props }) => <h5 className="text-base font-bold mt-4 mb-2" {...props}>{children}</h5>,
-  h6: ({ children, ...props }) => <h6 className="text-sm font-bold mt-4 mb-2" {...props}>{children}</h6>,
+  h1: ({ children, id, ...props }) => {
+    const headingId = id || generateHeadingId(children);
+    return <h1 id={headingId} className="text-3xl font-bold mt-8 mb-4" {...props}>{children}</h1>;
+  },
+  h2: ({ children, id, ...props }) => {
+    const headingId = id || generateHeadingId(children);
+    return <h2 id={headingId} className="text-lg font-semibold mt-10 mb-3 text-gray-800 dark:text-gray-200" {...props}>{children}</h2>;
+  },
+  h3: ({ children, id, ...props }) => {
+    const headingId = id || generateHeadingId(children);
+    return <h3 id={headingId} className="text-base font-semibold mt-8 mb-2 text-gray-800 dark:text-gray-200" {...props}>{children}</h3>;
+  },
+  h4: ({ children, id, ...props }) => {
+    const headingId = id || generateHeadingId(children);
+    return <h4 id={headingId} className="text-sm font-semibold mt-6 mb-2 text-gray-700 dark:text-gray-300" {...props}>{children}</h4>;
+  },
+  h5: ({ children, id, ...props }) => {
+    const headingId = id || generateHeadingId(children);
+    return <h5 id={headingId} className="text-base font-bold mt-4 mb-2" {...props}>{children}</h5>;
+  },
+  h6: ({ children, id, ...props }) => {
+    const headingId = id || generateHeadingId(children);
+    return <h6 id={headingId} className="text-sm font-bold mt-4 mb-2" {...props}>{children}</h6>;
+  },
   pre: ({ children, ...props }) => {
     const childrenArray = React.Children.toArray(children);
     // Check if the first child is a valid React element representing the <code> tag

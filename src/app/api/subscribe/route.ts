@@ -66,33 +66,32 @@ export async function POST(request: Request) {
     const emailResponse = await resend.emails.send({
       from: 'Max Forsey <signal@maxforsey.com>',
       to: [email],
-      subject: 'Welcome to The Signal!',
+      subject: 'Thanks for subscribing',
       headers: {
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
       },
-      // Simplified HTML content
       html: `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome to The Signal</title>
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #333333; line-height: 1.5; background-color: #ffffff; padding: 20px;">
-  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #000000; padding: 32px;">
-    <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #0957D0;">Welcome to The Signal</h1>
-    
-    <p style="margin: 16px 0;">Hey${name ? ` ${name}` : ''}, it's Max!</p>
-    
-    <p style="margin: 16px 0;">Thanks for subscribing. I'll send occasional emails with new articles and insights on AI, software, and productivity.</p>
-        
-    <p style="margin: 16px 0;">Best,<br>Max Forsey</p>
-    
-    <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 32px 0 16px;">
-    
-    <p style="font-size: 12px; color: #666666; margin: 8px 0; text-align: center;">
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 16px; color: #333333; line-height: 1.6; background-color: #ffffff; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto;">
+    <img src="https://www.maxforsey.com/icon-192.png" alt="Max Forsey" style="width: 64px; height: 64px; border-radius: 50%; margin-bottom: 16px;" />
+
+    <p style="margin: 0 0 16px 0;">Hi,</p>
+
+    <p style="margin: 0 0 16px 0;">Thanks for subscribing. I will email you when I publish new writing on maxforsey.com, usually 1 to 2 times per month.</p>
+
+    <p style="margin: 0 0 16px 0;">I write about AI, design, and systems—how they connect across building, health, and life.</p>
+
+    <p style="margin: 0 0 4px 0;">Best,</p>
+    <p style="margin: 0 0 24px 0;">Max Forsey</p>
+
+    <p style="font-size: 12px; color: #666666; margin: 0;">
       <a href="${unsubscribeUrl}" style="color: #666666; text-decoration: underline;">Unsubscribe</a>
     </p>
   </div>

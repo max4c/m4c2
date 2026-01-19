@@ -43,7 +43,7 @@ export default function AboutPage() {
   return (
     <>
       <MinimalHeader />
-      <main className="w-full max-w-2xl mx-auto px-4 pb-12 pt-8">
+      <main className="w-full max-w-2xl mx-auto px-4 pb-12 mt-4">
         <div className="space-y-4">
           {highlights.map((highlight, index) => (
             <p key={index}>

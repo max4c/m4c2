@@ -4,6 +4,7 @@ import MDXContent from '@/components/MDXContent';
 import { components as MDXComponents } from '@/components/MDXComponents';
 import { getPostBySlug } from '@/lib/blog';
 import { notFound } from 'next/navigation';
+import { format } from 'date-fns';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -19,9 +20,12 @@ export default async function WikiQuotesPage() {
     notFound();
   }
 
+  const lastUpdatedDate = post.lastModified ? new Date(post.lastModified) : new Date(post.date);
+  const lastUpdated = format(lastUpdatedDate, 'MM/dd/yyyy');
+
   return (
     <article>
-      <BlogPostHeader title={post.title} type={post.type} banner={post.banner} />
+      <BlogPostHeader title={post.title} type={post.type} banner={post.banner} lastUpdated={lastUpdated} />
       <MDXContent>
         <MDXRemote source={post.content} components={MDXComponents as any} />
       </MDXContent>

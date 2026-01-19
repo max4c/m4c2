@@ -16,6 +16,11 @@ const DEFAULT_VOLUME = 0.25;
 
 export function AmbienceProvider({ children }: { children: React.ReactNode }) {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
+  const audioHandlersRef = React.useRef<{
+    onPlaying: (() => void) | null;
+    onPause: (() => void) | null;
+    onError: (() => void) | null;
+  }>({ onPlaying: null, onPause: null, onError: null });
 
   const [isPlaying, setIsPlaying] = React.useState(false);
 
@@ -25,6 +30,17 @@ export function AmbienceProvider({ children }: { children: React.ReactNode }) {
     audio.loop = true;
     audio.preload = 'auto';
     audio.volume = DEFAULT_VOLUME;
+
+    const onPlaying = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onError = () => setIsPlaying(false);
+
+    audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('pause', onPause);
+    audio.addEventListener('ended', onPause);
+    audio.addEventListener('error', onError);
+
+    audioHandlersRef.current = { onPlaying, onPause, onError };
     audioRef.current = audio;
   }, []);
 
@@ -33,10 +49,11 @@ export function AmbienceProvider({ children }: { children: React.ReactNode }) {
     const audio = audioRef.current;
     if (!audio) return;
 
+    setIsPlaying(true);
+
     const maybePromise = audio.play();
     if (maybePromise && typeof (maybePromise as Promise<void>).then === 'function') {
       (maybePromise as Promise<void>)
-        .then(() => setIsPlaying(true))
         .catch(() => setIsPlaying(false));
       return;
     }
@@ -64,6 +81,15 @@ export function AmbienceProvider({ children }: { children: React.ReactNode }) {
       const audio = audioRef.current;
       if (!audio) return;
       audio.pause();
+
+      const handlers = audioHandlersRef.current;
+      if (handlers.onPlaying) audio.removeEventListener('playing', handlers.onPlaying);
+      if (handlers.onPause) {
+        audio.removeEventListener('pause', handlers.onPause);
+        audio.removeEventListener('ended', handlers.onPause);
+      }
+      if (handlers.onError) audio.removeEventListener('error', handlers.onError);
+
       audioRef.current = null;
     };
   }, []);

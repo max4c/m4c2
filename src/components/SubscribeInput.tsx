@@ -52,40 +52,44 @@ const SubscribeInput: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center space-x-1.5 max-w-xs">
-      <label htmlFor="email-subscribe" className="sr-only">
-        Email address
-      </label>
-      <input
-        type="email"
-        name="email"
-        id="email-subscribe"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={isLoading}
-        className="block w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 disabled:opacity-50"
-        placeholder="your@email.com"
-      />
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-xs font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 flex-shrink-0"
-      >
-        {isLoading ? 'Wait' : 'Subscribe'}
-      </button>
-      <div className="ml-2 text-xs min-w-[80px] text-left">
-        {statusMessage?.type === 'loading' && (
-          <span className="text-gray-500 dark:text-gray-400">{statusMessage.text}</span>
-        )}
-        {statusMessage?.type === 'success' && (
-          <span className="text-green-600 dark:text-green-400">{statusMessage.text}</span>
-        )}
-        {statusMessage?.type === 'error' && (
-          <span className="text-red-600 dark:text-red-400">{statusMessage.text}</span>
-        )}
-      </div>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit} className="flex items-center gap-1.5">
+        <label htmlFor="email-subscribe" className="sr-only">
+          Email address
+        </label>
+        <input
+          type="email"
+          name="email"
+          id="email-subscribe"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+          className="w-40 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 disabled:opacity-50"
+          placeholder="your@email.com"
+        />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="inline-flex items-center px-3 py-1 border border-gray-300 dark:border-gray-700 rounded-md text-xs font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 flex-shrink-0"
+        >
+          {isLoading ? 'Wait' : 'Subscribe'}
+        </button>
+      </form>
+      {statusMessage && (
+        <div className="mt-1 text-xs">
+          {statusMessage.type === 'loading' && (
+            <span className="text-gray-500 dark:text-gray-400">{statusMessage.text}</span>
+          )}
+          {statusMessage.type === 'success' && (
+            <span className="text-green-600 dark:text-green-400">{statusMessage.text}</span>
+          )}
+          {statusMessage.type === 'error' && (
+            <span className="text-red-600 dark:text-red-400">{statusMessage.text}</span>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

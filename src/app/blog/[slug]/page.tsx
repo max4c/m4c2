@@ -2,16 +2,16 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { Metadata } from 'next';
 import MDXContent from '@/components/MDXContent';
 import { components as MDXComponents } from '@/components/MDXComponents';
+import TableOfContents from '@/components/TableOfContents';
 import { format } from 'date-fns';
 import BlogPostHeader from '@/components/BlogPostHeader';
-import Link from 'next/link';
 import Image from 'next/image';
 import { getPostBySlug, getAllPosts, getSeriesNavigation } from '@/lib/blog';
+import { extractHeadings } from '@/lib/headings';
 import { notFound } from 'next/navigation';
 import JsonLd from '@/components/JsonLd';
 import SeriesNavigation from '@/components/SeriesNavigation';
 import SubscribeInput from '@/components/SubscribeInput';
-import PerplexityLink from '@/components/PerplexityLink';
 
 // Generate static params for static generation
 export async function generateStaticParams() {
@@ -80,6 +80,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   
   const isOngoing = post.type === 'ongoing';
   const seriesInfo = post.series ? getSeriesNavigation(post) : null;
+
+  // Extract headings from MDX content (h2, h3, and h4)
+  const headings = extractHeadings(post.content, 2, 4);
   
   const postDate = ensureDate(post.date);
   const formattedDate = format(postDate, 'MM/dd/yyyy');
@@ -118,22 +121,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     <article>
       <JsonLd data={structuredData} />
       
-      <BlogPostHeader 
+      <BlogPostHeader
         title={post.title}
         type={post.type}
         formattedDate={!isOngoing ? formattedDate : undefined}
         location={post.location || ''}
-        banner={post.banner}
+        banner={post.type === 'project' ? undefined : post.banner}
       />
       
-      {/* Use the PerplexityLink Client Component */}
-      <div className="max-w-2xl mx-auto mt-2 px-2 mb-6">
-        <PerplexityLink />
-      </div>
       
       {seriesInfo && seriesInfo.series && (
         <div className="max-w-2xl mx-auto px-4 mb-8">
-          <SeriesNavigation 
+          <SeriesNavigation
             seriesName={seriesInfo.series.name}
             currentPart={post.series!.part}
             totalParts={seriesInfo.series.totalParts}
@@ -142,7 +141,13 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           />
         </div>
       )}
-      
+
+      {headings.length > 0 && (
+        <div className="max-w-2xl mx-auto px-4 mb-6">
+          <TableOfContents headings={headings} />
+        </div>
+      )}
+
       <MDXContent>
         <MDXRemote
           source={post.content}
@@ -162,28 +167,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </div>
       )}
       
-      <div className="max-w-2xl mx-auto px-4 mt-8 pb-8 space-y-4">
-        
-        {/* Display Date only if not ongoing */} 
-        {!isOngoing && formattedDate && (
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            {formattedDate}
-          </p>
-        )}
-
-        {/* Back to blog link */} 
-        <Link 
-          href="/blog"
-          className="block text-sm text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          back to blog
-        </Link>
-
-        {/* Subscribe Input */} 
-        <div className="-ml-2"> 
-          <SubscribeInput />
-        </div>
-        
+      <div className="max-w-2xl mx-auto px-4 mt-8 pb-8">
+        <SubscribeInput />
       </div>
     </article>
   );
