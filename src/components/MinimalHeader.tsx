@@ -57,9 +57,6 @@ export default function MinimalHeader() {
           </Link>
         </h3>
         <nav className="flex flex-wrap items-center justify-start gap-3 sm:justify-self-end sm:justify-end">
-          <Link href="/" className={linkClass(pathname === '/')}>
-            home
-          </Link>
           <Link href="/blog" className={linkClass(pathname.startsWith('/blog'))}>
             blog
           </Link>
