@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
-// Still importing but won't use
-import { WelcomeEmail } from '../../../components/emails/WelcomeEmail';
 
 // Initialize Resend with API key
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -53,15 +51,7 @@ export async function POST(request: Request) {
     
     // Create an explicit unsubscribe URL - using exact format from docs
     const unsubscribeUrl = `${process.env.NEXT_PUBLIC_URL || 'https://www.maxforsey.com'}/api/unsubscribe?email=${encodeURIComponent(email)}`;
-    console.log('Generated unsubscribe URL:', unsubscribeUrl);
-    
-    // LOGGING: Print API key info (masked)
-    const apiKeyPreview = process.env.RESEND_API_KEY ? 
-      `${process.env.RESEND_API_KEY.substring(0, 5)}...${process.env.RESEND_API_KEY.substring(process.env.RESEND_API_KEY.length - 5)}` : 
-      'not found';
-    console.log('Using Resend API key (masked):', apiKeyPreview);
-    console.log('Audience ID:', process.env.RESEND_AUDIENCE_ID);
-    
+
     // Send simplified welcome email
     const emailResponse = await resend.emails.send({
       from: 'Max Forsey <signal@maxforsey.com>',
@@ -99,10 +89,7 @@ export async function POST(request: Request) {
 </html>
 `
     });
-    
-    // Log response from Resend
-    console.log('Resend email response:', emailResponse);
-    
+
     return NextResponse.json(
       { message: 'Successfully subscribed!', unsubscribeUrl },
       { status: 200 }

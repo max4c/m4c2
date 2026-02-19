@@ -1,12 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Heading } from '@/lib/headings';
 
-export interface Heading {
-  id: string;
-  text: string;
-  level: number;
-}
+export type { Heading };
 
 interface TableOfContentsProps {
   headings: Heading[];

@@ -72,6 +72,55 @@ const angleDifference = (current: number, previous: number) => {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+type FloatingObjectProps = {
+  object: OrbitObject;
+  index: number;
+  toggle: () => void;
+  isPlaying: boolean;
+};
+
+function FloatingObject({ object, index, toggle, isPlaying }: FloatingObjectProps) {
+  const isAmbience = object.kind === 'ambience';
+  const imageClassName = `${styles.floatingImg}${object.id === 'longevity' ? ` ${styles.longevitySmall}` : ''}`;
+
+  if (isAmbience) {
+    return (
+      <button
+        key={`${object.id}-${index}`}
+        type="button"
+        className={styles.floatingObject}
+        onClick={toggle}
+        aria-pressed={isPlaying}
+        data-playing={isPlaying ? 'true' : undefined}
+      >
+        <Image
+          src={getObjectImageSrc(object.id)}
+          alt={object.label}
+          width={80}
+          height={80}
+          className={imageClassName}
+        />
+      </button>
+    );
+  }
+
+  return (
+    <Link
+      key={`${object.id}-${index}`}
+      href={object.href ?? '/'}
+      className={styles.floatingObject}
+    >
+      <Image
+        src={getObjectImageSrc(object.id)}
+        alt={object.label}
+        width={80}
+        height={80}
+        className={imageClassName}
+      />
+    </Link>
+  );
+}
+
 export default function OrbitHero() {
   const { isPlaying, toggle } = useAmbience();
   const [activeObjectId, setActiveObjectId] = useState<string | null>(null);
@@ -337,46 +386,15 @@ export default function OrbitHero() {
         {/* Mobile floating rows */}
         <div className={styles.mobileLayout}>
           <div className={styles.floatingRow} data-direction="left">
-            {[...topRowObjects, ...topRowObjects, ...topRowObjects, ...topRowObjects].map((object, index) => {
-              const isAmbience = object.kind === 'ambience';
-              const imageClassName = [
-                styles.floatingImg,
-                object.id === 'longevity' ? styles.longevitySmall : '',
-              ].filter(Boolean).join(' ');
-
-              return isAmbience ? (
-                <button
-                  key={`${object.id}-${index}`}
-                  type="button"
-                  className={styles.floatingObject}
-                  onClick={toggle}
-                  aria-pressed={isPlaying}
-                  data-playing={isPlaying ? 'true' : undefined}
-                >
-                  <Image
-                    src={getObjectImageSrc(object.id)}
-                    alt={object.label}
-                    width={80}
-                    height={80}
-                    className={imageClassName}
-                  />
-                </button>
-              ) : (
-                <Link
-                  key={`${object.id}-${index}`}
-                  href={object.href ?? '/'}
-                  className={styles.floatingObject}
-                >
-                  <Image
-                    src={getObjectImageSrc(object.id)}
-                    alt={object.label}
-                    width={80}
-                    height={80}
-                    className={imageClassName}
-                  />
-                </Link>
-              );
-            })}
+            {[...topRowObjects, ...topRowObjects, ...topRowObjects, ...topRowObjects].map((object, index) => (
+              <FloatingObject
+                key={`${object.id}-${index}`}
+                object={object}
+                index={index}
+                toggle={toggle}
+                isPlaying={isPlaying}
+              />
+            ))}
           </div>
 
           <div className={styles.mobileCenter}>
@@ -398,46 +416,15 @@ export default function OrbitHero() {
           </div>
 
           <div className={styles.floatingRow} data-direction="right">
-            {[...bottomRowObjects, ...bottomRowObjects, ...bottomRowObjects, ...bottomRowObjects].map((object, index) => {
-              const isAmbience = object.kind === 'ambience';
-              const imageClassName = [
-                styles.floatingImg,
-                object.id === 'longevity' ? styles.longevitySmall : '',
-              ].filter(Boolean).join(' ');
-
-              return isAmbience ? (
-                <button
-                  key={`${object.id}-${index}`}
-                  type="button"
-                  className={styles.floatingObject}
-                  onClick={toggle}
-                  aria-pressed={isPlaying}
-                  data-playing={isPlaying ? 'true' : undefined}
-                >
-                  <Image
-                    src={getObjectImageSrc(object.id)}
-                    alt={object.label}
-                    width={80}
-                    height={80}
-                    className={imageClassName}
-                  />
-                </button>
-              ) : (
-                <Link
-                  key={`${object.id}-${index}`}
-                  href={object.href ?? '/'}
-                  className={styles.floatingObject}
-                >
-                  <Image
-                    src={getObjectImageSrc(object.id)}
-                    alt={object.label}
-                    width={80}
-                    height={80}
-                    className={imageClassName}
-                  />
-                </Link>
-              );
-            })}
+            {[...bottomRowObjects, ...bottomRowObjects, ...bottomRowObjects, ...bottomRowObjects].map((object, index) => (
+              <FloatingObject
+                key={`${object.id}-${index}`}
+                object={object}
+                index={index}
+                toggle={toggle}
+                isPlaying={isPlaying}
+              />
+            ))}
           </div>
         </div>
 

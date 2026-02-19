@@ -45,9 +45,6 @@ const SubscribeInput: React.FC = () => {
       console.error('Subscription error:', error);
     } finally {
       setIsLoading(false);
-      if (!statusMessage || statusMessage.type !== 'success' && statusMessage.type !== 'error') {
-        if (isLoading) setStatusMessage(null);
-      }
     }
   };
 

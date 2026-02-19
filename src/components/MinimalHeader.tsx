@@ -37,9 +37,7 @@ export default function MinimalHeader() {
   const pathname = usePathname() || '';
   const { isPlaying, toggle } = useAmbience();
   const linkClass = (isActive: boolean) =>
-    ['text-blue-600 dark:text-blue-400 hover:underline', isActive ? 'font-bold' : '']
-      .filter(Boolean)
-      .join(' ');
+    `text-blue-600 dark:text-blue-400 hover:underline${isActive ? ' font-bold' : ''}`;
 
   return (
     <header className="w-full max-w-2xl mx-auto pt-6 px-4">
@@ -89,4 +87,4 @@ export default function MinimalHeader() {
       </div>
     </header>
   );
-} 
+}

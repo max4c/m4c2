@@ -9,6 +9,9 @@ import matter from 'gray-matter';
 // Configuration
 const contentDir = path.join(process.cwd(), 'src/content/blog');
 
+// Cache for getAllPosts to avoid repeated filesystem reads
+let postsCache: Post[] | null = null;
+
 // Post type definition
 export interface Post {
   slug: string;
@@ -36,6 +39,10 @@ export interface Post {
  * Get all blog posts with their metadata
  */
 export function getAllPosts(): Post[] {
+  if (postsCache) {
+    return postsCache;
+  }
+
   const parseFrontmatterBoolean = (value: unknown): boolean | undefined => {
     if (typeof value === 'boolean') return value;
     if (typeof value === 'string') {
@@ -107,7 +114,8 @@ export function getAllPosts(): Post[] {
   }
   
   // Sort posts by date (newest first)
-  return posts.sort((a, b) => b.date.getTime() - a.date.getTime());
+  postsCache = posts.sort((a, b) => b.date.getTime() - a.date.getTime());
+  return postsCache;
 }
 
 /**

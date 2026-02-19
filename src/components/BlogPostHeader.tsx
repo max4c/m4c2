@@ -5,14 +5,14 @@ import MinimalHeader from './MinimalHeader';
 
 interface BlogPostHeaderProps {
   title: string;
-  type: string;
+  type?: string;
   formattedDate?: string;
   lastUpdated?: string;
   location?: string;
   banner?: string;
 }
 
-export default function BlogPostHeader({ title, type, formattedDate, lastUpdated, location, banner }: BlogPostHeaderProps) {
+export default function BlogPostHeader({ title, formattedDate, lastUpdated, location, banner }: BlogPostHeaderProps) {
   return (
     <>
       <MinimalHeader />

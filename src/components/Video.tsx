@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { CSSProperties } from 'react';
 
 interface VideoProps {
   src: string;
@@ -18,13 +17,6 @@ export default function Video({ src, title }: VideoProps) {
       });
     }
   }, []);
-
-  const videoStyle: CSSProperties = {
-    outline: 'none',
-    width: '100%',
-    display: 'block',
-    borderRadius: '8px',
-  };
 
   return (
     <div className="my-8">

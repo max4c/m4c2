@@ -4,9 +4,8 @@ import Iframe from './Iframe';
 import Link from 'next/link';
 import Image from 'next/image';
 import CopyButton from './CopyButton';
-import React, { DetailedHTMLProps, HTMLAttributes } from 'react';
+import React, { AnchorHTMLAttributes, DetailedHTMLProps, HTMLAttributes } from 'react';
 import LatexEquation from './LatexEquation';
-import Table from './Table';
 import MDXTable from './MDXTable';
 
 // Helper to generate an ID from heading text
@@ -221,8 +220,9 @@ export const components: MDXComponents = {
       </div>
     );
   },
-  a: ({ href, ...props }: any) => {
-    if (href?.startsWith('http')) {
+  a: ({ href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    if (!href) return <a {...props} className="text-blue-600 dark:text-blue-400 hover:underline" />;
+    if (href.startsWith('http')) {
       return <a href={href} target="_blank" rel="noopener noreferrer" {...props} className="text-blue-600 dark:text-blue-400 hover:underline" />
     }
     return <Link href={href} {...props} className="text-blue-600 dark:text-blue-400 hover:underline" />
