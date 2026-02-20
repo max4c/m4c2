@@ -27,7 +27,7 @@ export default async function WikiQuotesPage() {
     <article>
       <BlogPostHeader title={post.title} type={post.type} banner={post.banner} lastUpdated={lastUpdated} />
       <MDXContent>
-        <MDXRemote source={post.content} components={MDXComponents as any} />
+        <MDXRemote source={post.content} components={MDXComponents as any} options={{ blockJS: false }} />
       </MDXContent>
     </article>
   );

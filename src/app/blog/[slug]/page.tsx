@@ -152,6 +152,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <MDXRemote
           source={post.content}
           components={MDXComponents as any}
+          options={{ blockJS: false }}
         />
       </MDXContent>
       

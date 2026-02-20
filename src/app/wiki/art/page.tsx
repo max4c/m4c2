@@ -44,13 +44,13 @@ export default async function WikiArtPage() {
       </div>
       <MDXContent>
         <h2 id="music">Music</h2>
-        <MDXRemote source={music.content} components={MDXComponents as any} />
+        <MDXRemote source={music.content} components={MDXComponents as any} options={{ blockJS: false }} />
 
         <h2 id="books">Books</h2>
-        <MDXRemote source={books.content} components={MDXComponents as any} />
+        <MDXRemote source={books.content} components={MDXComponents as any} options={{ blockJS: false }} />
 
         <h2 id="films">Films</h2>
-        <MDXRemote source={films.content} components={MDXComponents as any} />
+        <MDXRemote source={films.content} components={MDXComponents as any} options={{ blockJS: false }} />
       </MDXContent>
     </article>
   );

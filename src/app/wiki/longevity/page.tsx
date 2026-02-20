@@ -37,7 +37,7 @@ export default async function WikiLongevityPage() {
         </div>
       )}
       <MDXContent>
-        <MDXRemote source={post.content} components={MDXComponents as any} />
+        <MDXRemote source={post.content} components={MDXComponents as any} options={{ blockJS: false }} />
       </MDXContent>
     </article>
   );
