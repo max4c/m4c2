@@ -64,6 +64,9 @@ export default function MinimalHeader() {
           <Link href="/about" className={linkClass(pathname.startsWith('/about'))}>
             about
           </Link>
+          <Link href="/design" className={linkClass(pathname.startsWith('/design'))}>
+            design
+          </Link>
           <button
             type="button"
             onClick={toggle}
