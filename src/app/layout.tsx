@@ -28,7 +28,7 @@ const TIME_THEME_SCRIPT = `
 export const metadata: Metadata = {
   metadataBase: new URL('https://maxforsey.com'),
   title: 'Max Forsey',
-  description: 'I like to research AI and build helpful tools',
+  description: 'Founder & CEO of Daso. I research AI and build helpful tools.',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32' },
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Max Forsey',
-    description: 'I like to research AI and build helpful tools',
+    description: 'Founder & CEO of Daso. I research AI and build helpful tools.',
     url: 'https://maxforsey.com',
     siteName: 'Max Forsey',
     locale: 'en_US',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Max Forsey',
-    description: 'I like to research AI and build helpful tools',
+    description: 'Founder & CEO of Daso. I research AI and build helpful tools.',
   },
 }
 

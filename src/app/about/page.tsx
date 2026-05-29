@@ -12,7 +12,8 @@ type Highlight = {
 };
 
 const highlights: Highlight[] = [
-  { text: "Head of DevRel at Runpod", links: [{ url: "https://www.runpod.io/", text: "Runpod" }] },
+  { text: "Founder and CEO of Daso", links: [{ url: "https://getdaso.com/", text: "Daso" }] },
+  { text: "Led DevRel at Runpod", links: [{ url: "https://www.runpod.io/", text: "Runpod" }] },
   { text: "Currently in San Francisco", links: null },
   { text: "Researched Mechanistic Interpretability in the PCC Lab", links: null },
   { text: "Studied machine learning at BYU (ended up dropping out)", links: null },
