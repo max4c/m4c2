@@ -43,11 +43,14 @@ export const metadata: Metadata = {
     siteName: 'Max Forsey',
     locale: 'en_US',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Max Forsey' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Max Forsey',
     description: 'Founder & CEO of Daso. I research AI and build helpful tools.',
+    creator: '@maxforsey',
+    images: ['/og-image.png'],
   },
 }
 
