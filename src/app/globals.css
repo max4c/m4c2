@@ -67,7 +67,7 @@
     @apply max-w-none;
     @apply prose-h1:text-lg prose-h1:font-bold prose-h1:mb-4 prose-h1:mt-8;
     @apply prose-h2:text-xl prose-h2:font-bold prose-h2:mb-3 prose-h2:mt-8;
-    @apply prose-h3:text-lg prose-h3:font-bold prose-h3:mb-3 prose-h3:mt-6;
+    @apply prose-h3:text-lg prose-h3:font-bold prose-h3:mb-3 prose-h3:mt-6 prose-h3:leading-snug;
     @apply prose-p:mb-4 prose-p:leading-relaxed;
     @apply prose-ul:my-4 prose-ul:list-disc prose-ul:pl-5;
     @apply prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-5;
@@ -568,6 +568,26 @@ body.modal-open {
   @apply p-4;
 }
 
+/* Collapsible toggle button (mobile + desktop) */
+.toc-toggle {
+  @apply flex items-center justify-between w-full text-left;
+  @apply cursor-pointer select-none;
+  @apply transition-colors duration-150;
+}
+
+.toc-toggle:hover {
+  @apply text-gray-600 dark:text-gray-300;
+}
+
+.toc-chevron {
+  @apply inline-block ml-2 text-sm leading-none;
+  transition: transform 0.15s ease;
+}
+
+.toc-chevron-open {
+  transform: rotate(90deg);
+}
+
 .toc-mobile-header {
   @apply text-xs font-medium uppercase tracking-wider;
   @apply text-gray-400 dark:text-gray-500;
@@ -584,7 +604,7 @@ body.modal-open {
 
 .toc-mobile-link {
   @apply block w-full text-left py-1;
-  @apply text-sm leading-snug;
+  @apply text-sm leading-snug break-words;
   @apply text-gray-500 dark:text-gray-500;
   @apply hover:text-gray-900 dark:hover:text-gray-300;
   @apply transition-colors duration-150;
@@ -600,7 +620,7 @@ body.modal-open {
   @apply hidden lg:block;
   @apply fixed right-8 top-32;
   @apply w-56;
-  @apply max-h-[calc(100vh-10rem)] overflow-y-auto;
+  @apply max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden;
   z-index: 40;
 }
 
@@ -632,7 +652,7 @@ body.modal-open {
 
 .toc-sidebar-link {
   @apply block w-full text-left py-1;
-  @apply text-sm leading-snug;
+  @apply text-sm leading-snug break-words;
   @apply text-gray-500 dark:text-gray-500;
   @apply hover:text-gray-900 dark:hover:text-gray-300;
   @apply transition-colors duration-150;

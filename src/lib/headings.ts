@@ -28,7 +28,10 @@ export function extractHeadings(content: string, minLevel = 2, maxLevel = 4): He
       continue;
     }
 
-    const text = match[2].trim();
+    // Strip inline markdown emphasis markers (*, _, `) so the TOC shows clean text
+    const text = match[2]
+      .trim()
+      .replace(/(\*\*|\*|__|_|`)/g, '');
     // Use custom id if provided, otherwise generate from text
     const id = match[3] || text.toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')

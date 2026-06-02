@@ -5,7 +5,7 @@ banner: /images/blog-banners/how-to-build-with-ai.png
 ---
 The intent of this post is to lay out principles and practices to accelerate building. I define building broadly as the act of putting things together to create something new. This can span from gathering data, to writing a blog post to building a web app. The best way to build with AI is to learn the principles of AI, delegation, and building.
 
-#### Principles of AI
+### Principles of AI
 
 **Context is king.** An AI model will only give the best output when given the best input. That means creating the right amount of detail needed for each prompt. That means giving detailed prompts, screenshots, files, links, etc. A great question to ask yourself is: "What would I need to know/see/have access to, to accomplish this task?" Because of the amount of data and context that you need to give AI, **in many cases,** it is faster for the human to do the task. If you develop an over-reliance on reaching for AI first, you will be slower.
 
@@ -13,11 +13,11 @@ The intent of this post is to lay out principles and practices to accelerate bui
 
 **Overconfidence can hide hallucination.** If you are not an expert in the thing you working with AI to build, you need to exercise caution and do the extra work to ensure you aren't being fooled. AI can lie to you about using a tool, checking a source, or even modify the test cases you wrote to prevent it from lying. Bringing in other models to evaluate can help, or starting a conversation with a model that doesn't have context also helps. In many cases, having an actual expert to confirm always helps.
 
-#### Principles of Delegation
+### Principles of Delegation
 
 **Every person is a manager now.** With today's technology, you're essentially delegating tasks to AI "team members" that execute your vision. For simple tasks, you'll often work in real-time with an AI copilot through interfaces like Claude, ChatGPT, or code assistants that respond immediately to your direction. For more complex work, newer tools like Cursor's agent mode or Perplexity's Deep Research can handle longer, autonomous assignments that might take 30-60 minutes to complete. This creates a management dynamic where you can assign a substantial task to your AI assistant, then shift your attention to other priorities while it works—much like a manager delegates to a trusted team member.
 
-#### Principles of Building
+### Principles of Building
 
 Building upon what the CEO of Windsurf said [on X](https://x.com/vitrupo/status/1913973939011026986), building is made up of 4 steps:
 
@@ -25,7 +25,7 @@ Building upon what the CEO of Windsurf said [on X](https://x.com/vitrupo/status/
 
 Every artist, writer, engineer, researcher, and creator uses these steps more or less to build. Before you decide on which product, tool or model to use, it's very important to know at which step in the building process you are at as certain AI tools excel at different parts of the process. It's also important to verify the size of the task as each step could take a different amount of time. In many cases, you might **skip ideation and planning entirely—and just** one-shot build the thing you want. In order to do any of these steps well, you first need to have the right tools to communicate with AI effectively.
 
-#### How to Communicate with AI
+### How to Communicate with AI
 
 **Almost every model you work with now is multimodal.** With this in mind, you need to be using the right tools to give the best data to the model you are working with to get the best response. Instead of just copy/pasting everything or writing long prompts, look into these tools:
 
@@ -35,15 +35,15 @@ Every artist, writer, engineer, researcher, and creator uses these steps more or
 - speaking tool - Do you have a super long prompt you need to give AI? Instead of typing out the prompt, speak it. It is 3x faster. I personally use [superwhisper.com](http://superwhisper.com/) but wispr flow is also great from I've heard
 - Provide minimal, working code snippets: Especially for specific libraries or APIs, give the AI a small, functional example to reduce errors.
 
-#### What to solve with AI
+### What to solve with AI
 
 **Identify what you want to build.** Dump your thoughts, ideas, directions, screeshots, and files into a prompt. Deep research from really any major model provider is a great way to do this given the task is large enough. There have been multiple times where I try to go straight to executing and then realizing I don't have a clear idea of what I even want.
 
-#### How to solve it with AI
+### How to solve it with AI
 
 **Verify you have the tools to build what you want and confirm it with AI.** The thing you are building likely will become apart of a larger environment and will interact with other things. Are you choosing the right tools for that environment? For example, in coding you need to make sure you are building with the tech stack that is right for the job and make sure the model is aware of that. Choosing a mainstream stack (like Next.js, Python, etc.) that AI models know well often accelerates development. Think about how you will iterate on the work and how you will verify the results.
 
-#### Doing the work with AI
+### Doing the work with AI
 
 **Execute on the plan.** At this point you have amassed quite a large amount of data from the ideation and planning phases. It will be tempting to paste all of that raw data you have gathered into cursor or lovable or another tool to do the building.
 
@@ -54,17 +54,17 @@ In many cases it is worth it to synthesize that data into a clear small steps th
 On the contrary, It is much better to do initial macro ideation and macro planning and then a series of micro loops of what to solve->how to solve->doing the work->verifying the work. If you are coding, a great way to keep track of this is to create a todo.md file where you can have all of the milestones you are hoping to accomplish and relevant links which your coding agent can update. **Reach a milestone and do** a git commit so you can easily revert back to the latest working milestone. **That's** especially crucial, as AI can sometimes introduce unexpected issues.
 <img src="/building-loop.png" alt="Building Loop" width="50%" />
 
-#### Verifying the work with AI
+### Verifying the work with AI
 
 **Rigorously test.** After each milestone, the last part of a building phase is to test. With AI, you can use a different model or different conversation to test what you have built. Always find a way to manually inspect the tests AI has helped write such as checking the design visually or writing your own test cases by hand.
 
-#### Need specific Cursor tips?
+### Need specific Cursor tips?
 Read Ryo's guide [here](https://x.com/ryolu_/status/1914384195138511142)
 
-#### Not sure what models to use?
+### Not sure what models to use?
 Use o3 for figuring out what & how to build and gemini 2.5 pro or claude 3.7 sonnet thinking for doing & verifying the work.
 
-#### Looking for an Example?
+### Looking for an Example?
 Watch this video of me building a full web app from scratch to try to win a hackathon in 3.5 hours:
 
 [How I Build with AI (Building a Full App in 3.5 hours)](https://www.youtube.com/watch?v=JWGJUfGx7kw)

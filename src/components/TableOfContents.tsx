@@ -11,6 +11,7 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ headings }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const hasHeadings = headings && headings.length > 0;
 
@@ -62,47 +63,67 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
 
   return (
     <>
-      {/* Mobile: always visible list */}
+      {/* Mobile: collapsible list */}
       <nav className="toc-mobile xl:hidden mb-6" aria-label="Table of contents">
-        <div className="toc-mobile-header">Contents</div>
-        <ul className="toc-mobile-list">
-          {headings.map((heading) => (
-            <li
-              key={heading.id}
-              className="toc-mobile-item"
-              style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
-            >
-              <button
-                onClick={() => scrollToHeading(heading.id)}
-                className={`toc-mobile-link ${activeId === heading.id ? 'toc-mobile-link-active' : ''}`}
-              >
-                {heading.text}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {/* Desktop: sticky sidebar on the right */}
-      <nav className="toc-sidebar" aria-label="Table of contents">
-        <div className="toc-sidebar-inner">
-          <div className="toc-sidebar-header">Contents</div>
-          <ul className="toc-sidebar-list">
+        <button
+          type="button"
+          className="toc-toggle toc-mobile-header"
+          aria-expanded={isOpen}
+          onClick={() => setIsOpen((open) => !open)}
+        >
+          <span>Contents</span>
+          <span className={`toc-chevron ${isOpen ? 'toc-chevron-open' : ''}`} aria-hidden="true">›</span>
+        </button>
+        {isOpen && (
+          <ul className="toc-mobile-list">
             {headings.map((heading) => (
               <li
                 key={heading.id}
-                className="toc-sidebar-item"
+                className="toc-mobile-item"
                 style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
               >
                 <button
                   onClick={() => scrollToHeading(heading.id)}
-                  className={`toc-sidebar-link ${activeId === heading.id ? 'toc-sidebar-link-active' : ''}`}
+                  className={`toc-mobile-link ${activeId === heading.id ? 'toc-mobile-link-active' : ''}`}
                 >
                   {heading.text}
                 </button>
               </li>
             ))}
           </ul>
+        )}
+      </nav>
+
+      {/* Desktop: sticky sidebar on the right */}
+      <nav className="toc-sidebar" aria-label="Table of contents">
+        <div className="toc-sidebar-inner">
+          <button
+            type="button"
+            className="toc-toggle toc-sidebar-header"
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen((open) => !open)}
+          >
+            <span>Contents</span>
+            <span className={`toc-chevron ${isOpen ? 'toc-chevron-open' : ''}`} aria-hidden="true">›</span>
+          </button>
+          {isOpen && (
+            <ul className="toc-sidebar-list">
+              {headings.map((heading) => (
+                <li
+                  key={heading.id}
+                  className="toc-sidebar-item"
+                  style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
+                >
+                  <button
+                    onClick={() => scrollToHeading(heading.id)}
+                    className={`toc-sidebar-link ${activeId === heading.id ? 'toc-sidebar-link-active' : ''}`}
+                  >
+                    {heading.text}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </nav>
     </>

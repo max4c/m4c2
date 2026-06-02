@@ -175,7 +175,7 @@ export const components: MDXComponents = {
   },
   h3: ({ children, id, ...props }) => {
     const headingId = id || generateHeadingId(children);
-    return <h3 id={headingId} className="text-base font-semibold mt-8 mb-2 text-gray-800 dark:text-gray-200" {...props}>{children}</h3>;
+    return <h3 id={headingId} className="text-base font-semibold leading-snug mt-8 mb-2 text-gray-800 dark:text-gray-200" {...props}>{children}</h3>;
   },
   h4: ({ children, id, ...props }) => {
     const headingId = id || generateHeadingId(children);
