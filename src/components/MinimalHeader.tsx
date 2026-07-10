@@ -45,7 +45,7 @@ export default function MinimalHeader() {
         <h3 className="text-xl font-bold leading-none">
           <Link href="/" className="text-black dark:text-white hover:no-underline inline-flex items-baseline gap-2">
             <Image
-              src="/images/objects/about.jpeg"
+              src="/images/objects/max-avatar.png"
               alt=""
               width={24}
               height={24}
@@ -63,9 +63,6 @@ export default function MinimalHeader() {
           </Link>
           <Link href="/about" className={linkClass(pathname.startsWith('/about'))}>
             about
-          </Link>
-          <Link href="/design" className={linkClass(pathname.startsWith('/design'))}>
-            design
           </Link>
           <button
             type="button"

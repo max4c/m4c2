@@ -1239,8 +1239,8 @@
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
   border: 2px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -1254,8 +1254,8 @@
 
 @media (max-width: 640px) {
   .avatar {
-    width: 64px;
-    height: 64px;
+    width: 72px;
+    height: 72px;
   }
 }
 
@@ -1266,14 +1266,16 @@
   opacity: 0.6;
 }
 
-.subscribeWrapper {
-  margin-top: 0.8rem;
-  display: flex;
-  justify-content: center;
+.taglineLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: opacity 200ms ease;
 }
 
-.subscribeWrapper :global(form) {
-  margin: 0 auto;
+.taglineLink:hover {
+  opacity: 0.85;
 }
 
 .centerContent {

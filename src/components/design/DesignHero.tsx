@@ -140,22 +140,9 @@ const namedCards: Record<number, Partial<Card>> = {
   },
 };
 
-const TOTAL_CARDS = 6;
-const CTA_INDEX = TOTAL_CARDS - 1;
+const TOTAL_CARDS = 5;
 
 const cards: Card[] = Array.from({ length: TOTAL_CARDS }, (_, i) => {
-  if (i === CTA_INDEX) {
-    return {
-      label: 'Work with me',
-      title: 'Work with me',
-      year: '',
-      role: null,
-      description: '',
-      link: null,
-      video: null,
-      cta: true,
-    };
-  }
   const n = String(i + 1).padStart(2, '0');
   const base: Card = {
     label: `Project ${n} · 2025`,

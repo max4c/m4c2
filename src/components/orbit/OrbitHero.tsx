@@ -12,7 +12,6 @@ import {
 } from 'react';
 import styles from './OrbitHero.module.css';
 import { useAmbience } from '@/components/AmbienceProvider';
-import SubscribeInput from '@/components/SubscribeInput';
 
 type OrbitObject = {
   id: string;
@@ -400,7 +399,7 @@ export default function OrbitHero() {
           <div className={styles.mobileCenter}>
             <Link href="/about" className={styles.avatarLink}>
               <Image
-                src="/images/objects/about.jpeg"
+                src="/images/objects/max-avatar.png"
                 alt="Max Forsey"
                 width={96}
                 height={96}
@@ -409,10 +408,9 @@ export default function OrbitHero() {
               />
             </Link>
             <h1 className={styles.title}>Max Forsey</h1>
-            <p className={styles.tagline}>Playing with AI, design, and systems.</p>
-            <div className={styles.subscribeWrapper}>
-              <SubscribeInput />
-            </div>
+            <p className={styles.tagline}>
+              Building a <a href="https://getdaso.com" className={styles.taglineLink}>computer</a> for curious kids.
+            </p>
           </div>
 
           <div className={styles.floatingRow} data-direction="right">
@@ -480,7 +478,7 @@ export default function OrbitHero() {
                         width={200}
                         height={200}
                         sizes="120px"
-                        priority={index < 3}
+                        loading="eager"
                         className={imageClassName}
                       />
                     </span>
@@ -558,7 +556,7 @@ export default function OrbitHero() {
           <div className={styles.centerCard}>
             <Link href="/about" className={styles.avatarLink}>
               <Image
-                src="/images/objects/about.jpeg"
+                src="/images/objects/max-avatar.png"
                 alt="Max Forsey"
                 width={96}
                 height={96}
@@ -567,10 +565,9 @@ export default function OrbitHero() {
               />
             </Link>
             <h1 className={styles.title}>Max Forsey</h1>
-            <p className={styles.tagline}>Playing with AI, design, and systems.</p>
-            <div className={styles.subscribeWrapper}>
-              <SubscribeInput />
-            </div>
+            <p className={styles.tagline}>
+              Building a <a href="https://getdaso.com" className={styles.taglineLink}>computer</a> for curious kids.
+            </p>
           </div>
         </div>
 

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Design | Max Forsey',
   description: 'Design portfolio',
   alternates: {
-    canonical: 'https://www.maxforsey.com/design',
+    canonical: 'https://www.maxforsey.com/wiki/design',
   },
 };
 

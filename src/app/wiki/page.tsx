@@ -7,6 +7,7 @@ const WIKI_PAGES = [
   { title: 'Quotes', href: '/wiki/quotes' },
   { title: 'Art', href: '/wiki/art' },
   { title: 'Longevity', href: '/wiki/longevity' },
+  { title: 'Design', href: '/wiki/design' },
 ];
 
 export const metadata: Metadata = {
