@@ -131,10 +131,10 @@ export default function OrbitHero() {
   const lastFrameRef = useRef<number | null>(null);
   const rotationRef = useRef(0);
   const velocityRef = useRef(0);
-  const stepRef = useRef<(timestamp: number) => void>();
+  const stepRef = useRef<((timestamp: number) => void) | undefined>(undefined);
   const preventClickRef = useRef(false);
-  const preventResetTimeoutRef = useRef<number>();
-  const labelTimeoutRef = useRef<number>();
+  const preventResetTimeoutRef = useRef<number | undefined>(undefined);
+  const labelTimeoutRef = useRef<number | undefined>(undefined);
   const scrollSpinRef = useRef({ lastY: null as number | null, lastTime: 0 });
   const dragStateRef = useRef({
     dragging: false,

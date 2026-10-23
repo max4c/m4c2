@@ -15,8 +15,8 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { year: string } }): Promise<Metadata> {
-  const { year } = params;
+export async function generateMetadata({ params }: { params: Promise<{ year: string }> }): Promise<Metadata> {
+  const { year } = await params;
   const websiteUrl = 'https://www.maxforsey.com';
   const canonicalUrl = `${websiteUrl}/blog/archive/${year}`;
   
@@ -40,8 +40,8 @@ export async function generateMetadata({ params }: { params: { year: string } })
   };
 }
 
-export default function YearArchivePage({ params }: { params: { year: string } }) {
-  const { year } = params;
+export default async function YearArchivePage({ params }: { params: Promise<{ year: string }> }) {
+  const { year } = await params;
   const posts = getPostsByYear(year);
   
   if (posts.length === 0) {

@@ -15,16 +15,6 @@ const nextConfig = {
   experimental: {
     mdxRs: true,
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        punycode: false,
-      };
-    }
-    config.cache = false;
-    return config;
-  },
 }
 
 export default withMDX(nextConfig)

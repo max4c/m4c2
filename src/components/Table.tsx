@@ -14,6 +14,7 @@ const Table: React.FC<TableProps> = ({ headers, rows, caption, className = '' })
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional mount detection
     setIsClient(true);
   }, []);
   

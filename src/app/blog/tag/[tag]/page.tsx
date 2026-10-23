@@ -14,10 +14,11 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { tag: string } }): Promise<Metadata> {
-  const tag = decodeURIComponent(params.tag);
+export async function generateMetadata({ params }: { params: Promise<{ tag: string }> }): Promise<Metadata> {
+  const { tag: rawTag } = await params;
+  const tag = decodeURIComponent(rawTag);
   const websiteUrl = 'https://www.maxforsey.com';
-  const canonicalUrl = `${websiteUrl}/blog/tag/${params.tag}`;
+  const canonicalUrl = `${websiteUrl}/blog/tag/${rawTag}`;
   
   return {
     title: `${tag} | Blog | Max Forsey`,
@@ -39,8 +40,8 @@ export async function generateMetadata({ params }: { params: { tag: string } }):
   };
 }
 
-export default function TagPage({ params }: { params: { tag: string } }) {
-  const { tag } = params;
+export default async function TagPage({ params }: { params: Promise<{ tag: string }> }) {
+  const { tag } = await params;
   const formattedTag = tag.replace('-', ' ');
   const posts = getPostsByTag(tag);
   

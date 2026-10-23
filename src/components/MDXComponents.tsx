@@ -13,7 +13,7 @@ const generateHeadingId = (children: React.ReactNode): string => {
   const text = React.Children.toArray(children)
     .map(child => {
       if (typeof child === 'string') return child;
-      if (React.isValidElement(child) && child.props.children) {
+      if (React.isValidElement<{ children?: React.ReactNode }>(child) && child.props.children) {
         return generateHeadingId(child.props.children);
       }
       return '';
@@ -89,7 +89,7 @@ const Paragraph = ({ children, ...rest }: ParagraphProps) => {
     }
 
     if (React.isValidElement(node)) {
-      const element = node as React.ReactElement;
+      const element = node as React.ReactElement<{ children?: React.ReactNode }>;
       
       // Handle code elements
       if (element.type === 'code') {
@@ -133,8 +133,8 @@ function OptimizedImage({
   className = '', // Allow passing other classes like rounded-lg etc.
   ...props
 }: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>) {
-  // Handle undefined src (return null or empty div)
-  if (!src) return null;
+  // Handle undefined or non-string src (return null or empty div)
+  if (!src || typeof src !== 'string') return null;
   
   // Set desired aspect ratio (2:1 like Projects page), allowing overrides
   const imgWidth = width ? Number(width) : 600;
@@ -192,7 +192,7 @@ export const components: MDXComponents = {
   pre: ({ children, ...props }) => {
     const childrenArray = React.Children.toArray(children);
     // Check if the first child is a valid React element representing the <code> tag
-    const codeElement = React.isValidElement(childrenArray[0]) ? childrenArray[0] : null;
+    const codeElement = React.isValidElement<{ children?: string }>(childrenArray[0]) ? childrenArray[0] : null;
 
     // Ensure we have a valid code element with props and children
     if (!codeElement || !codeElement.props || !codeElement.props.children) {

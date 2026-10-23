@@ -48,8 +48,8 @@ function getMonthName(month: string): string {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: { params: { year: string, month: string } }): Promise<Metadata> {
-  const { year, month } = params;
+export async function generateMetadata({ params }: { params: Promise<{ year: string, month: string }> }): Promise<Metadata> {
+  const { year, month } = await params;
   const monthName = getMonthName(month);
   const websiteUrl = 'https://www.maxforsey.com';
   const canonicalUrl = `${websiteUrl}/blog/archive/${year}/${month}`;
@@ -74,8 +74,8 @@ export async function generateMetadata({ params }: { params: { year: string, mon
   };
 }
 
-export default function MonthArchivePage({ params }: { params: { year: string, month: string } }) {
-  const { year, month } = params;
+export default async function MonthArchivePage({ params }: { params: Promise<{ year: string, month: string }> }) {
+  const { year, month } = await params;
   
   // Get posts for the year and filter by month
   const yearPosts = getPostsByYear(year);

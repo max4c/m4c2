@@ -239,9 +239,11 @@ export default function DesignHero() {
   const dots = useRef<TrailDot[]>([]);
   const trailRaf = useRef(0);
   const hoveredRef = useRef(hoveredCard);
-  hoveredRef.current = hoveredCard;
   const modalRef = useRef(isModalOpen);
-  modalRef.current = isModalOpen;
+  useEffect(() => {
+    hoveredRef.current = hoveredCard;
+    modalRef.current = isModalOpen;
+  });
   const shapeIndex = useRef(0);
   const lastSpawn = useRef({ x: 0, y: 0 });
   const MIN_SPAWN_DIST = 50;
