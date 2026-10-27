@@ -409,7 +409,7 @@ export default function OrbitHero() {
             </Link>
             <h1 className={styles.title}>Max Forsey</h1>
             <p className={styles.tagline}>
-              Building a <a href="https://getdaso.com" className={styles.taglineLink}>computer</a> for curious kids.
+              Building a <a href="https://kale.computer" className={styles.taglineLink}>computer</a> for curious kids.
             </p>
           </div>
 
@@ -566,7 +566,7 @@ export default function OrbitHero() {
             </Link>
             <h1 className={styles.title}>Max Forsey</h1>
             <p className={styles.tagline}>
-              Building a <a href="https://getdaso.com" className={styles.taglineLink}>computer</a> for curious kids.
+              Building a <a href="https://kale.computer" className={styles.taglineLink}>computer</a> for curious kids.
             </p>
           </div>
         </div>

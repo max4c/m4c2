@@ -12,7 +12,7 @@ type Highlight = {
 };
 
 const highlights: Highlight[] = [
-  { text: "Founder and CEO of Daso", links: [{ url: "https://getdaso.com/", text: "Daso" }] },
+  { text: "Founder and CEO of Kale", links: [{ url: "https://kale.computer/", text: "Kale" }] },
   { text: "Led DevRel at Runpod", links: [{ url: "https://www.runpod.io/", text: "Runpod" }] },
   { text: "Currently in San Francisco", links: null },
   { text: "Researched Mechanistic Interpretability in the PCC Lab", links: null },
