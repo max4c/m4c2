@@ -39,3 +39,9 @@ next-env.d.ts
 
 # local agent config
 .claude/
+
+# Fitness local state and visual evidence
+.convex/
+.daso/
+.dev.vars*
+coverage/

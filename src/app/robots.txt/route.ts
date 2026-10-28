@@ -12,6 +12,9 @@ Sitemap: https://www.maxforsey.com/sitemap.xml
 # Private areas
 Disallow: /api/
 Disallow: /admin/
+Disallow: /fitness
+Disallow: /mcp/
+Disallow: /photos/
 `.trim();
 
   return new NextResponse(robotsTxt, {

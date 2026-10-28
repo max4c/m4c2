@@ -9,7 +9,7 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/**', 'node_modules/**', 'next-env.d.ts'],
+    ignores: ['.next/**', 'convex/_generated/**', '.daso/**', 'node_modules/**', 'next-env.d.ts'],
   },
 ];
 
