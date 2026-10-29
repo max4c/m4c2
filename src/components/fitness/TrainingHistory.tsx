@@ -41,7 +41,6 @@ export default function TrainingHistory({ data }: { data: Data }) {
     <section id="training" className="training-history">
       <div className="section-title">
         <h2>Training</h2>
-        <span>YOUR LOG</span>
       </div>
       <div className="two-col">
         <article className="panel">

@@ -132,39 +132,15 @@ export function Dashboard({ data }: { data: DashboardData }) {
       <header>
         <a className="brand" href="#overview">
           <span className="brand-mark">s.</span> Supermedium
-          <span className="brand-caption">PERSONAL FITNESS</span>
         </a>
-        <span className="live">
-          <i />{" "}
-          {process.env.NEXT_PUBLIC_FITNESS_TEST_DATA === "true"
-            ? "LOCAL TEST DATA"
-            : "LIVE FROM YOUR LOG"}
-        </span>
+        {process.env.NEXT_PUBLIC_FITNESS_TEST_DATA === "true" && (
+          <span className="live">Test data</span>
+        )}
       </header>
-      <section className="intro">
-        <div>
-          <p className="eyebrow">YOUR DAILY PICTURE</p>
-          <h1>Keep showing up.</h1>
-        </div>
-        <div className="date-block">
-          <span>
-            {new Date(today + "T12:00:00").toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </span>
-          <small>
-            {plan.timezone.replace("_", " ")}
-            <br />
-            This week · {periodStart(today, "week").slice(5)} — {today.slice(5)}
-          </small>
-        </div>
-      </section>
       <section id="overview" aria-label="This week">
         <div className="section-title">
-          <h2>This week</h2>
-          <span>THIS WEEK, SO FAR</span>
+          <h1>This week</h1>
+          <span>{periodStart(today, "week").slice(5)} – {today.slice(5)}</span>
         </div>
         <div className="score-grid">
           {[
@@ -174,7 +150,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
               unit: "sessions",
               target: `${plan.targets.liftsMin}–${plan.targets.liftsMax} per week`,
               pass: stats.lifts.pass,
-              caption: "Make room for strength.",
               max: plan.targets.liftsMin,
             },
             {
@@ -183,7 +158,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
               unit: "/ 7 days",
               target: `${plan.targets.movementDays} days per week`,
               pass: stats.movementDays.pass,
-              caption: "Easy days count, too.",
               max: plan.targets.movementDays,
             },
             {
@@ -192,20 +166,12 @@ export function Dashboard({ data }: { data: DashboardData }) {
               unit: "g avg",
               target: `${plan.targets.protein}g per day`,
               pass: stats.proteinAvg.pass,
-              caption: "Build on the basics.",
               max: plan.targets.protein,
             },
           ].map((s, i) => (
             <article className={`score score-${i}`} key={s.title}>
               <div className="score-label">
                 {s.title}
-                <span className={s.pass ? "badge pass" : "badge"}>
-                  {s.pass
-                    ? "MET"
-                    : i === 0 && s.value > plan.targets.liftsMax
-                      ? "ABOVE RANGE"
-                      : "BUILDING"}
-                </span>
               </div>
               <div className="big-number">
                 {s.value}
@@ -219,7 +185,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
                 />
               </div>
               <div className="score-bottom">
-                <span>{s.caption}</span>
                 <strong>{s.target}</strong>
               </div>
             </article>
@@ -230,7 +195,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
           <p>
             Week-to-date averages include unlogged days.{" "}
             {week.coverage.mealDays} of {week.elapsedDays} days have meal logs.
-            “Building” means the weekly target is not yet met.
           </p>
         </details>
       </section>
@@ -288,7 +252,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
             ) : (
               <Empty>
                 No weigh-ins yet.
-                <small>Log your weight when you’re ready.</small>
               </Empty>
             )}
           </article>
@@ -297,7 +260,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
       <section className="two-col">
         <article className="panel">
           <div className="panel-top">
-            <h3>Weekly rhythm</h3>
+            <h3>Weekly activity</h3>
             <span>LAST 8 WEEKS</span>
           </div>
           <div className="rhythm-key">
@@ -340,7 +303,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
         </article>
         <article className="panel">
           <div className="panel-top">
-            <h3>Muscle balance</h3>
+            <h3>Sets by muscle</h3>
             <span>HARD SETS / THIS WEEK</span>
           </div>
           <div className="muscles">
@@ -421,7 +384,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
         <article className="panel">
           <div className="panel-top">
             <h3>Progress photos</h3>
-            <span>MONTHLY CHECK-INS</span>
           </div>
           {data.photos.length ? (
             <div className="photos">
@@ -432,7 +394,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
           ) : (
             <Empty>
               No photos yet.
-              <small>Monthly progress photos will live here.</small>
             </Empty>
           )}
         </article>
@@ -440,7 +401,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
       <section id="history" className="panel meals">
         <div className="panel-top">
           <h3>Recent meals</h3>
-          <span>YOUR LAST 5 MEALS</span>
         </div>
         {recent.length ? (
           <div className="table-wrap">
@@ -488,7 +448,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
 
       <footer>
         <span>
-          Supermedium <span className="muted">/ just for you</span>
+          Supermedium
         </span>
         <button
           className="forget-device"
@@ -563,8 +523,7 @@ export default function FitnessApp() {
       <main className="gate">
         <span className="brand-mark">s.</span>
         <p className="eyebrow">SUPERMEDIUM</p>
-        <h1>Your progress. Your space.</h1>
-        <p>Sign in to your private training, nutrition, and progress log.</p>
+        <h1>Sign in</h1>
         <form
           onSubmit={async (event) => {
             event.preventDefault();

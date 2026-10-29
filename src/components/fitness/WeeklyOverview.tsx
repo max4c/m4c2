@@ -49,9 +49,6 @@ export default function WeeklyOverview({ data }: { data: Data }) {
     <section id="weekly" className="weekly-overview">
       <div className="section-title">
         <h2>Weekly</h2>
-        <span>
-          {week.end === data.today ? "WEEK TO DATE" : "WEEKLY REVIEW"}
-        </span>
       </div>
       <div className="week-picker">
         <button
@@ -65,7 +62,6 @@ export default function WeeklyOverview({ data }: { data: Data }) {
           <strong>
             {week.start} — {week.end}
           </strong>
-          <small>{week.elapsedDays} days · Monday start</small>
         </div>
         <button
           aria-label="Newer week"
@@ -87,7 +83,7 @@ export default function WeeklyOverview({ data }: { data: Data }) {
           <article className="panel weekly-metric" key={label}>
             <span>{label}</span>
             <strong>{value}</strong>
-            {prev !== null && <small>Last week: {prev}</small>}
+            {prev !== null && <small>Previous full week: {prev}</small>}
           </article>
         ))}
       </div>
