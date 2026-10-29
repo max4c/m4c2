@@ -42,7 +42,7 @@ try {
     ),
   );
   const list = await client.listTools();
-  assert.equal(list.tools.length, 15);
+  assert.equal(list.tools.length, 16);
   for (const [name, args] of [
     ["get_plan", {}],
     ["get_next_session", {}],

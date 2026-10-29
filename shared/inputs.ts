@@ -18,6 +18,18 @@ const stamp = {
       "Stable unique ID for retries of this same log; reuse only for identical content.",
     ),
 };
+export const deleteInput = z.object({
+  table: z.enum([
+    "meals",
+    "workouts",
+    "weights",
+    "supplements",
+    "steps",
+    "measurements",
+    "photos",
+  ]),
+  id: z.string().min(1),
+});
 export const mealInput = z.object({
   ...stamp,
   name: z.string().trim().min(1).max(200),

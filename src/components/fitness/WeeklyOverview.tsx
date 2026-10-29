@@ -90,7 +90,7 @@ export default function WeeklyOverview({ data }: { data: Data }) {
       <details className="metric-note">
         <summary>About these numbers</summary>
         <p>
-          Exercises counts each exercise once per workout; different exercises
+          Exercises counts each exercise once per lift date; unique exercises
           counts distinct names across the week. Steps logged on{" "}
           {week.coverage.stepDays} of {week.elapsedDays} days. Your usual steps:{" "}
           {number(week.stepsDetail.normalPrevious28Days)} per logged day across{" "}

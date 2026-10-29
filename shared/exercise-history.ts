@@ -1,10 +1,11 @@
 import { normalize, type Workout, type Plan } from "./model";
+import { liftSessions } from "./lift-sessions";
 export function exerciseHistory(workouts: Workout[], name: string, plan: Plan) {
   const mode =
     Object.values(plan.program)
       .flat()
       .find((e) => normalize(e.name) === normalize(name))?.mode ?? "weighted";
-  const sessions = workouts
+  const sessions = liftSessions(workouts)
     .filter((w) => w.kind === "lift")
     .flatMap((w) => {
       const sets = w.exercises

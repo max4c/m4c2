@@ -8,6 +8,7 @@ import {
   type Workout,
 } from "./model";
 export type HistoryWorkout = Workout & { deload?: boolean };
+import { liftSessions } from "./lift-sessions";
 export function nextSession(
   plan: Plan,
   next: "push" | "pull" | "upper",
@@ -15,9 +16,10 @@ export function nextSession(
   today: string,
   recoveryRemaining = 0,
 ) {
-  const lifts = workouts
-    .filter((w) => w.kind === "lift" && w.date <= today)
-    .sort((a, b) => b.date.localeCompare(a.date) || b.ts - a.ts);
+  const eligible = workouts.filter((w) => w.date <= today);
+  const lifts = liftSessions(eligible);
+  // Filter deload fragments before merging so they cannot contaminate the baseline.
+  const baselineLifts = liftSessions(eligible.filter((w) => !w.deload));
   const last = lifts[0];
   const gap = last ? daysBetween(last.date, today) : null;
   const reduced = recoveryRemaining > 0 || (gap !== null && gap > 14);
@@ -80,7 +82,7 @@ export function nextSession(
           .map((e) => ({ date: w.date, sets: e.sets })),
       );
     const actual = find(lifts)[0] ?? null;
-    const baseline = find(lifts.filter((w) => !w.deload))[0] ?? null;
+    const baseline = find(baselineLifts)[0] ?? null;
     const hit =
       baseline &&
       baseline.sets.length >= p.sets &&
@@ -171,7 +173,7 @@ export function summarize(
     weights = data.weights
       .filter(within)
       .sort((a, b) => a.date.localeCompare(b.date) || a.ts - b.ts);
-  const lifts = workouts.filter((w) => w.kind === "lift").length;
+  const lifts = liftSessions(workouts).length;
   const movement = new Set([
     ...workouts.map((w) => w.date),
     ...steps.filter((s) => s.count > 0).map((s) => s.date),
@@ -191,7 +193,7 @@ export function summarize(
     (w) => w.kind === "lift" && w.intensity === "hard",
   ))
     for (const e of w.exercises) hardSets[muscle(e.name)] += e.sets.length;
-  const liftRows = workouts.filter((w) => w.kind === "lift");
+  const liftRows = liftSessions(workouts);
   const cardio = workouts.filter((w) => w.kind === "cardio");
   const exerciseNames = [
     ...new Set(

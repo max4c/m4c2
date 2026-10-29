@@ -110,6 +110,15 @@ Live production password sign-in, Secure/HttpOnly cookie, anonymous-data rejecti
 
 ## Weekly overview
 
-The Weekly phone tab supports all recorded weeks, with previous-week context. It includes lifting sessions, exercise occurrences (once per exercise per workout), distinct exercises, sets, easy/hard cardio sessions and their activities, movement days, total steps and average logged-day steps, meal counts, calories/macros, meal quality, supplements by item, weight check-ins and averages, tape measurements, photos, and hard sets by muscle.
+The Weekly phone tab supports all recorded weeks, with previous-week context. It includes lifting sessions, exercise occurrences (once per exercise per lift date), distinct exercises, sets, easy/hard cardio sessions and their activities, movement days, total steps and average logged-day steps, meal counts, calories/macros, meal quality, supplements by item, weight check-ins and averages, tape measurements, photos, and hard sets by muscle.
 
 Normal steps means average logged-day steps in the 28 days before the selected week, with baseline coverage shown. Missing steps/nutrition produce null logged-day averages; explicit zero-step days count. Existing top-level proteinAvg/calorieAvg/stepsAvg fields retain elapsed-calendar-day denominators. get_summary exposes the same expanded metrics to chat clients. The current partial week is labeled and prior-week comparisons explicitly cover the full prior week.
+
+
+## Split sessions and deletion
+
+Lift totals count distinct logged dates. Same-date lifting rows are merged by normalized exercise name, with sets concatenated in timestamp order, for progression and exercise history. Deload rows remain visible in history but are excluded from the progression baseline before merging. Movement/streak/rest advisories count dates.
+
+Rotation advances at most once per date and normalized Push/Pull/Upper label. Persistent advancement markers survive row deletion; deletion never rewinds rotation. Existing same-date valid rows also prevent a duplicate advancement.
+
+`delete_entry(table, id)` deletes one logged row. Query first to confirm `_id`, or use a log result's `id`. Only the seven logging tables are allowed, IDs must belong to the selected table, and the service token is required. Repeating deletion returns `deleted: false`. Deleting a photo entry removes its database row, not the R2 object. Refresh connector tools to discover `delete_entry` (16 tools total).

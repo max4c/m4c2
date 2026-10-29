@@ -35,7 +35,7 @@ await client.connect(
   new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers } }),
 );
 const list = await client.listTools();
-assert.equal(list.tools.length, 14);
+assert.equal(list.tools.length, 16);
 assert(list.tools.every((t) => t.description.includes("source of truth")));
 async function call(name, args = {}) {
   const r = await client.callTool({ name, arguments: args });

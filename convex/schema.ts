@@ -36,6 +36,10 @@ export const planFields = {
   bedtimeHour: v.number(),
 };
 export default defineSchema({
+  rotationAdvances: defineTable({ date: v.string(), label: v.string() }).index(
+    "by_date_label",
+    ["date", "label"],
+  ),
   loginAttempts: defineTable({
     client: v.string(),
     windowStart: v.number(),
@@ -86,6 +90,7 @@ export default defineSchema({
     "date",
   ]),
   state: defineTable({
+    lastLift: v.optional(v.object({ date: v.string(), ts: v.number() })),
     rotation: v.object({
       next: v.union(v.literal("push"), v.literal("pull"), v.literal("upper")),
     }),

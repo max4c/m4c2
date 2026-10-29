@@ -28,6 +28,7 @@ import {
   measurementsInput,
   planPatch,
   queryInput,
+  deleteInput,
 } from "../shared/inputs";
 import { z } from "zod";
 const auth = { token: v.string() };
@@ -184,12 +185,19 @@ async function saveLog(
     const { requestId: _, ...p } = workoutInput.parse(raw);
     const w = { ...p, ...stamp(p, plan.timezone) };
     const state = await readState(ctx);
-    const last = await ctx.db
+    const lastRow = await ctx.db
       .query("workouts")
       .withIndex("by_date_ts")
       .order("desc")
       .filter((q) => q.eq(q.field("kind"), "lift"))
       .first();
+    const last = [lastRow, state.lastLift]
+      .filter((x) => x != null)
+      .sort((a, b) => b.date.localeCompare(a.date) || b.ts - a.ts)[0];
+    const sameDay = await ctx.db
+      .query("workouts")
+      .withIndex("by_date", (q) => q.eq("date", w.date))
+      .collect();
     // Backfilled entries remain historical and never rewind the live rotation.
     const current =
       !last || w.date > last.date || (w.date === last.date && w.ts >= last.ts);
@@ -204,16 +212,42 @@ async function saveLog(
       remaining = 3;
       recoveryDays = ["push", "pull", "upper"];
     }
-    const deload = current && remaining > 0 && w.kind === "lift";
+    const deload =
+      w.kind === "lift" &&
+      ((current && remaining > 0) ||
+        sameDay.some((row) => row.kind === "lift" && row.deload));
     id = await ctx.db.insert("workouts", { ...w, deload });
     if (current && w.kind === "lift") {
       const r = rotationLabel(w.label);
-      advanced = validRotation(w) && r.success;
+      if (validRotation(w) && r.success) {
+        const marker = await ctx.db
+          .query("rotationAdvances")
+          .withIndex("by_date_label", (q) =>
+            q.eq("date", w.date).eq("label", r.data),
+          )
+          .unique();
+        const alreadyLogged = sameDay.some((row) => {
+          const label = rotationLabel(row.label);
+          return (
+            row._id !== id &&
+            validRotation(row) &&
+            label.success &&
+            label.data === r.data
+          );
+        });
+        advanced = !marker && !alreadyLogged;
+        if (!marker)
+          await ctx.db.insert("rotationAdvances", {
+            date: w.date,
+            label: r.data,
+          });
+      }
       if (advanced && r.success && recoveryDays.includes(r.data)) {
         recoveryDays = recoveryDays.filter((day) => day !== r.data);
         remaining = recoveryDays.length;
       }
       await ctx.db.patch(state._id, {
+        lastLift: { date: w.date, ts: w.ts },
         rotation:
           advanced && r.success
             ? { next: nextRotation(r.data) }
@@ -257,7 +291,7 @@ export const get_next_session = query({
       .query("workouts")
       .withIndex("by_date_ts")
       .order("desc")
-      .take(1000);
+      .collect();
     return nextSession(
       plan,
       state.rotation.next,
@@ -369,6 +403,53 @@ export const query_entries = query({
         ),
       ),
     };
+  },
+});
+export const delete_entry = mutation({
+  args: { ...auth, input: v.any() },
+  handler: async (ctx, { token, input }) => {
+    requireToken(token);
+    const { table, id } = deleteInput.parse(input);
+    const rowId = ctx.db.normalizeId(table, id);
+    if (!rowId) throw new Error("ID does not belong to the requested table");
+    const row = await ctx.db.get(rowId);
+    if (!row) return { id, deleted: false };
+    // Retain the advancement marker even when deleting a pre-marker workout.
+    if (table === "workouts") {
+      const workoutId = ctx.db.normalizeId("workouts", id)!;
+      const workout = await ctx.db.get(workoutId);
+      if (workout?.kind === "lift") {
+        const state = await readState(ctx);
+        const last = state.lastLift;
+        if (
+          !last ||
+          workout.date > last.date ||
+          (workout.date === last.date && workout.ts > last.ts)
+        ) {
+          await ctx.db.patch(state._id, {
+            lastLift: { date: workout.date, ts: workout.ts },
+          });
+        }
+      }
+      if (workout && validRotation(workout)) {
+        const label = rotationLabel(workout.label);
+        if (label.success) {
+          const marker = await ctx.db
+            .query("rotationAdvances")
+            .withIndex("by_date_label", (q) =>
+              q.eq("date", workout.date).eq("label", label.data),
+            )
+            .unique();
+          if (!marker)
+            await ctx.db.insert("rotationAdvances", {
+              date: workout.date,
+              label: label.data,
+            });
+        }
+      }
+    }
+    await ctx.db.delete(rowId);
+    return { id, deleted: true };
   },
 });
 export const add_photo = mutation({

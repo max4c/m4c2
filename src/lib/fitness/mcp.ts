@@ -16,6 +16,7 @@ import {
   measurementsInput,
   planPatch,
   queryInput,
+  deleteInput,
 } from "../../../shared/inputs";
 import { foodInput, lookupFood } from "./food";
 const truth =
@@ -70,8 +71,12 @@ export function createServer(env: Secrets) {
         inputSchema: schema as z.ZodObject,
         annotations: {
           readOnlyHint: readOnly,
-          destructiveHint: name === "update_plan" || name === "log_steps",
-          idempotentHint: readOnly || name === "log_steps",
+          destructiveHint:
+            name === "update_plan" ||
+            name === "log_steps" ||
+            name === "delete_entry",
+          idempotentHint:
+            readOnly || name === "log_steps" || name === "delete_entry",
           openWorldHint: name === "lookup_food" || name === "upload_photo_url",
         },
       },
@@ -115,7 +120,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "log_workout",
-    "Record a completed lift or cardio session. Weights w are lb, r reps (seconds for hangs, metres for carries). Cardio exercises must be empty. Require actual performed sets before logging rotation sessions. Push/Pull/Upper with sets advances rotation atomically; Legs/cardio/empty lifts do not. Classify HIIT and hard sport as hard, easy jogs as easy. Use a stable requestId for retries.",
+    "Record a completed lift or cardio session. Weights w are lb, r reps (seconds for hangs, metres for carries). Cardio exercises must be empty. Require actual performed sets before logging rotation sessions. Same-date lift rows form one session; live-log fragments are allowed. Push/Pull/Upper with sets advances rotation atomically once per date and normalized label, even after deletion; Legs/cardio/empty lifts do not. Classify HIIT and hard sport as hard, easy jogs as easy. Use a stable requestId for retries.",
     workoutInput,
     false,
     (p) =>
@@ -182,7 +187,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "get_next_session",
-    "Call when asked what to lift today. Returns next rotation session, each exercise’s actual previous sets and double-progression aims, plus legs, rest, hard-cardio and neutral re-entry advisories. Never turn gaps into failures or ask to backfill.",
+    "Call when asked what to lift today. Returns next rotation session, each exercise’s actual previous sets and double-progression aims from same-date lift rows merged by exercise (sets concatenated in timestamp order), plus legs, rest, hard-cardio and neutral re-entry advisories. Never turn gaps into failures or ask to backfill.",
     z.object({}),
     true,
     () => db.query(api.fitness.get_next_session, auth),
@@ -196,7 +201,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "get_summary",
-    "Read day, calendar week, or calendar month totals ending at asOf (YYYY-MM-DD; defaults today). For last week use the previous Sunday; for a particular day use period day and asOf. Call for progress reviews. Week leads with THE THREE NUMBERS pass/fail: lifts 4–5, movement 6/7, protein average 150g, using live targets. Averages include elapsed unlogged days; explain coverage and partial weeks. Includes exercise/session/set counts, easy/hard cardio sessions, muscle sets, nutrition and logged-day averages, steps and a preceding-28-day logged-day baseline, supplements by item, weight, tape measurements and photo counts. Missing logs are not zero activity.",
+    "Read day, calendar week, or calendar month totals ending at asOf (YYYY-MM-DD; defaults today). For last week use the previous Sunday; for a particular day use period day and asOf. Call for progress reviews. Lifts count distinct dates with a lift row, never rows. Same-date lift fragments count as one session; exercise occurrences count once per exercise per lift date. Movement and rest/streak advisories count distinct dates. Week leads with THE THREE NUMBERS pass/fail: lifts 4–5, movement 6/7, protein average 150g, using live targets. Averages include elapsed unlogged days; explain coverage and partial weeks. Includes exercise/session/set counts, easy/hard cardio sessions, muscle sets, nutrition and logged-day averages, steps and a preceding-28-day logged-day baseline, supplements by item, weight, tape measurements and photo counts. Missing logs are not zero activity.",
     z.object({
       period: z.enum(["day", "week", "month"]),
       asOf: z
@@ -209,7 +214,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "get_exercise_history",
-    "Read every logged session for one exercise, heaviest set with reps, best reps at each load, best session volume and lifetime volume (lb × reps, weighted exercises only). Match the exercise name from get_plan or query_entries; do not invent PRs or combine differently named exercises. Timed r is seconds; carry r is metres.",
+    "Read every logged session for one exercise, merging all same-date lift rows and concatenating that exercise’s sets, heaviest set with reps, best reps at each load, best session volume and lifetime volume (lb × reps, weighted exercises only). Match the exercise name from get_plan or query_entries; do not invent PRs or combine differently named exercises. Timed r is seconds; carry r is metres.",
     z.object({ name: z.string().min(1).max(160) }),
     true,
     (p) => db.query(api.fitness.get_exercise_history, { ...auth, ...p }),
@@ -223,10 +228,17 @@ export function createServer(env: Secrets) {
   );
   register(
     "query_entries",
-    "Read raw logged rows for ad hoc analysis or to check whether a write succeeded. Dates inclusive. Filters are exact case-insensitive equality; apply only fields valid for the table. Pagination happens before filters: follow continueCursor until isDone even if a page is empty.",
+    "Read raw logged rows with _id (usable as delete_entry id) for ad hoc analysis or to check whether a write succeeded. Dates inclusive. Filters are exact case-insensitive equality; apply only fields valid for the table. Pagination happens before filters: follow continueCursor until isDone even if a page is empty.",
     queryInput,
     true,
     (p) => db.query(api.fitness.query_entries, { ...auth, input: p }),
+  );
+  register(
+    "delete_entry",
+    "Delete one logged row by id; use for duplicates or mistaken logs. Query first to confirm the id. Use _id from query_entries or id from a log result. Deleting a workout never rewinds rotation; same-date/label advancement remains consumed. Deleting a photo row does not delete its stored image.",
+    deleteInput,
+    false,
+    (p) => db.mutation(api.fitness.delete_entry, { ...auth, input: p }),
   );
   register(
     "lookup_food",
