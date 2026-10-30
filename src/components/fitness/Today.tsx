@@ -43,6 +43,53 @@ export default function Today({ data }: { data: Data }) {
           })}
         </span>
       </div>
+      <section className="panel">
+        <div className="panel-top">
+          <h2>
+            Next · <span className="session-label">{next.next}</span>
+          </h2>
+        </div>
+        {next.exercises.map((e) => {
+          return (
+            <div className="today-exercise" key={e.name}>
+              <strong>{e.name}</strong>
+              <span>{setsLabel(e.aims, e.mode ?? "weighted")}</span>
+              {e.last && (
+                <small>
+                  Last {e.last.date.slice(5)}:{" "}
+                  {setsLabel(e.last.sets, e.mode ?? "weighted")}
+                </small>
+              )}
+            </div>
+          );
+        })}
+        <details className="metric-note">
+          <summary>Goals & program</summary>
+          <p>{data.plan.rationale}</p>
+          <p>
+            Push → Pull → Upper · {data.plan.targets.liftsMin}–
+            {data.plan.targets.liftsMax} lifts per week. The rotation continues
+            across weeks; workouts are not assigned to weekdays. Add the legs
+            block once a week.
+          </p>
+          {Object.entries(data.plan.program).map(([day, exercises]) => (
+            <div key={day}>
+              <h3 className="session-label">{day}</h3>
+              <p>
+                {exercises.map((e) => `${e.name} · ${e.sets} sets`).join("; ")}
+              </p>
+            </div>
+          ))}
+        </details>
+        {next.flags.length > 0 && (
+          <details className="metric-note">
+            <summary>Session notes</summary>
+            {next.flags.map((flag) => (
+              <p key={flag}>{flag}</p>
+            ))}
+          </details>
+        )}
+      </section>
       <section className="today-numbers" aria-label="Today's totals">
         <div>
           <span>Calories</span>
@@ -75,35 +122,6 @@ export default function Today({ data }: { data: Data }) {
         today={data.today}
         timezone={data.plan.timezone}
       />
-      <section className="panel">
-        <div className="panel-top">
-          <h2>
-            Next · <span className="session-label">{next.next}</span>
-          </h2>
-        </div>
-        {next.exercises.map((e) => {
-          return (
-            <div className="today-exercise" key={e.name}>
-              <strong>{e.name}</strong>
-              <span>{setsLabel(e.aims, e.mode ?? "weighted")}</span>
-              {e.last && (
-                <small>
-                  Last {e.last.date.slice(5)}:{" "}
-                  {setsLabel(e.last.sets, e.mode ?? "weighted")}
-                </small>
-              )}
-            </div>
-          );
-        })}
-        {next.flags.length > 0 && (
-          <details className="metric-note">
-            <summary>Session notes</summary>
-            {next.flags.map((flag) => (
-              <p key={flag}>{flag}</p>
-            ))}
-          </details>
-        )}
-      </section>
       <section className="panel">
         <h2>Logged today</h2>
         {!workouts.length && !meals.length && (
