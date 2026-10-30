@@ -5,6 +5,9 @@ import {
   nonnegative,
   planExerciseSchema,
   targetsSchema,
+  rotationOrderSchema,
+  scheduleSchema,
+  rulesSchema,
 } from "./model";
 const stamp = {
   date: dateSchema.optional(),
@@ -84,6 +87,9 @@ export const planPatch = z.object({
     .optional(),
   targets: targetsSchema.partial().optional(),
   goals: z.array(z.string().min(1).max(500)).max(10).optional(),
+  rotation: rotationOrderSchema.optional(),
+  schedule: scheduleSchema.optional(),
+  rules: rulesSchema.optional(),
   rationale: z.string().min(1).max(10000).optional(),
   timezone: z.string().optional(),
   bedtimeHour: z.number().int().min(0).max(23).optional(),

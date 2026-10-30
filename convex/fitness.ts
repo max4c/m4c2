@@ -13,6 +13,7 @@ import {
   addDays,
   daysBetween,
   nextRotation,
+  rotationOrder,
   rotationLabel,
   validRotation,
   periodStart,
@@ -110,6 +111,22 @@ export const update_plan = mutation({
       targets: { ...old.targets, ...p.targets },
     });
     await ctx.db.replace(old._id, merged);
+    const state = await readState(ctx);
+    if (!rotationOrder(merged).includes(state.rotation.next))
+      await ctx.db.patch(state._id, {
+        rotation: { next: rotationOrder(merged)[0] },
+      });
+    if (p.rotation && state.recoveryRemaining > 0) {
+      // Keep only pending days that can still be logged in the new rotation.
+      // Newly added days join the next recovery cycle, not one already in progress.
+      const recoveryDays = (state.recoveryDays ?? rotationOrder(old)).filter(
+        (day) => rotationOrder(merged).includes(day),
+      );
+      await ctx.db.patch(state._id, {
+        recoveryDays,
+        recoveryRemaining: recoveryDays.length,
+      });
+    }
     return merged;
   },
 });
@@ -209,8 +226,8 @@ async function saveLog(
       last &&
       daysBetween(last.date, w.date) > 14
     ) {
-      remaining = 3;
-      recoveryDays = ["push", "pull", "upper"];
+      recoveryDays = rotationOrder(plan);
+      remaining = recoveryDays.length;
     }
     const deload =
       w.kind === "lift" &&
@@ -219,7 +236,7 @@ async function saveLog(
     id = await ctx.db.insert("workouts", { ...w, deload });
     if (current && w.kind === "lift") {
       const r = rotationLabel(w.label);
-      if (validRotation(w) && r.success) {
+      if (validRotation(w, rotationOrder(plan)) && r.success) {
         const marker = await ctx.db
           .query("rotationAdvances")
           .withIndex("by_date_label", (q) =>
@@ -230,7 +247,7 @@ async function saveLog(
           const label = rotationLabel(row.label);
           return (
             row._id !== id &&
-            validRotation(row) &&
+            validRotation(row, rotationOrder(plan)) &&
             label.success &&
             label.data === r.data
           );
@@ -250,7 +267,7 @@ async function saveLog(
         lastLift: { date: w.date, ts: w.ts },
         rotation:
           advanced && r.success
-            ? { next: nextRotation(r.data) }
+            ? { next: nextRotation(r.data, rotationOrder(plan)) }
             : state.rotation,
         recoveryRemaining: remaining,
         recoveryDays,
@@ -431,7 +448,10 @@ export const delete_entry = mutation({
           });
         }
       }
-      if (workout && validRotation(workout)) {
+      if (
+        workout &&
+        validRotation(workout, rotationOrder(await readPlan(ctx)))
+      ) {
         const label = rotationLabel(workout.label);
         if (label.success) {
           const marker = await ctx.db

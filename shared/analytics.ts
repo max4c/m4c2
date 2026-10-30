@@ -6,17 +6,24 @@ import {
   periodStart,
   type Plan,
   type Workout,
+  type Rotation,
+  rotationOrder,
 } from "./model";
+import { canonicalWorkouts } from "./training";
+import { exerciseAims } from "./progression";
 export type HistoryWorkout = Workout & { deload?: boolean };
 import { liftSessions } from "./lift-sessions";
 export function nextSession(
   plan: Plan,
-  next: "push" | "pull" | "upper",
+  next: Rotation,
   workouts: HistoryWorkout[],
   today: string,
   recoveryRemaining = 0,
 ) {
-  const eligible = workouts.filter((w) => w.date <= today);
+  const eligible = canonicalWorkouts(
+    workouts.filter((w) => w.date <= today),
+    plan,
+  );
   const lifts = liftSessions(eligible);
   // Filter deload fragments before merging so they cannot contaminate the baseline.
   const baselineLifts = liftSessions(eligible.filter((w) => !w.deload));
@@ -25,6 +32,7 @@ export function nextSession(
   const reduced = recoveryRemaining > 0 || (gap !== null && gap > 14);
   const flags: string[] = [];
   if (
+    !rotationOrder(plan).includes("legs") &&
     !lifts.some(
       (w) =>
         w.date > addDays(today, -7) &&
@@ -66,7 +74,7 @@ export function nextSession(
     );
   if (reduced)
     flags.push(
-      `Re-entry: ${gap !== null && gap > 14 ? `${gap} days since the last lift. ` : ""}Use approximately 10% lighter weighted aims for ${recoveryRemaining || 3} rotation sessions, then resume. First cardio back short and easy. Nothing to backfill.`,
+      `Re-entry: ${gap !== null && gap > 14 ? `${gap} days since the last lift. ` : ""}Use approximately 10% lighter weighted aims for ${recoveryRemaining || rotationOrder(plan).length} rotation sessions, then resume. First cardio back short and easy. Nothing to backfill.`,
     );
   else if (gap !== null && gap >= 7)
     flags.push(
@@ -83,43 +91,11 @@ export function nextSession(
       );
     const actual = find(lifts)[0] ?? null;
     const baseline = find(baselineLifts)[0] ?? null;
-    const hit =
-      baseline &&
-      baseline.sets.length >= p.sets &&
-      baseline.sets.every((s) => s.r >= 12);
-    const aims = Array.from({ length: p.sets }, (_, i) => {
-      const s = baseline?.sets[i] ?? baseline?.sets.at(-1);
-      if (!s)
-        return {
-          w: null,
-          r: p.mode === "timed" || p.mode === "carry" ? null : 8,
-        };
-      if (p.mode === "timed" || p.mode === "carry")
-        return { w: reduced ? Math.round(s.w * 0.9 * 10) / 10 : s.w, r: s.r };
-      if (p.mode === "bodyweight")
-        return {
-          w: s.w,
-          r: reduced ? Math.max(1, Math.round(s.r * 0.9)) : s.r + 1,
-        };
-      return {
-        w: Math.round((s.w + (hit ? 5 : 0)) * (reduced ? 0.9 : 1) * 10) / 10,
-        r: hit ? 8 : Math.min(12, s.r + 1),
-      };
-    });
     return {
       ...p,
       last: actual,
       progressionBaseline: baseline,
-      aims,
-      note: !baseline
-        ? "No history: choose a comfortable starting load and record actuals."
-        : p.mode === "timed"
-          ? "r is seconds; repeat last duration."
-          : p.mode === "carry"
-            ? "r is distance in metres; repeat last distance."
-            : p.mode === "bodyweight"
-              ? "Add one rep per set."
-              : "8–12 reps; add 5 lb only when all prescribed sets reach 12, then reset to 8.",
+      ...exerciseAims(p, baseline, reduced),
     };
   });
   return {
@@ -127,7 +103,9 @@ export function nextSession(
     exercises,
     flags,
     reduced,
-    recoveryRemaining: reduced ? recoveryRemaining || 3 : 0,
+    recoveryRemaining: reduced
+      ? recoveryRemaining || rotationOrder(plan).length
+      : 0,
     legsBlock: plan.program.legs,
   };
 }
@@ -187,6 +165,7 @@ export function summarize(
     chest: 0,
     back: 0,
     legs: 0,
+    abs: 0,
     unmapped: 0,
   };
   for (const w of workouts.filter(

@@ -29,21 +29,21 @@ Private dashboard and MCP links are saved locally in ignored `.vercel/fitness-li
 
 Keep existing Vercel environment variables, including newsletter/analytics settings. Add these to the same project's production environment:
 
-| Variable | Purpose |
-| --- | --- |
-| `FITNESS_APP_HOST` | Confirmed app hostname, no scheme/path |
-| `DASHBOARD_ORIGIN` | `https://` + that hostname |
-| `NEXT_PUBLIC_CONVEX_URL` | Production Convex URL; available at build time |
-| `CONVEX_URL` | Same production Convex URL for server tools |
-| `CONVEX_SERVICE_TOKEN` | Separate random write credential, at least 32 characters |
-| `MCP_PATH_TOKEN` | Random connector URL token, at least 32 characters |
-| `DASHBOARD_TOKEN` | Server-only Convex read credential, at least 32 characters |
-| `SUPERMEDIUM_PASSWORD_HASH` | scrypt salt:hex-hash for dashboard sign-in |
-| `SUPERMEDIUM_SESSION_SECRET` | Random session signing secret, at least 32 characters |
-| `R2_ACCOUNT_ID` | Existing Cloudflare account for progress-photo storage |
-| `R2_BUCKET` | Private bucket name; defaults to supermedium-progress |
-| `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Bucket-scoped R2 object credentials |
-| `USDA_API_KEY` | FoodData Central API key |
+| Variable                                   | Purpose                                                    |
+| ------------------------------------------ | ---------------------------------------------------------- |
+| `FITNESS_APP_HOST`                         | Confirmed app hostname, no scheme/path                     |
+| `DASHBOARD_ORIGIN`                         | `https://` + that hostname                                 |
+| `NEXT_PUBLIC_CONVEX_URL`                   | Production Convex URL; available at build time             |
+| `CONVEX_URL`                               | Same production Convex URL for server tools                |
+| `CONVEX_SERVICE_TOKEN`                     | Separate random write credential, at least 32 characters   |
+| `MCP_PATH_TOKEN`                           | Random connector URL token, at least 32 characters         |
+| `DASHBOARD_TOKEN`                          | Server-only Convex read credential, at least 32 characters |
+| `SUPERMEDIUM_PASSWORD_HASH`                | scrypt salt:hex-hash for dashboard sign-in                 |
+| `SUPERMEDIUM_SESSION_SECRET`               | Random session signing secret, at least 32 characters      |
+| `R2_ACCOUNT_ID`                            | Existing Cloudflare account for progress-photo storage     |
+| `R2_BUCKET`                                | Private bucket name; defaults to supermedium-progress      |
+| `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Bucket-scoped R2 object credentials                        |
+| `USDA_API_KEY`                             | FoodData Central API key                                   |
 
 Never set `NEXT_PUBLIC_FITNESS_TEST_DATA=true` in production or use the anonymous local Convex deployment. No token should have a `NEXT_PUBLIC_` prefix. No Cloudflare Worker or Pages project is needed: Next.js serves the MCP transport and signs R2 PUT/GET requests directly. R2 remains the requested photo store, and Convex remains the requested database.
 
@@ -114,7 +114,6 @@ The Weekly phone tab supports all recorded weeks, with previous-week context. It
 
 Normal steps means average logged-day steps in the 28 days before the selected week, with baseline coverage shown. Missing steps/nutrition produce null logged-day averages; explicit zero-step days count. Existing top-level proteinAvg/calorieAvg/stepsAvg fields retain elapsed-calendar-day denominators. get_summary exposes the same expanded metrics to chat clients. The current partial week is labeled and prior-week comparisons explicitly cover the full prior week.
 
-
 ## Split sessions and deletion
 
 Lift totals count distinct logged dates. Same-date lifting rows are merged by normalized exercise name, with sets concatenated in timestamp order, for progression and exercise history. Deload rows remain visible in history but are excluded from the progression baseline before merging. Movement/streak/rest advisories count dates.
@@ -122,3 +121,13 @@ Lift totals count distinct logged dates. Same-date lifting rows are merged by no
 Rotation advances at most once per date and normalized Push/Pull/Upper label. Persistent advancement markers survive row deletion; deletion never rewinds rotation. Existing same-date valid rows also prevent a duplicate advancement.
 
 `delete_entry(table, id)` deletes one logged row. Query first to confirm `_id`, or use a log result's `id`. Only the seven logging tables are allowed, IDs must belong to the selected table, and the service token is required. Repeating deletion returns `deleted: false`. Deleting a photo entry removes its database row, not the R2 object. Refresh connector tools to discover `delete_entry` (16 tools total).
+
+## October 30 routine and rest timer
+
+The user-approved plan is applied from `shared/routine-october.ts` using `node scripts/fitness/apply-october-routine.mjs` (local) or `--production` (explicit existing production deployment). The script backs up the previous plan under ignored `.vercel`, changes only program/rotation/schedule/rules/rationale, and verifies goals, targets and next session are preserved. To roll back the initial update, use the backed-up program/rationale with rotation `["push","pull","upper"]`, schedule `[]` and rules `[]` through `update_plan`; do not alter workout rows or advancement markers. Reconcile the next rotation explicitly if workouts were logged after migration.
+
+The intended week is Mon Push, Tue Pull, Wed HIIT, Thu Upper, Fri Legs, Sat soccer, Sun easy jog/rest. Lifting follows Push → Pull → Upper → Legs even when weekdays move. Cardio never advances it. Legs is a full session now. The extra-day policy and effort/warm-up/superset rules are saved in the plan, returned to chat clients, and visible under Routine → Session rules.
+
+Exercise prescriptions carry rep ranges, rest durations, categories, optional superset groups, added-load conventions and progression policies. Double progression uses each exercise's range. Unknown equipment increments produce a load-selection instruction instead of an invented numeric increase. Sets below a new range request a lighter load. Heavy 4–6-rep pull-ups have separate history from Pull-day pull-ups. Explicit aliases preserve renamed dip/raise/carry histories without rewriting logs. Jumps prioritize quality, bodyweight abs progress reps, and carries use metres. Legacy plans still parse with their prior defaults.
+
+Rest controls appear in Today and Routine. Only the second exercise of the arm superset offers the pair timer. One local timer persists across navigation/reload using a wall-clock deadline, with +30s and cancel. It catches up after browser suspension. A completion tone requires an active audio context and visible app; there is no promised iPhone lock-screen alarm or background notification. Timer controls do not log sets.

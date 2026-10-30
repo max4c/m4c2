@@ -1,5 +1,8 @@
 "use client";
 import type { FunctionReturnType } from "convex/server";
+import { RestButton } from "./RestTimer";
+import { prescription } from "../../../shared/training";
+import { rotationOrder } from "../../../shared/model";
 import Sleep from "./Sleep";
 import type { SleepData } from "../../../shared/sleep";
 import { api } from "../../../convex/_generated/api";
@@ -21,6 +24,8 @@ function setsLabel(
   if (!first) return "No sets";
   if (sets.every((s) => s.w === first.w && s.r === first.r))
     return `${sets.length} sets${first.r === null ? "" : ` × ${first.r} ${unit}`} · ${load(first.w)}`;
+  if (sets.every((s) => s.w === first.w))
+    return `${load(first.w)} × ${sets.map((s) => s.r ?? "—").join(", ")} ${unit}`;
   return sets.map((s) => `${load(s.w)} × ${s.r ?? "—"} ${unit}`).join(" · ");
 }
 export default function Today({ data }: { data: Data }) {
@@ -52,17 +57,29 @@ export default function Today({ data }: { data: Data }) {
             Routine →
           </a>
         </div>
-        {next.exercises.map((e) => {
+        {next.exercises.map((e, i, list) => {
+          const pairedWith =
+            e.superset && list[i + 1]?.superset === e.superset
+              ? list[i + 1].name
+              : undefined;
           return (
             <div className="today-exercise" key={e.name}>
-              <strong>{e.name}</strong>
-              <span>{setsLabel(e.aims, e.mode ?? "weighted")}</span>
+              <div className="exercise-heading">
+                <strong>{e.name}</strong>
+                <small>{prescription(e)}</small>
+              </div>
+              <div className="set-comparison">
+                <span>Target</span>
+                <strong>{setsLabel(e.aims, e.mode ?? "weighted")}</strong>
+              </div>
               {e.last && (
-                <small>
-                  Last {e.last.date.slice(5)}:{" "}
-                  {setsLabel(e.last.sets, e.mode ?? "weighted")}
-                </small>
+                <div className="set-comparison previous">
+                  <span>Last {e.last.date.slice(5)}</span>
+                  <span>{setsLabel(e.last.sets, e.mode ?? "weighted")}</span>
+                </div>
               )}
+              {e.loadInstruction && <small>{e.loadInstruction}</small>}
+              <RestButton exercise={e} pairedWith={pairedWith} />
             </div>
           );
         })}
@@ -75,10 +92,12 @@ export default function Today({ data }: { data: Data }) {
           </ul>
           <a href="#goals">View goals</a>
           <p>
-            Push → Pull → Upper · {data.plan.targets.liftsMin}–
-            {data.plan.targets.liftsMax} lifts per week. The rotation continues
-            across weeks; workouts are not assigned to weekdays. Add the legs
-            block once a week.
+            <span className="session-label">
+              {rotationOrder(data.plan).join(" → ")}
+            </span>{" "}
+            · {data.plan.targets.liftsMin}–{data.plan.targets.liftsMax} lifts
+            per week. Continue the sequence when a planned day moves. Cardio
+            does not advance it.
           </p>
         </details>
         {next.flags.length > 0 && (

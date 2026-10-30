@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
 import FloatingNav, { type DashboardView } from "./FloatingNav";
+import { RestTimerProvider } from "./RestTimer";
 import Today from "./Today";
 import Goals from "./Goals";
 import Routine from "./Routine";
@@ -113,6 +114,13 @@ function Photo({ photo }: { photo: DashboardData["photos"][number] }) {
   );
 }
 export function Dashboard({ data }: { data: DashboardData }) {
+  return (
+    <RestTimerProvider>
+      <DashboardContent data={data} />
+    </RestTimerProvider>
+  );
+}
+function DashboardContent({ data }: { data: DashboardData }) {
   const { plan, today, week } = data;
   const [view, setView] = useState<DashboardView>("today");
   useEffect(() => {

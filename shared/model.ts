@@ -17,12 +17,62 @@ export const exerciseSchema = z.object({
   name: z.string().trim().min(1).max(120),
   sets: z.array(setSchema).max(30),
 });
-export const rotationSchema = z.enum(["push", "pull", "upper"]);
-export const planExerciseSchema = z.object({
-  name: z.string().min(1).max(120),
-  sets: z.number().int().min(1).max(20),
-  mode: z.enum(["weighted", "bodyweight", "timed", "carry"]),
-});
+export const rotationSchema = z.enum(["push", "pull", "upper", "legs"]);
+export type Rotation = z.infer<typeof rotationSchema>;
+export const repRangeSchema = z
+  .object({
+    min: z.number().int().min(1).max(100),
+    max: z.number().int().min(1).max(100),
+  })
+  .refine((r) => r.min <= r.max, "Rep minimum must not exceed maximum");
+export const planExerciseSchema = z
+  .object({
+    name: z.string().min(1).max(120),
+    sets: z.number().int().min(1).max(20),
+    mode: z.enum(["weighted", "bodyweight", "timed", "carry"]),
+    repRange: repRangeSchema.optional(),
+    setsMax: z.number().int().min(1).max(20).optional(),
+    restSeconds: z.number().int().min(15).max(600).optional(),
+    restMinSeconds: z.number().int().min(15).max(600).optional(),
+    category: z.enum(["isolation", "compound", "power", "carry"]).optional(),
+    progression: z.enum(["double", "reps", "quality", "distance"]).optional(),
+    weightIncrement: z.number().positive().max(100).optional(),
+    distanceMetres: z.number().int().positive().max(1000).optional(),
+    perSide: z.boolean().optional(),
+    superset: z.string().min(1).max(100).optional(),
+    aliases: z.array(z.string().min(1).max(120)).max(10).optional(),
+    note: z.string().max(500).optional(),
+  })
+  .refine(
+    (p) => p.setsMax === undefined || p.setsMax >= p.sets,
+    "Set maximum must not be below sets",
+  )
+  .refine(
+    (p) =>
+      p.restMinSeconds === undefined ||
+      (p.restSeconds !== undefined && p.restMinSeconds <= p.restSeconds),
+    "Rest minimum requires a valid maximum",
+  );
+export const scheduleSchema = z
+  .array(
+    z.object({
+      day: z.enum(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]),
+      label: z.string().min(1).max(100),
+      session: rotationSchema.optional(),
+      detail: z.string().max(500).optional(),
+    }),
+  )
+  .max(7)
+  .refine(
+    (s) => new Set(s.map((d) => d.day)).size === s.length,
+    "Days must be unique",
+  );
+export const rotationOrderSchema = z
+  .array(rotationSchema)
+  .min(1)
+  .max(4)
+  .refine((r) => new Set(r).size === r.length, "Rotation days must be unique");
+export const rulesSchema = z.array(z.string().min(1).max(1000)).max(15);
 export const targetsSchema = z.object({
   protein: nonnegative.max(500),
   calories: nonnegative.max(10000).nullable(),
@@ -41,6 +91,9 @@ export const planSchema = z
       legs: z.array(planExerciseSchema).min(1),
     }),
     goals: z.array(z.string().min(1).max(500)).max(10).optional(),
+    rotation: rotationOrderSchema.optional(),
+    schedule: scheduleSchema.optional(),
+    rules: rulesSchema.optional(),
     rationale: z.string().min(1).max(10000),
     targets: targetsSchema,
     timezone: z.string().refine((t) => {
@@ -60,6 +113,7 @@ export const planSchema = z
     "Target minimum must not exceed maximum",
   );
 export type Plan = z.infer<typeof planSchema>;
+export type PlanExercise = z.infer<typeof planExerciseSchema>;
 export type Exercise = z.infer<typeof exerciseSchema>;
 export type Workout = {
   date: string;
@@ -138,29 +192,49 @@ export function periodStart(date: string, period: "day" | "week" | "month") {
   if (period === "month") return date.slice(0, 7) + "-01";
   return addDays(date, -((new Date(date + "T12:00:00Z").getUTCDay() + 6) % 7));
 }
-export const nextRotation = (r: "push" | "pull" | "upper") =>
-  (({ push: "pull", pull: "upper", upper: "push" }) as const)[r];
+export const rotationOrder = (plan: Plan): Rotation[] =>
+  plan.rotation ?? ["push", "pull", "upper"];
+export function nextRotation(
+  r: Rotation,
+  order: Rotation[] = ["push", "pull", "upper"],
+) {
+  return order[(order.indexOf(r) + 1) % order.length];
+}
 export function rotationLabel(label: string) {
   return rotationSchema.safeParse(label.trim().toLowerCase());
 }
-export function validRotation(w: Workout) {
+export function validRotation(
+  w: Workout,
+  order: Rotation[] = ["push", "pull", "upper"],
+) {
+  const label = rotationLabel(w.label);
   return (
     w.kind === "lift" &&
-    rotationLabel(w.label).success &&
+    label.success &&
+    order.includes(label.data) &&
     w.exercises.some((e) => e.sets.length > 0)
   );
 }
 export function muscle(
   name: string,
-): "biceps" | "triceps" | "shoulders" | "chest" | "back" | "legs" | "unmapped" {
+):
+  | "biceps"
+  | "triceps"
+  | "shoulders"
+  | "chest"
+  | "back"
+  | "legs"
+  | "abs"
+  | "unmapped" {
   const n = normalize(name);
+  if (/crunch|abwheel|legraise|kneeraise|plank|rollout/.test(n)) return "abs";
   if (/hamstring|adductor|squat|legpress|lunge|calf|deadlift/.test(n))
     return "legs";
   if (/triceps|pushdown|dip/.test(n)) return "triceps";
   if (/curl/.test(n)) return "biceps";
   if (/lateral|reardelt|overheadpress|shoulderpress/.test(n))
     return "shoulders";
-  if (/chest|incline.*press|benchpress|pushup/.test(n)) return "chest";
   if (/pullup|chinup|row|pulldown/.test(n)) return "back";
+  if (/chest|incline.*press|benchpress|pushup/.test(n)) return "chest";
   return "unmapped";
 }

@@ -1046,3 +1046,151 @@ html.dark {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.routine-week {
+  margin: 16px 0 32px;
+}
+.routine-week > div {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.routine-week > div > span {
+  color: var(--muted);
+}
+.routine-week strong {
+  font-weight: 500;
+}
+.routine-week small {
+  display: block;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+.routine-exercises li {
+  row-gap: 2px;
+}
+.routine-exercise-rest {
+  grid-column: 1 / -1;
+}
+.rest-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 6px 0;
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  align-self: flex-start;
+}
+.rest-start:hover {
+  color: var(--ink);
+}
+.rest-start svg {
+  width: 16px;
+  height: 16px;
+}
+.rest-start span {
+  font-size: 12px;
+}
+.superset-next {
+  display: block;
+  padding: 12px 0;
+  color: var(--muted);
+}
+.exercise-heading {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.exercise-heading small {
+  white-space: nowrap;
+}
+.set-comparison {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  align-items: baseline;
+}
+.set-comparison > span:first-child {
+  font-size: 12px;
+  color: var(--muted);
+}
+.set-comparison strong {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.set-comparison.previous span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.rest-timer {
+  position: fixed;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(470px, calc(100% - 24px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--dock);
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  z-index: 45;
+  color: var(--ink);
+}
+.rest-timer-label {
+  flex: 1;
+  min-width: 0;
+}
+.fitness-dashboard:has(+ .rest-timer) {
+  padding-bottom: calc(210px + env(safe-area-inset-bottom));
+}
+.rest-timer-label span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.rest-timer-label small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.rest-timer > strong {
+  font-size: 24px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.rest-timer button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0;
+  font-size: 12px;
+}
+.rest-timer button svg {
+  width: 18px;
+  height: 18px;
+  margin: auto;
+}
+.rest-start:focus-visible,
+.rest-timer button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

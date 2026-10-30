@@ -5,9 +5,41 @@ const exercise = v.object({
   name: v.string(),
   sets: v.array(v.object({ w: v.number(), r: v.number() })),
 });
+const rotation = v.union(
+  v.literal("push"),
+  v.literal("pull"),
+  v.literal("upper"),
+  v.literal("legs"),
+);
 const pe = v.object({
   name: v.string(),
   sets: v.number(),
+  repRange: v.optional(v.object({ min: v.number(), max: v.number() })),
+  setsMax: v.optional(v.number()),
+  restSeconds: v.optional(v.number()),
+  restMinSeconds: v.optional(v.number()),
+  category: v.optional(
+    v.union(
+      v.literal("isolation"),
+      v.literal("compound"),
+      v.literal("power"),
+      v.literal("carry"),
+    ),
+  ),
+  progression: v.optional(
+    v.union(
+      v.literal("double"),
+      v.literal("reps"),
+      v.literal("quality"),
+      v.literal("distance"),
+    ),
+  ),
+  weightIncrement: v.optional(v.number()),
+  distanceMetres: v.optional(v.number()),
+  perSide: v.optional(v.boolean()),
+  superset: v.optional(v.string()),
+  aliases: v.optional(v.array(v.string())),
+  note: v.optional(v.string()),
   mode: v.union(
     v.literal("weighted"),
     v.literal("bodyweight"),
@@ -23,6 +55,26 @@ export const planFields = {
     legs: v.array(pe),
   }),
   goals: v.optional(v.array(v.string())),
+  rotation: v.optional(v.array(rotation)),
+  schedule: v.optional(
+    v.array(
+      v.object({
+        day: v.union(
+          v.literal("Mon"),
+          v.literal("Tue"),
+          v.literal("Wed"),
+          v.literal("Thu"),
+          v.literal("Fri"),
+          v.literal("Sat"),
+          v.literal("Sun"),
+        ),
+        label: v.string(),
+        session: v.optional(rotation),
+        detail: v.optional(v.string()),
+      }),
+    ),
+  ),
+  rules: v.optional(v.array(v.string())),
   rationale: v.string(),
   targets: v.object({
     protein: v.number(),
@@ -93,14 +145,10 @@ export default defineSchema({
   state: defineTable({
     lastLift: v.optional(v.object({ date: v.string(), ts: v.number() })),
     rotation: v.object({
-      next: v.union(v.literal("push"), v.literal("pull"), v.literal("upper")),
+      next: rotation,
     }),
     recoveryRemaining: v.number(),
-    recoveryDays: v.optional(
-      v.array(
-        v.union(v.literal("push"), v.literal("pull"), v.literal("upper")),
-      ),
-    ),
+    recoveryDays: v.optional(v.array(rotation)),
   }),
   plan: defineTable(planFields),
   requests: defineTable({

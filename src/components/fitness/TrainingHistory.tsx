@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import { exerciseHistory } from "../../../shared/exercise-history";
+import { canonicalExerciseName } from "../../../shared/training";
 import { normalize } from "../../../shared/model";
 type Data = FunctionReturnType<typeof api.fitness.dashboard>;
 export default function TrainingHistory({ data }: { data: Data }) {
@@ -12,7 +13,13 @@ export default function TrainingHistory({ data }: { data: Data }) {
   const names = [
     ...new Map(
       data.workoutHistory.flatMap((w) =>
-        w.exercises.map((e) => [normalize(e.name), e.name] as const),
+        w.exercises.map(
+          (e) =>
+            [
+              normalize(canonicalExerciseName(e.name, data.plan)),
+              canonicalExerciseName(e.name, data.plan),
+            ] as const,
+        ),
       ),
     ).values(),
   ].sort();
@@ -127,7 +134,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
                     className="exercise-row"
                     key={i}
                     onClick={() => {
-                      setSelected(e.name);
+                      setSelected(canonicalExerciseName(e.name, data.plan));
                       document
                         .getElementById("exercise-records")
                         ?.scrollIntoView({

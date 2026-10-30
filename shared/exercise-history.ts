@@ -1,11 +1,13 @@
 import { normalize, type Workout, type Plan } from "./model";
+import { canonicalExerciseName, canonicalWorkouts } from "./training";
 import { liftSessions } from "./lift-sessions";
 export function exerciseHistory(workouts: Workout[], name: string, plan: Plan) {
+  name = canonicalExerciseName(name, plan);
   const mode =
     Object.values(plan.program)
       .flat()
       .find((e) => normalize(e.name) === normalize(name))?.mode ?? "weighted";
-  const sessions = liftSessions(workouts)
+  const sessions = liftSessions(canonicalWorkouts(workouts, plan))
     .filter((w) => w.kind === "lift")
     .flatMap((w) => {
       const sets = w.exercises
@@ -48,6 +50,6 @@ export function exerciseHistory(workouts: Workout[], name: string, plan: Plan) {
     totalVolume:
       mode === "weighted" ? sessions.reduce((n, s) => n + s.volume, 0) : null,
     volumeUnit: mode === "weighted" ? "lb × reps" : null,
-    note: "Records reflect logged sets only. Weight is the entered load; no per-hand doubling. Timed r is seconds; carry r is metres. Exercise names match ignoring case and punctuation.",
+    note: "Records reflect logged sets only. Weight is the entered load; no per-hand doubling. Timed r is seconds; carry r is metres. Exercise names match ignoring case and punctuation, including explicitly saved aliases. Heavy and moderate-rep pull-ups remain separate.",
   };
 }
