@@ -67,6 +67,28 @@ describe("persistent data and authorization", () => {
       }),
     ).rejects.toThrow();
   });
+  it("stores goals without changing the program and preserves them through other updates", async () => {
+    const t = await setup();
+    const goals = ["Stronger abs", "Bigger biceps"];
+    await t.mutation(api.fitness.update_plan, { token, patch: { goals } });
+    await t.mutation(api.fitness.update_plan, {
+      token,
+      patch: { targets: { protein: 155 } },
+    });
+    const plan = await t.query(api.fitness.get_plan, { token });
+    expect(plan.goals).toEqual(goals);
+    expect(plan.program).toEqual(seedPlan.program);
+    expect(
+      (await t.query(api.fitness.dashboard, { token: readToken })).plan.goals,
+    ).toEqual(goals);
+    await t.mutation(api.fitness.update_plan, {
+      token,
+      patch: { goals: ["Stronger arms"] },
+    });
+    expect((await t.query(api.fitness.get_plan, { token })).goals).toEqual([
+      "Stronger arms",
+    ]);
+  });
   it("logs each data type, returns remaining and the three numbers", async () => {
     const t = await setup();
     await t.mutation(api.fitness.update_plan, {

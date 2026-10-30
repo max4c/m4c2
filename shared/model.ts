@@ -40,6 +40,7 @@ export const planSchema = z
       upper: z.array(planExerciseSchema).min(1),
       legs: z.array(planExerciseSchema).min(1),
     }),
+    goals: z.array(z.string().min(1).max(500)).max(10).optional(),
     rationale: z.string().min(1).max(10000),
     targets: targetsSchema,
     timezone: z.string().refine((t) => {

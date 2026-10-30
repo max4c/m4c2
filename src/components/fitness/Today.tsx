@@ -65,7 +65,12 @@ export default function Today({ data }: { data: Data }) {
         })}
         <details className="metric-note">
           <summary>Goals & program</summary>
-          <p>{data.plan.rationale}</p>
+          <ul>
+            {data.plan.goals?.map((goal, i) => (
+              <li key={`${i}:${goal}`}>{goal}</li>
+            ))}
+          </ul>
+          <a href="#goals">View goals</a>
           <p>
             Push → Pull → Upper · {data.plan.targets.liftsMin}–
             {data.plan.targets.liftsMax} lifts per week. The rotation continues

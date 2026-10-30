@@ -194,7 +194,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "get_plan",
-    "Read the live program, physique/training priorities saved in rationale, daily targets, timezone and bedtime. No separate numeric physique goal or fixed weekday schedule is currently stored. Call for program questions and before suggesting program changes.",
+    "Read the live program, physique/training priorities saved in rationale, daily targets, timezone and bedtime. Current priorities are in goals; rationale contains older program context. Prefer explicit goals if they differ from older rationale. No fixed weekday schedule is stored. Call for program questions and before suggesting program changes.",
     z.object({}),
     true,
     () => db.query(api.fitness.get_plan, auth),
@@ -212,6 +212,7 @@ export function createServer(env: Secrets) {
       return {
         ...session,
         planContext: {
+          goals: plan.goals ?? [],
           rationale: plan.rationale,
           targets: plan.targets,
           scheduling:
@@ -249,7 +250,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "update_plan",
-    "Update only user-requested program/targets/rationale, typically at an 8–12 week block review. Read get_plan first. Patch merges program days and target fields; supplied day arrays replace that whole day. Never silently change the rationale or infer a calorie target.",
+    "Update only user-requested goals/program/targets/rationale, typically at an 8–12 week block review. Read get_plan first. A supplied goals array replaces the entire goals list; omitted goals stay unchanged. Patch merges program days and target fields; supplied day arrays replace that whole day. Never silently change the rationale or infer a calorie target.",
     z.object({ patch: planPatch }),
     false,
     (p) => db.mutation(api.fitness.update_plan, { ...auth, ...p }),

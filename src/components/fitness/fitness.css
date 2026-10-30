@@ -976,3 +976,14 @@ html.dark {
   background: var(--ink);
   border-radius: 6px;
 }
+.goals-list p {
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+.goals-list p:last-child {
+  margin-bottom: 0;
+}
+.goals-list p > span {
+  color: var(--muted);
+}

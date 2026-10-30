@@ -22,6 +22,7 @@ export const planFields = {
     upper: v.array(pe),
     legs: v.array(pe),
   }),
+  goals: v.optional(v.array(v.string())),
   rationale: v.string(),
   targets: v.object({
     protein: v.number(),

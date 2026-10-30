@@ -83,6 +83,7 @@ export const planPatch = z.object({
     })
     .optional(),
   targets: targetsSchema.partial().optional(),
+  goals: z.array(z.string().min(1).max(500)).max(10).optional(),
   rationale: z.string().min(1).max(10000).optional(),
   timezone: z.string().optional(),
   bedtimeHour: z.number().int().min(0).max(23).optional(),

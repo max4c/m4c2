@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
 import FloatingNav, { type DashboardView } from "./FloatingNav";
 import Today from "./Today";
+import Goals from "./Goals";
 import Sleep from "./Sleep";
 import type { SleepData } from "../../../shared/sleep";
 import WeeklyOverview from "./WeeklyOverview";
@@ -116,7 +117,11 @@ export function Dashboard({ data }: { data: DashboardData }) {
   useEffect(() => {
     const sync = () => {
       const hash = window.location.hash.slice(1);
-      setView(hash === "history" || hash === "trends" ? hash : "today");
+      setView(
+        hash === "history" || hash === "trends" || hash === "goals"
+          ? hash
+          : "today",
+      );
       window.scrollTo(0, 0);
     };
     sync();
@@ -154,6 +159,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
         <span className="live">Test data</span>
       )}
       {view === "today" && <Today data={data} />}
+      {view === "goals" && <Goals plan={plan} />}
       {view === "history" && (
         <>
           <div className="section-title view-title">
@@ -167,12 +173,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
           <div className="section-title view-title">
             <h1>Trends</h1>
           </div>
-          <Sleep
-            data={data.sleep}
-            today={today}
-            timezone={plan.timezone}
-            history
-          />
           <section id="overview" aria-label="This week">
             <div className="section-title">
               <h2>This week</h2>
@@ -436,6 +436,12 @@ export function Dashboard({ data }: { data: DashboardData }) {
               )}
             </article>
           </section>
+          <Sleep
+            data={data.sleep}
+            today={today}
+            timezone={plan.timezone}
+            history
+          />
         </>
       )}
       {view === "history" && (
