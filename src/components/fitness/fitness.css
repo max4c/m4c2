@@ -1,6 +1,12 @@
 :root {
-  color: #171717;
-  background: #fff;
+  --ink: #171717;
+  --paper: #ffffff;
+  --dock: rgba(255, 255, 255, 0.96);
+  --control-border: #bfbfbf;
+  --accent: #0957d0;
+  --error: #b42318;
+  color: var(--ink);
+  background: var(--paper);
   font-size: 15px;
   font-synthesis: none;
   --muted: #686868;
@@ -37,7 +43,7 @@ a {
   color: inherit;
 }
 :focus-visible {
-  outline: 2px solid #0957d0;
+  outline: 2px solid var(--accent);
   outline-offset: 4px;
 }
 main {
@@ -69,8 +75,8 @@ header {
   place-items: center;
   width: 34px;
   height: 34px;
-  background: #171717;
-  color: white;
+  background: var(--ink);
+  color: var(--paper);
   border-radius: 8px;
   font-size: 25px;
   font-weight: 650;
@@ -167,7 +173,7 @@ section {
 .track > span {
   display: block;
   height: 100%;
-  background: #171717;
+  background: var(--ink);
 }
 .score-bottom {
   font-size: 11px;
@@ -207,7 +213,7 @@ section {
   color: var(--muted);
 }
 .segmented button[aria-pressed="true"] {
-  color: #171717;
+  color: var(--ink);
   background: var(--soft);
   font-weight: 600;
 }
@@ -244,7 +250,7 @@ section {
   display: inline-block;
   width: 7px;
   height: 7px;
-  background: #222;
+  background: var(--ink);
   margin-right: 4px;
 }
 .rhythm-key span + span i {
@@ -293,7 +299,7 @@ section {
   color: var(--muted);
 }
 .lifts {
-  background: #222;
+  background: var(--ink);
 }
 .movement {
   background: #b0b0b0;
@@ -326,7 +332,7 @@ section {
 .muscle-fill {
   position: absolute;
   height: 4px;
-  background: #333;
+  background: var(--ink);
 }
 .target-band {
   position: absolute;
@@ -503,8 +509,8 @@ footer {
   font-size: 12px;
 }
 .calendar-grid button[aria-pressed="true"] {
-  background: #171717;
-  color: #fff;
+  background: var(--ink);
+  color: var(--paper);
 }
 .calendar-grid small {
   font-size: 9px;
@@ -534,9 +540,9 @@ footer {
   width: 100%;
   min-height: 48px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--control-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--paper);
   font-size: 16px;
   color: inherit;
 }
@@ -667,8 +673,8 @@ footer {
   gap: 3px;
   width: min(360px, calc(100vw - 32px));
   padding: 6px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid #ddd;
+  background: var(--dock);
+  border: 1px solid var(--line);
   border-radius: 40px;
   box-shadow: 0 4px 20px #0000000d;
   backdrop-filter: blur(16px);
@@ -682,7 +688,7 @@ footer {
   min-width: 0;
   height: 48px;
   border-radius: 28px;
-  color: #6b6b6b;
+  color: var(--muted);
   text-decoration: none;
 }
 .floating-dock svg {
@@ -697,8 +703,8 @@ footer {
 }
 .floating-dock a[aria-current] {
   flex: 1.7;
-  background: #171717;
-  color: #fff;
+  background: var(--ink);
+  color: var(--paper);
 }
 .floating-dock a[aria-current] span {
   display: block;
@@ -744,10 +750,10 @@ footer {
   height: 52px;
   padding: 12px 70px 12px 12px;
   font-size: 16px;
-  border: 1px solid #bfbfbf;
+  border: 1px solid var(--control-border);
   border-radius: 6px;
-  background: #fff;
-  color: #171717;
+  background: var(--paper);
+  color: var(--ink);
 }
 .gate .password-toggle {
   position: absolute;
@@ -757,7 +763,7 @@ footer {
   width: 58px;
   padding: 0;
   background: transparent;
-  color: #555;
+  color: var(--muted);
   border: 0;
   font-size: 12px;
 }
@@ -767,11 +773,11 @@ footer {
   margin-top: 16px;
   border: 0;
   border-radius: 6px;
-  background: #171717;
-  color: white;
+  background: var(--ink);
+  color: var(--paper);
 }
 .gate [role="alert"] {
-  color: #b42318;
+  color: var(--error);
   font-size: 13px;
   margin-top: 12px;
 }
@@ -873,5 +879,57 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+}
+
+html.dark {
+  --ink: #eeeeee;
+  --paper: #171717;
+  --muted: #a6a6a6;
+  --line: #353535;
+  --soft: #242424;
+  --dock: rgba(29, 29, 29, 0.96);
+  --control-border: #606060;
+  --accent: #80b4ff;
+  --error: #ff9e96;
+}
+.dark .target-band {
+  background: #464646;
+}
+.theme-toggle {
+  position: absolute;
+  top: 30px;
+  right: max(20px, calc((100vw - 704px) / 2));
+  width: 44px;
+  height: 44px;
+  padding: 11px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  z-index: 20;
+}
+.theme-toggle:hover {
+  background: var(--soft);
+}
+.theme-toggle svg {
+  width: 22px;
+  height: 22px;
+}
+.theme-sun,
+.dark .theme-moon {
+  display: none;
+}
+.dark .theme-sun {
+  display: block;
+}
+.fitness-dashboard header {
+  padding-right: 52px;
+}
+@media (max-width: 700px) {
+  .theme-toggle {
+    top: 24px;
   }
 }

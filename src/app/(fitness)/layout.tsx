@@ -1,7 +1,17 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "@/components/fitness/fitness.css";
+import ThemeToggle from "@/components/fitness/ThemeToggle";
 const inter = Inter({ subsets: ["latin"] });
+// Same saved preference and 7am–7pm daylight rule as the personal site.
+const themeScript = `(() => {
+  let override;
+  try { override = localStorage.getItem('themeOverride'); } catch {}
+  const hour = new Date().getHours();
+  const dark = override === 'dark' || (override !== 'light' && (hour < 7 || hour >= 19));
+  document.documentElement.classList.toggle('dark', dark);
+  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+})();`;
 export const metadata: Metadata = {
   title: "Supermedium",
   description: "Your private training, nutrition, and progress log.",
@@ -37,8 +47,14 @@ export default function FitnessLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className={inter.className}>
+        <ThemeToggle />
+        {children}
+      </body>
     </html>
   );
 }

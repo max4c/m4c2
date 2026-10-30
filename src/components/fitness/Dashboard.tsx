@@ -42,23 +42,28 @@ function Trend({
           data={data}
           margin={{ top: 14, right: 12, bottom: 0, left: -8 }}
         >
-          <CartesianGrid vertical={false} stroke="#e7e8df" />
+          <CartesianGrid vertical={false} stroke="var(--line)" />
           <XAxis
             dataKey="date"
             tickFormatter={(s) => String(s).slice(5)}
             minTickGap={40}
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 10, fill: "#7e8475" }}
+            tick={{ fontSize: 10, fill: "var(--muted)" }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 10, fill: "#7e8475" }}
+            tick={{ fontSize: 10, fill: "var(--muted)" }}
             domain={unit === "lb" ? ["auto", "auto"] : [0, "auto"]}
           />
           <Tooltip
-            contentStyle={{ borderRadius: 10, border: "1px solid #dadfd0" }}
+            contentStyle={{
+              borderRadius: 6,
+              border: "1px solid var(--line)",
+              background: "var(--paper)",
+              color: "var(--ink)",
+            }}
             labelFormatter={(l) => String(l)}
             formatter={(v, name) => [`${v} ${unit}`, name]}
           />
