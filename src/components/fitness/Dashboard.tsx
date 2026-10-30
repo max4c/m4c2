@@ -134,14 +134,9 @@ export function Dashboard({ data }: { data: DashboardData }) {
   });
   return (
     <main className="fitness-dashboard">
-      <header>
-        <a className="brand" href="#overview">
-          <span className="brand-mark">s.</span> Supermedium
-        </a>
-        {process.env.NEXT_PUBLIC_FITNESS_TEST_DATA === "true" && (
-          <span className="live">Test data</span>
-        )}
-      </header>
+      {process.env.NEXT_PUBLIC_FITNESS_TEST_DATA === "true" && (
+        <span className="live">Test data</span>
+      )}
       <section id="overview" aria-label="This week">
         <div className="section-title">
           <h1>This week</h1>
@@ -448,7 +443,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
       </section>
 
       <footer>
-        <span>Supermedium</span>
         <button
           className="forget-device"
           onClick={async () => {
@@ -468,10 +462,8 @@ export function Dashboard({ data }: { data: DashboardData }) {
 function Gate({ title, detail }: { title: string; detail: string }) {
   return (
     <div className="gate">
-      <span className="brand-mark">s.</span>
-      <p className="eyebrow">SUPERMEDIUM</p>
       <h1>{title}</h1>
-      <p>{detail}</p>
+      {detail && <p>{detail}</p>}
     </div>
   );
 }
@@ -521,8 +513,6 @@ export default function FitnessApp() {
   if (locked)
     return (
       <main className="gate">
-        <span className="brand-mark">s.</span>
-        <p className="eyebrow">SUPERMEDIUM</p>
         <h1>Sign in</h1>
         <form
           onSubmit={async (event) => {
@@ -588,10 +578,7 @@ export default function FitnessApp() {
     );
   return (
     <>
-      <Gate
-        title="Opening Supermedium…"
-        detail={error || "Connecting to your private log."}
-      />
+      <Gate title="Loading…" detail={error} />
       {error && <button onClick={() => void refresh()}>Retry</button>}
     </>
   );

@@ -52,36 +52,8 @@ main {
   padding: 0 28px;
 }
 .fitness-dashboard {
+  padding-top: 24px;
   padding-bottom: 130px;
-}
-header {
-  min-height: 108px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: 650;
-  letter-spacing: -0.7px;
-  text-decoration: none;
-}
-.brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  background: var(--ink);
-  color: var(--paper);
-  border-radius: 8px;
-  font-size: 25px;
-  font-weight: 650;
-  letter-spacing: -1.5px;
-  padding: 0 2px 3px 0;
 }
 .live {
   color: var(--muted);
@@ -714,19 +686,6 @@ footer {
   margin: 12vh auto 0;
   padding: 28px;
 }
-.gate .brand-mark {
-  width: 44px;
-  height: 44px;
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-.eyebrow {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0;
-  margin-bottom: 28px;
-  text-transform: none;
-}
 .gate h1 {
   font-size: 28px;
 }
@@ -792,12 +751,6 @@ footer {
 @media (max-width: 700px) {
   main {
     padding: 0 20px;
-  }
-  header {
-    min-height: 92px;
-  }
-  .brand {
-    font-size: 21px;
   }
   .score-grid {
     gap: 18px;
@@ -925,11 +878,16 @@ html.dark {
 .dark .theme-sun {
   display: block;
 }
-.fitness-dashboard header {
-  padding-right: 52px;
-}
 @media (max-width: 700px) {
   .theme-toggle {
     top: 24px;
   }
+}
+
+#overview > .section-title {
+  min-height: 44px;
+  padding-right: 52px;
+}
+.theme-toggle {
+  top: 24px;
 }
