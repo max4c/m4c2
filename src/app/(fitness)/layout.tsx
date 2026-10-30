@@ -25,14 +25,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/supermedium-icons/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32" },
       {
-        url: "/supermedium-icons/icon-32.png",
-        sizes: "32x32",
+        url: "/icon-192.png",
+        sizes: "192x192",
         type: "image/png",
       },
     ],
-    apple: "/supermedium-icons/apple-touch-icon.png",
+    apple: "/supermedium-icons/bonsai-180.png",
   },
 };
 export const viewport: Viewport = {

@@ -5,6 +5,9 @@ const privatePath = (path: string) =>
   path.startsWith("/mcp/") ||
   path.startsWith("/photos/");
 const assets = new Set([
+  "/supermedium-icons/bonsai-180.png",
+  "/supermedium-icons/bonsai-192.png",
+  "/supermedium-icons/bonsai-512.png",
   "/supermedium-icons/icon.svg",
   "/supermedium-icons/icon-32.png",
   "/supermedium-icons/icon-192.png",
@@ -48,9 +51,7 @@ export function proxy(request: NextRequest) {
   }
   if (!isApp) return NextResponse.next();
   const appIcons: Record<string, string> = {
-    "/favicon.ico": "/supermedium-icons/icon-32.png",
-    "/icon-192.png": "/supermedium-icons/icon-192.png",
-    "/apple-touch-icon.png": "/supermedium-icons/apple-touch-icon.png",
+    "/apple-touch-icon.png": "/supermedium-icons/bonsai-180.png",
   };
   if (appIcons[path])
     return NextResponse.rewrite(new URL(appIcons[path], request.url));
