@@ -5,6 +5,9 @@ export default function Goals({ plan }: { plan: Plan }) {
       <div className="section-title view-title">
         <h1>Goals</h1>
       </div>
+      <a className="routine-link" href="#routine">
+        View routine →
+      </a>
       <section className="panel goals-list" aria-label="Current goals">
         {plan.goals?.length ? (
           plan.goals.map((goal, i) => (
@@ -29,26 +32,6 @@ export default function Goals({ plan }: { plan: Plan }) {
           {plan.targets.liftsMin}–{plan.targets.liftsMax} lifts per week. One
           short legs block per week.
         </p>
-      </section>
-      <section className="panel">
-        <h2>Current exercises</h2>
-        {Object.entries(plan.program).map(([day, exercises]) => (
-          <details className="metric-note" key={day}>
-            <summary className="session-label">{day}</summary>
-            {exercises.map((e) => (
-              <p key={e.name}>
-                {e.name} · {e.sets} sets
-              </p>
-            ))}
-          </details>
-        ))}
-        {!Object.values(plan.program)
-          .flat()
-          .some((e) =>
-            /crunch|ab wheel|rollout|plank|leg raise|knee raise|pallof/i.test(
-              e.name,
-            ),
-          ) && <p className="muted">Direct ab work isn’t programmed yet.</p>}
       </section>
       <section className="panel">
         <h2>Progress</h2>

@@ -3,6 +3,7 @@
 import FloatingNav, { type DashboardView } from "./FloatingNav";
 import Today from "./Today";
 import Goals from "./Goals";
+import Routine from "./Routine";
 import Sleep from "./Sleep";
 import type { SleepData } from "../../../shared/sleep";
 import WeeklyOverview from "./WeeklyOverview";
@@ -118,7 +119,10 @@ export function Dashboard({ data }: { data: DashboardData }) {
     const sync = () => {
       const hash = window.location.hash.slice(1);
       setView(
-        hash === "history" || hash === "trends" || hash === "goals"
+        hash === "history" ||
+          hash === "trends" ||
+          hash === "goals" ||
+          hash === "routine"
           ? hash
           : "today",
       );
@@ -160,6 +164,9 @@ export function Dashboard({ data }: { data: DashboardData }) {
       )}
       {view === "today" && <Today data={data} />}
       {view === "goals" && <Goals plan={plan} />}
+      {view === "routine" && (
+        <Routine plan={plan} next={data.nextSession.next} />
+      )}
       {view === "history" && (
         <>
           <div className="section-title view-title">

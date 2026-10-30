@@ -1,5 +1,6 @@
 "use client";
-export type DashboardView = "today" | "history" | "trends" | "goals";
+export type DashboardView =
+  "today" | "history" | "trends" | "goals" | "routine";
 const items = [
   {
     id: "today",
@@ -26,7 +27,11 @@ export default function FloatingNav({ active }: { active: DashboardView }) {
           key={item.id}
           href={"#" + item.id}
           aria-label={item.label}
-          aria-current={active === item.id ? "page" : undefined}
+          aria-current={
+            active === item.id || (active === "routine" && item.id === "goals")
+              ? "page"
+              : undefined
+          }
         >
           <svg
             viewBox="0 0 24 24"

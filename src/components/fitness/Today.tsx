@@ -48,6 +48,9 @@ export default function Today({ data }: { data: Data }) {
           <h2>
             Next · <span className="session-label">{next.next}</span>
           </h2>
+          <a className="routine-link" href="#routine">
+            Routine →
+          </a>
         </div>
         {next.exercises.map((e) => {
           return (
@@ -77,14 +80,6 @@ export default function Today({ data }: { data: Data }) {
             across weeks; workouts are not assigned to weekdays. Add the legs
             block once a week.
           </p>
-          {Object.entries(data.plan.program).map(([day, exercises]) => (
-            <div key={day}>
-              <h3 className="session-label">{day}</h3>
-              <p>
-                {exercises.map((e) => `${e.name} · ${e.sets} sets`).join("; ")}
-              </p>
-            </div>
-          ))}
         </details>
         {next.flags.length > 0 && (
           <details className="metric-note">
