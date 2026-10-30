@@ -891,3 +891,52 @@ html.dark {
 .theme-toggle {
   top: 24px;
 }
+
+.view-title {
+  padding: 24px 52px 0 0;
+  min-height: 68px;
+}
+.today-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 24px 0;
+}
+.today-numbers > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.today-numbers span,
+.today-numbers small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.today-numbers strong {
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 500;
+}
+.today-exercise {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.today-exercise span {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.today-exercise small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.session-label {
+  text-transform: capitalize;
+}
+.floating-dock a span {
+  display: block;
+}
+.floating-dock a[aria-current] {
+  flex: 1;
+}

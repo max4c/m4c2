@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
-import FloatingNav from "./FloatingNav";
+import FloatingNav, { type DashboardView } from "./FloatingNav";
+import Today from "./Today";
 import WeeklyOverview from "./WeeklyOverview";
 import TrainingHistory from "./TrainingHistory";
 import React, { useState, useEffect } from "react";
@@ -107,6 +108,17 @@ function Photo({ photo }: { photo: DashboardData["photos"][number] }) {
 }
 export function Dashboard({ data }: { data: DashboardData }) {
   const { plan, today, week } = data;
+  const [view, setView] = useState<DashboardView>("today");
+  useEffect(() => {
+    const sync = () => {
+      const hash = window.location.hash.slice(1);
+      setView(hash === "history" || hash === "trends" ? hash : "today");
+      window.scrollTo(0, 0);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
   const [range, setRange] = useState(30);
   const start = addDays(today, 1 - range);
   const protein = Array.from({ length: range }, (_, i) => {
@@ -137,310 +149,334 @@ export function Dashboard({ data }: { data: DashboardData }) {
       {process.env.NEXT_PUBLIC_FITNESS_TEST_DATA === "true" && (
         <span className="live">Test data</span>
       )}
-      <section id="overview" aria-label="This week">
-        <div className="section-title">
-          <h1>This week</h1>
-          <span>
-            {periodStart(today, "week").slice(5)} – {today.slice(5)}
-          </span>
-        </div>
-        <div className="score-grid">
-          {[
-            {
-              title: "Lifts",
-              value: stats.lifts.value,
-              unit: "sessions",
-              target: `${plan.targets.liftsMin}–${plan.targets.liftsMax} per week`,
-              pass: stats.lifts.pass,
-              max: plan.targets.liftsMin,
-            },
-            {
-              title: "Movement",
-              value: stats.movementDays.value,
-              unit: "/ 7 days",
-              target: `${plan.targets.movementDays} days per week`,
-              pass: stats.movementDays.pass,
-              max: plan.targets.movementDays,
-            },
-            {
-              title: "Daily protein",
-              value: stats.proteinAvg.value,
-              unit: "g avg",
-              target: `${plan.targets.protein}g per day`,
-              pass: stats.proteinAvg.pass,
-              max: plan.targets.protein,
-            },
-          ].map((s, i) => (
-            <article className={`score score-${i}`} key={s.title}>
-              <div className="score-label">{s.title}</div>
-              <div className="big-number">
-                {s.value}
-                <span>{s.unit}</span>
-              </div>
-              <div className="track">
-                <span
-                  style={{
-                    width: `${Math.min(100, (s.value / s.max) * 100)}%`,
-                  }}
-                />
-              </div>
-              <div className="score-bottom">
-                <strong>{s.target}</strong>
-              </div>
-            </article>
-          ))}
-        </div>
-        <details className="metric-note">
-          <summary>About these numbers</summary>
-          <p>
-            Week-to-date averages include unlogged days.{" "}
-            {week.coverage.mealDays} of {week.elapsedDays} days have meal logs.
-          </p>
-        </details>
-      </section>
-      <WeeklyOverview data={data} />
-      <TrainingHistory data={data} />
-      <section id="trends">
-        <div className="section-title">
-          <h2>Trends</h2>
-          <div className="segmented" aria-label="Chart period">
-            {[30, 90].map((n) => (
-              <button
-                key={n}
-                aria-pressed={range === n}
-                onClick={() => setRange(n)}
-              >
-                {n} days
-              </button>
-            ))}
+      {view === "today" && <Today data={data} />}
+      {view === "history" && (
+        <>
+          <div className="section-title view-title">
+            <h1>History</h1>
           </div>
-        </div>
-        <div className="two-col">
-          <article className="panel">
-            <div className="panel-top">
-              <h3>Protein</h3>
+          <TrainingHistory data={data} />
+        </>
+      )}
+      {view === "trends" && (
+        <>
+          <div className="section-title view-title">
+            <h1>Trends</h1>
+          </div>
+          <section id="overview" aria-label="This week">
+            <div className="section-title">
+              <h2>This week</h2>
               <span>
-                GRAMS / DAY{" "}
-                <b className="legend">— {plan.targets.protein}g target</b>
+                {periodStart(today, "week").slice(5)} – {today.slice(5)}
               </span>
             </div>
-            {data.meals.length ? (
-              <Trend
-                data={protein}
-                series={[{ key: "protein", color: "#628451" }]}
-                unit="g"
-                target={plan.targets.protein}
-              />
-            ) : (
-              <Empty>
-                No meals yet.
-                <small>Log a meal in your connected chat.</small>
-              </Empty>
-            )}
-          </article>
-          <article className="panel">
-            <div className="panel-top">
-              <h3>Body weight</h3>
-              <span>POUNDS</span>
-            </div>
-            {weights.length ? (
-              <Trend
-                data={weights}
-                series={[{ key: "weight", color: "#b28255" }]}
-                unit="lb"
-              />
-            ) : (
-              <Empty>No weigh-ins yet.</Empty>
-            )}
-          </article>
-        </div>
-      </section>
-      <section className="two-col">
-        <article className="panel">
-          <div className="panel-top">
-            <h3>Weekly activity</h3>
-            <span>LAST 8 WEEKS</span>
-          </div>
-          <div className="rhythm-key">
-            <span>
-              <i /> Lifts · {plan.targets.liftsMin}–{plan.targets.liftsMax}
-            </span>
-            <span>
-              <i /> Movement · {plan.targets.movementDays}/7
-            </span>
-          </div>
-          <div className="weeks">
-            {weekly.map((w) => (
-              <div className="week" key={w.date}>
-                <div className="bar-pair">
-                  <div
-                    className="week-bar lifts"
-                    style={{ height: `${Math.max(2, (w.lifts / 10) * 100)}%` }}
-                    title={`${w.lifts} lifts`}
-                  >
-                    {w.lifts > 0 && <span>{w.lifts}</span>}
+            <div className="score-grid">
+              {[
+                {
+                  title: "Lifts",
+                  value: stats.lifts.value,
+                  unit: "sessions",
+                  target: `${plan.targets.liftsMin}–${plan.targets.liftsMax} per week`,
+                  pass: stats.lifts.pass,
+                  max: plan.targets.liftsMin,
+                },
+                {
+                  title: "Movement",
+                  value: stats.movementDays.value,
+                  unit: "/ 7 days",
+                  target: `${plan.targets.movementDays} days per week`,
+                  pass: stats.movementDays.pass,
+                  max: plan.targets.movementDays,
+                },
+                {
+                  title: "Daily protein",
+                  value: stats.proteinAvg.value,
+                  unit: "g avg",
+                  target: `${plan.targets.protein}g per day`,
+                  pass: stats.proteinAvg.pass,
+                  max: plan.targets.protein,
+                },
+              ].map((s, i) => (
+                <article className={`score score-${i}`} key={s.title}>
+                  <div className="score-label">{s.title}</div>
+                  <div className="big-number">
+                    {s.value}
+                    <span>{s.unit}</span>
                   </div>
-                  <div
-                    className="week-bar movement"
-                    style={{
-                      height: `${Math.max(2, (w.movementDays / 10) * 100)}%`,
-                    }}
-                    title={`${w.movementDays} movement days`}
-                  >
-                    {w.movementDays > 0 && <span>{w.movementDays}</span>}
-                  </div>
-                </div>
-                <small>{w.date.slice(5)}</small>
-              </div>
-            ))}
-          </div>
-          <details className="metric-note">
-            <summary>About these numbers</summary>
-            <p>Movement = a workout or positive self-reported steps.</p>
-          </details>
-        </article>
-        <article className="panel">
-          <div className="panel-top">
-            <h3>Sets by muscle</h3>
-            <span>HARD SETS / THIS WEEK</span>
-          </div>
-          <div className="muscles">
-            {Object.entries(week.hardSets)
-              .filter(([m]) => m !== "unmapped")
-              .map(([m, n]) => (
-                <div className="muscle" key={m}>
-                  <span>{m}</span>
-                  <div className="muscle-track">
-                    {["biceps", "triceps", "shoulders"].includes(m) && (
-                      <div
-                        className="target-band"
-                        style={{
-                          left: `${(plan.targets.setsMin / Math.max(20, plan.targets.setsMax, n)) * 100}%`,
-                          width: `${((plan.targets.setsMax - plan.targets.setsMin) / Math.max(20, plan.targets.setsMax, n)) * 100}%`,
-                        }}
-                      />
-                    )}
-                    <div
-                      className="muscle-fill"
+                  <div className="track">
+                    <span
                       style={{
-                        width: `${Math.min(100, (n / Math.max(20, plan.targets.setsMax, n)) * 100)}%`,
+                        width: `${Math.min(100, (s.value / s.max) * 100)}%`,
                       }}
                     />
                   </div>
-                  <strong>{n}</strong>
-                </div>
-              ))}
-          </div>
-          <details className="metric-note">
-            <summary>About these numbers</summary>
-            <p>
-              Shaded band: {plan.targets.setsMin}–{plan.targets.setsMax} sets
-              for arms & shoulders. Primary muscle only.{" "}
-              {week.hardSets.unmapped} unmapped sets.
-            </p>
-          </details>
-        </article>
-      </section>
-      <section className="two-col">
-        <article className="panel">
-          <div className="panel-top">
-            <h3>Measurements</h3>
-            <span>INCHES / MONTHLY</span>
-          </div>
-          {data.measurements.length ? (
-            <>
-              <Trend
-                data={data.measurements}
-                series={[
-                  { key: "arm", color: "#527c50" },
-                  { key: "shoulders", color: "#b28255" },
-                  { key: "chest", color: "#748ba4" },
-                  { key: "waist", color: "#9d729a" },
-                ]}
-                unit="in"
-              />
-              <div className="measurement-key">
-                {["arm", "shoulders", "chest", "waist"].map((m, i) => (
-                  <span
-                    key={m}
-                    style={{
-                      color: ["#527c50", "#b28255", "#748ba4", "#9d729a"][i],
-                    }}
-                  >
-                    ● {m}
-                  </span>
-                ))}
-              </div>
-            </>
-          ) : (
-            <Empty>
-              No measurements yet.
-              <small>Your monthly tape measurements will appear here.</small>
-            </Empty>
-          )}
-        </article>
-        <article className="panel">
-          <div className="panel-top">
-            <h3>Progress photos</h3>
-          </div>
-          {data.photos.length ? (
-            <div className="photos">
-              {data.photos.map((p) => (
-                <Photo key={p._id} photo={p} />
+                  <div className="score-bottom">
+                    <strong>{s.target}</strong>
+                  </div>
+                </article>
               ))}
             </div>
-          ) : (
-            <Empty>No photos yet.</Empty>
-          )}
-        </article>
-      </section>
-      <section id="history" className="panel meals">
-        <div className="panel-top">
-          <h3>Recent meals</h3>
-        </div>
-        {recent.length ? (
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>MEAL</th>
-                  <th>WHEN</th>
-                  <th>CALORIES</th>
-                  <th>PROTEIN</th>
-                  <th>QUALITY</th>
-                  <th>SOURCE</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recent.map((m) => (
-                  <tr key={m._id}>
-                    <td>
-                      {m.name}
-                      <small>{m.note}</small>
-                    </td>
-                    <td data-label="Date">{m.date.slice(5)}</td>
-                    <td data-label="Calories">{Math.round(m.calories)}</td>
-                    <td data-label="Protein" className="protein-cell">
-                      {Math.round(m.protein)}g
-                    </td>
-                    <td data-label="Quality">
-                      {m.quality}
-                      <span className="muted"> / 10</span>
-                    </td>
-                    <td data-label="Source">
-                      <span className="source">{m.source}</span>
-                    </td>
-                  </tr>
+            <details className="metric-note">
+              <summary>About these numbers</summary>
+              <p>
+                Week-to-date averages include unlogged days.{" "}
+                {week.coverage.mealDays} of {week.elapsedDays} days have meal
+                logs.
+              </p>
+            </details>
+          </section>
+          <WeeklyOverview data={data} />
+          <section id="charts">
+            <div className="section-title">
+              <h2>Over time</h2>
+              <div className="segmented" aria-label="Chart period">
+                {[30, 90].map((n) => (
+                  <button
+                    key={n}
+                    aria-pressed={range === n}
+                    onClick={() => setRange(n)}
+                  >
+                    {n} days
+                  </button>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </div>
+            <div className="two-col">
+              <article className="panel">
+                <div className="panel-top">
+                  <h3>Protein</h3>
+                  <span>
+                    GRAMS / DAY{" "}
+                    <b className="legend">— {plan.targets.protein}g target</b>
+                  </span>
+                </div>
+                {data.meals.length ? (
+                  <Trend
+                    data={protein}
+                    series={[{ key: "protein", color: "#628451" }]}
+                    unit="g"
+                    target={plan.targets.protein}
+                  />
+                ) : (
+                  <Empty>
+                    No meals yet.
+                    <small>Log a meal in your connected chat.</small>
+                  </Empty>
+                )}
+              </article>
+              <article className="panel">
+                <div className="panel-top">
+                  <h3>Body weight</h3>
+                  <span>POUNDS</span>
+                </div>
+                {weights.length ? (
+                  <Trend
+                    data={weights}
+                    series={[{ key: "weight", color: "#b28255" }]}
+                    unit="lb"
+                  />
+                ) : (
+                  <Empty>No weigh-ins yet.</Empty>
+                )}
+              </article>
+            </div>
+          </section>
+          <section className="two-col">
+            <article className="panel">
+              <div className="panel-top">
+                <h3>Weekly activity</h3>
+                <span>LAST 8 WEEKS</span>
+              </div>
+              <div className="rhythm-key">
+                <span>
+                  <i /> Lifts · {plan.targets.liftsMin}–{plan.targets.liftsMax}
+                </span>
+                <span>
+                  <i /> Movement · {plan.targets.movementDays}/7
+                </span>
+              </div>
+              <div className="weeks">
+                {weekly.map((w) => (
+                  <div className="week" key={w.date}>
+                    <div className="bar-pair">
+                      <div
+                        className="week-bar lifts"
+                        style={{
+                          height: `${Math.max(2, (w.lifts / 10) * 100)}%`,
+                        }}
+                        title={`${w.lifts} lifts`}
+                      >
+                        {w.lifts > 0 && <span>{w.lifts}</span>}
+                      </div>
+                      <div
+                        className="week-bar movement"
+                        style={{
+                          height: `${Math.max(2, (w.movementDays / 10) * 100)}%`,
+                        }}
+                        title={`${w.movementDays} movement days`}
+                      >
+                        {w.movementDays > 0 && <span>{w.movementDays}</span>}
+                      </div>
+                    </div>
+                    <small>{w.date.slice(5)}</small>
+                  </div>
+                ))}
+              </div>
+              <details className="metric-note">
+                <summary>About these numbers</summary>
+                <p>Movement = a workout or positive self-reported steps.</p>
+              </details>
+            </article>
+            <article className="panel">
+              <div className="panel-top">
+                <h3>Sets by muscle</h3>
+                <span>HARD SETS / THIS WEEK</span>
+              </div>
+              <div className="muscles">
+                {Object.entries(week.hardSets)
+                  .filter(([m]) => m !== "unmapped")
+                  .map(([m, n]) => (
+                    <div className="muscle" key={m}>
+                      <span>{m}</span>
+                      <div className="muscle-track">
+                        {["biceps", "triceps", "shoulders"].includes(m) && (
+                          <div
+                            className="target-band"
+                            style={{
+                              left: `${(plan.targets.setsMin / Math.max(20, plan.targets.setsMax, n)) * 100}%`,
+                              width: `${((plan.targets.setsMax - plan.targets.setsMin) / Math.max(20, plan.targets.setsMax, n)) * 100}%`,
+                            }}
+                          />
+                        )}
+                        <div
+                          className="muscle-fill"
+                          style={{
+                            width: `${Math.min(100, (n / Math.max(20, plan.targets.setsMax, n)) * 100)}%`,
+                          }}
+                        />
+                      </div>
+                      <strong>{n}</strong>
+                    </div>
+                  ))}
+              </div>
+              <details className="metric-note">
+                <summary>About these numbers</summary>
+                <p>
+                  Shaded band: {plan.targets.setsMin}–{plan.targets.setsMax}{" "}
+                  sets for arms & shoulders. Primary muscle only.{" "}
+                  {week.hardSets.unmapped} unmapped sets.
+                </p>
+              </details>
+            </article>
+          </section>
+          <section className="two-col">
+            <article className="panel">
+              <div className="panel-top">
+                <h3>Measurements</h3>
+                <span>INCHES / MONTHLY</span>
+              </div>
+              {data.measurements.length ? (
+                <>
+                  <Trend
+                    data={data.measurements}
+                    series={[
+                      { key: "arm", color: "#527c50" },
+                      { key: "shoulders", color: "#b28255" },
+                      { key: "chest", color: "#748ba4" },
+                      { key: "waist", color: "#9d729a" },
+                    ]}
+                    unit="in"
+                  />
+                  <div className="measurement-key">
+                    {["arm", "shoulders", "chest", "waist"].map((m, i) => (
+                      <span
+                        key={m}
+                        style={{
+                          color: ["#527c50", "#b28255", "#748ba4", "#9d729a"][
+                            i
+                          ],
+                        }}
+                      >
+                        ● {m}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <Empty>
+                  No measurements yet.
+                  <small>
+                    Your monthly tape measurements will appear here.
+                  </small>
+                </Empty>
+              )}
+            </article>
+            <article className="panel">
+              <div className="panel-top">
+                <h3>Progress photos</h3>
+              </div>
+              {data.photos.length ? (
+                <div className="photos">
+                  {data.photos.map((p) => (
+                    <Photo key={p._id} photo={p} />
+                  ))}
+                </div>
+              ) : (
+                <Empty>No photos yet.</Empty>
+              )}
+            </article>
+          </section>
+        </>
+      )}
+      {view === "history" && (
+        <section id="meals" className="panel meals">
+          <div className="panel-top">
+            <h3>Recent meals</h3>
           </div>
-        ) : (
-          <Empty>
-            Nothing logged yet. Tell your connected chat what you ate.
-          </Empty>
-        )}
-      </section>
+          {recent.length ? (
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>MEAL</th>
+                    <th>WHEN</th>
+                    <th>CALORIES</th>
+                    <th>PROTEIN</th>
+                    <th>QUALITY</th>
+                    <th>SOURCE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recent.map((m) => (
+                    <tr key={m._id}>
+                      <td>
+                        {m.name}
+                        <small>{m.note}</small>
+                      </td>
+                      <td data-label="Date">{m.date.slice(5)}</td>
+                      <td data-label="Calories">{Math.round(m.calories)}</td>
+                      <td data-label="Protein" className="protein-cell">
+                        {Math.round(m.protein)}g
+                      </td>
+                      <td data-label="Quality">
+                        {m.quality}
+                        <span className="muted"> / 10</span>
+                      </td>
+                      <td data-label="Source">
+                        <span className="source">{m.source}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <Empty>
+              Nothing logged yet. Tell your connected chat what you ate.
+            </Empty>
+          )}
+        </section>
+      )}
 
       <footer>
         <button
@@ -455,7 +491,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
           Sign out
         </button>
       </footer>
-      <FloatingNav />
+      <FloatingNav active={view} />
     </main>
   );
 }

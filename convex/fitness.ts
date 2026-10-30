@@ -501,6 +501,7 @@ export const dashboard = query({
       .withIndex("by_date_ts")
       .order("desc")
       .collect();
+    const state = await readState(ctx);
     const allMeals = await ctx.db.query("meals").withIndex("by_date").collect();
     const mealCalendar: Record<string, { calories: number; meals: number }> =
       {};
@@ -514,6 +515,13 @@ export const dashboard = query({
       plan,
       today,
       workoutHistory,
+      nextSession: nextSession(
+        plan,
+        state.rotation.next,
+        workoutHistory,
+        today,
+        state.recoveryRemaining,
+      ),
       mealCalendar,
       weeklyHistory,
       ...data,
