@@ -1,4 +1,5 @@
 import "server-only";
+import { getGarminSleep } from "./garmin";
 import { timingSafeEqual } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
@@ -77,7 +78,10 @@ export function createServer(env: Secrets) {
             name === "delete_entry",
           idempotentHint:
             readOnly || name === "log_steps" || name === "delete_entry",
-          openWorldHint: name === "lookup_food" || name === "upload_photo_url",
+          openWorldHint:
+            name === "lookup_food" ||
+            name === "upload_photo_url" ||
+            name === "get_sleep",
         },
       },
       async (p) => {
@@ -106,6 +110,16 @@ export function createServer(env: Secrets) {
       },
     );
   }
+  register(
+    "get_sleep",
+    "Read the last 30 calendar days of Garmin sleep, fetched on demand and cached for up to 15 minutes. Dates identify the wake-up day. Missing nights are unrecorded, not zero sleep. Check status and fetchedAt before interpreting. These are wearable estimates; do not infer causation or diagnose from scores.",
+    z.object({}),
+    true,
+    async () => {
+      const plan = await db.query(api.fitness.get_plan, auth);
+      return getGarminSleep(todayAt(Date.now(), plan.timezone));
+    },
+  );
   register(
     "log_meal",
     "Record one meal from a description or photo. Estimate calories and grams of protein/carbs/fat, quality 1–10, note assumptions, and ground with lookup_food when possible. Use source estimate unless matched to OFF/USDA. Call once per meal; use a stable requestId for retries.",

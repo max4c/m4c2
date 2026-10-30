@@ -14,6 +14,7 @@ try {
   assert.equal((await fetch(base + "/mcp/invalid")).status, 404);
   assert.equal((await fetch(base + "/blog")).status, 404);
   assert.equal((await fetch(base + "/fitness/api/data")).status, 401);
+  assert.equal((await fetch(base + "/fitness/api/sleep")).status, 401);
   const password = readFileSync(".vercel/supermedium-password.txt", "utf8").trim();
   const login = (value, origin = base) => fetch(base + "/fitness/api/login", {method:"POST",headers:{Origin:origin,"Content-Type":"application/json"},body:JSON.stringify({password:value})});
   assert.equal((await login("wrong", "https://example.com")).status,403);
@@ -42,9 +43,10 @@ try {
     ),
   );
   const list = await client.listTools();
-  assert.equal(list.tools.length, 16);
+  assert.equal(list.tools.length, 17);
   for (const [name, args] of [
     ["get_plan", {}],
+    ["get_sleep", {}],
     ["get_next_session", {}],
     ["get_remaining", {}],
     ["get_summary", { period: "week", asOf: "2026-10-25" }],

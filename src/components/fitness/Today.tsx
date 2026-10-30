@@ -1,7 +1,11 @@
 "use client";
 import type { FunctionReturnType } from "convex/server";
+import Sleep from "./Sleep";
+import type { SleepData } from "../../../shared/sleep";
 import { api } from "../../../convex/_generated/api";
-type Data = FunctionReturnType<typeof api.fitness.dashboard>;
+type Data = FunctionReturnType<typeof api.fitness.dashboard> & {
+  sleep?: SleepData;
+};
 function setsLabel(
   sets: { w: number | null; r: number | null }[],
   mode: string,
@@ -66,6 +70,11 @@ export default function Today({ data }: { data: Data }) {
           <small>{steps.length ? "Logged today" : "Not logged"}</small>
         </div>
       </section>
+      <Sleep
+        data={data.sleep}
+        today={data.today}
+        timezone={data.plan.timezone}
+      />
       <section className="panel">
         <div className="panel-top">
           <h2>

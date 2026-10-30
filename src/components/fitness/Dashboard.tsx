@@ -2,6 +2,8 @@
 /* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
 import FloatingNav, { type DashboardView } from "./FloatingNav";
 import Today from "./Today";
+import Sleep from "./Sleep";
+import type { SleepData } from "../../../shared/sleep";
 import WeeklyOverview from "./WeeklyOverview";
 import TrainingHistory from "./TrainingHistory";
 import React, { useState, useEffect } from "react";
@@ -21,7 +23,9 @@ import {
 import { addDays, periodStart } from "../../../shared/model";
 import { summarize } from "../../../shared/analytics";
 
-type DashboardData = FunctionReturnType<typeof api.fitness.dashboard>;
+type DashboardData = FunctionReturnType<typeof api.fitness.dashboard> & {
+  sleep?: SleepData;
+};
 function Empty({ children }: { children: React.ReactNode }) {
   return <div className="empty">{children}</div>;
 }
@@ -163,6 +167,12 @@ export function Dashboard({ data }: { data: DashboardData }) {
           <div className="section-title view-title">
             <h1>Trends</h1>
           </div>
+          <Sleep
+            data={data.sleep}
+            today={today}
+            timezone={plan.timezone}
+            history
+          />
           <section id="overview" aria-label="This week">
             <div className="section-title">
               <h2>This week</h2>
@@ -505,6 +515,7 @@ function Gate({ title, detail }: { title: string; detail: string }) {
 }
 export default function FitnessApp() {
   const [data, setData] = useState<DashboardData | null>(null);
+  const [sleep, setSleep] = useState<SleepData | undefined>();
   const [locked, setLocked] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -521,6 +532,14 @@ export default function FitnessApp() {
       if (!response.ok)
         throw Error("Your log is temporarily unavailable. Please retry.");
       setData(await response.json());
+      void fetch("/fitness/api/sleep", { cache: "no-store" })
+        .then(async (response) => {
+          if (!response.ok) throw new Error("Sleep unavailable");
+          setSleep(await response.json());
+        })
+        .catch(() =>
+          setSleep({ status: "unavailable", nights: [], fetchedAt: null }),
+        );
       setLocked(false);
       setError("");
     } catch {
@@ -608,7 +627,7 @@ export default function FitnessApp() {
   if (data)
     return (
       <>
-        <Dashboard data={data} />
+        <Dashboard data={{ ...data, sleep }} />
         {error && <p role="alert">{error}</p>}
       </>
     );

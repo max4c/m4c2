@@ -1,3 +1,5 @@
+import { todayAt } from "../../../../../shared/model";
+import { getGarminSleep } from "@/lib/fitness/garmin";
 import { createHmac } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { ConvexHttpClient } from "convex/browser";
@@ -80,12 +82,18 @@ export async function GET(request: NextRequest) {
     return json({ error: "Sign in required" }, 401);
   const path = request.nextUrl.pathname;
   try {
-    if (path === "/fitness/api/data")
-      return json(
-        await db().query(api.fitness.dashboard, {
-          token: process.env.DASHBOARD_TOKEN!,
-        }),
-      );
+    if (path === "/fitness/api/data") {
+      const data = await db().query(api.fitness.dashboard, {
+        token: process.env.DASHBOARD_TOKEN!,
+      });
+      return json(data);
+    }
+    if (path === "/fitness/api/sleep") {
+      const plan = await db().query(api.fitness.get_plan, {
+        token: process.env.CONVEX_SERVICE_TOKEN!,
+      });
+      return json(await getGarminSleep(todayAt(Date.now(), plan.timezone)));
+    }
     const key = path.replace(/^\/fitness\/api\/photo\//, "");
     if (
       !path.startsWith("/fitness/api/photo/") ||
