@@ -1,1 +1,23 @@
-{"id":"/fitness","name":"Supermedium","short_name":"Supermedium","start_url":"/fitness","scope":"/","display":"standalone","background_color":"#f5f3ed","theme_color":"#f5f3ed","icons":[{"src":"/icon-192.png","sizes":"192x192","type":"image/png"},{"src":"/apple-touch-icon.png","sizes":"180x180","type":"image/png"}]}
+{
+  "id": "/fitness",
+  "name": "Supermedium",
+  "short_name": "Supermedium",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/supermedium-icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/supermedium-icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

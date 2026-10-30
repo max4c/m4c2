@@ -140,7 +140,9 @@ export function Dashboard({ data }: { data: DashboardData }) {
       <section id="overview" aria-label="This week">
         <div className="section-title">
           <h1>This week</h1>
-          <span>{periodStart(today, "week").slice(5)} – {today.slice(5)}</span>
+          <span>
+            {periodStart(today, "week").slice(5)} – {today.slice(5)}
+          </span>
         </div>
         <div className="score-grid">
           {[
@@ -170,9 +172,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
             },
           ].map((s, i) => (
             <article className={`score score-${i}`} key={s.title}>
-              <div className="score-label">
-                {s.title}
-              </div>
+              <div className="score-label">{s.title}</div>
               <div className="big-number">
                 {s.value}
                 <span>{s.unit}</span>
@@ -250,9 +250,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
                 unit="lb"
               />
             ) : (
-              <Empty>
-                No weigh-ins yet.
-              </Empty>
+              <Empty>No weigh-ins yet.</Empty>
             )}
           </article>
         </div>
@@ -392,9 +390,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
               ))}
             </div>
           ) : (
-            <Empty>
-              No photos yet.
-            </Empty>
+            <Empty>No photos yet.</Empty>
           )}
         </article>
       </section>
@@ -447,9 +443,7 @@ export function Dashboard({ data }: { data: DashboardData }) {
       </section>
 
       <footer>
-        <span>
-          Supermedium
-        </span>
+        <span>Supermedium</span>
         <button
           className="forget-device"
           onClick={async () => {
@@ -480,6 +474,7 @@ export default function FitnessApp() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [locked, setLocked] = useState(false);
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   async function refresh() {
@@ -547,16 +542,30 @@ export default function FitnessApp() {
           }}
         >
           <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            maxLength={256}
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
+          <div className="password-field">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              required
+              maxLength={256}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <button
+              className="password-toggle"
+              type="button"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-pressed={showPassword}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
           <button disabled={busy} type="submit">
             {busy ? "Signing in…" : "Sign in"}
           </button>

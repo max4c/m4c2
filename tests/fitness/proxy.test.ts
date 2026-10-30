@@ -36,3 +36,11 @@ it("disallows indexing and fails closed without hostname config", async () => {
   expect(proxy(request("maxforsey.com", "/fitness")).status).toBe(503);
   expect(proxy(request("maxforsey.com", "/blog")).status).toBe(200);
 });
+it("uses Supermedium icons on the app host and preserves the site's icons", () => {
+  vi.stubEnv("FITNESS_APP_HOST", "app.maxforsey.com");
+  expect(proxy(request("app.maxforsey.com", "/apple-touch-icon.png")).headers.get("x-middleware-rewrite"))
+    .toBe("https://app.maxforsey.com/supermedium-icons/apple-touch-icon.png");
+  expect(proxy(request("maxforsey.com", "/apple-touch-icon.png")).headers.get("x-middleware-rewrite"))
+    .toBeNull();
+  expect(proxy(request("app.maxforsey.com", "/supermedium-icons/icon-512.png")).status).toBe(200);
+});

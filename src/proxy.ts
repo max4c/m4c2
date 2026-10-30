@@ -5,6 +5,11 @@ const privatePath = (path: string) =>
   path.startsWith("/mcp/") ||
   path.startsWith("/photos/");
 const assets = new Set([
+  "/supermedium-icons/icon.svg",
+  "/supermedium-icons/icon-32.png",
+  "/supermedium-icons/icon-192.png",
+  "/supermedium-icons/icon-512.png",
+  "/supermedium-icons/apple-touch-icon.png",
   "/fitness.webmanifest",
   "/favicon.ico",
   "/icon-192.png",
@@ -42,6 +47,13 @@ export function proxy(request: NextRequest) {
     return response;
   }
   if (!isApp) return NextResponse.next();
+  const appIcons: Record<string, string> = {
+    "/favicon.ico": "/supermedium-icons/icon-32.png",
+    "/icon-192.png": "/supermedium-icons/icon-192.png",
+    "/apple-touch-icon.png": "/supermedium-icons/apple-touch-icon.png",
+  };
+  if (appIcons[path])
+    return NextResponse.rewrite(new URL(appIcons[path], request.url));
   if (path === "/robots.txt")
     return new NextResponse("User-agent: *\nDisallow: /\n", {
       headers: { ...privateHeaders, "Content-Type": "text/plain" },
