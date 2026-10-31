@@ -9,7 +9,7 @@ import {
   scheduleSchema,
   rulesSchema,
 } from "./model";
-const stamp = {
+export const stampFields = {
   date: dateSchema.optional(),
   ts: z.number().int().nonnegative().optional(),
   requestId: z
@@ -21,6 +21,16 @@ const stamp = {
       "Stable unique ID for retries of this same log; reuse only for identical content.",
     ),
 };
+const stamp = stampFields;
+export const loggedTables = [
+  "meals",
+  "workouts",
+  "weights",
+  "supplements",
+  "steps",
+  "measurements",
+  "photos",
+] as const;
 export const deleteInput = z.object({
   table: z.enum([
     "meals",
@@ -51,10 +61,34 @@ export const workoutInput = z
     kind: z.enum(["lift", "cardio"]),
     intensity: z.enum(["easy", "hard"]),
     exercises: z.array(exerciseSchema).max(50).default([]),
+    durationMin: nonnegative
+      .max(1440)
+      .optional()
+      .describe(
+        "Minutes for this row only. Do not repeat a whole-session duration on each live-log fragment.",
+      ),
+    distanceMi: nonnegative
+      .max(1000)
+      .optional()
+      .describe(
+        "Miles: exact distance or the lower bound of a reported range.",
+      ),
+    distanceMiMax: nonnegative
+      .max(1000)
+      .optional()
+      .describe(
+        "Upper bound when the user reported a range; e.g. 3–4 miles uses distanceMi=3 and distanceMiMax=4.",
+      ),
   })
   .refine(
     (w) => w.kind !== "cardio" || w.exercises.length === 0,
     "Cardio exercises must be empty",
+  )
+  .refine(
+    (w) =>
+      w.distanceMiMax === undefined ||
+      (w.distanceMi !== undefined && w.distanceMiMax >= w.distanceMi),
+    "Distance upper bound requires a lower bound and must not be smaller",
   );
 export const weightInput = z.object({
   ...stamp,
@@ -65,9 +99,12 @@ export const supplementsInput = z.object({
   items: z.array(z.string().trim().min(1).max(100)).min(1).max(50),
 });
 export const stepsInput = z.object({
-  date: dateSchema,
+  ...stamp,
   count: z.number().int().min(0).max(200000),
-  requestId: stamp.requestId,
+});
+export const photoInput = z.object({
+  ...stamp,
+  r2Key: z.string().regex(/^progress\/[\w/-]+\.(jpg|png|webp)$/),
 });
 export const measurementsInput = z.object({
   ...stamp,
@@ -75,6 +112,55 @@ export const measurementsInput = z.object({
   shoulders: z.number().positive().max(200),
   chest: z.number().positive().max(200),
   waist: z.number().positive().max(200),
+});
+export const entrySchemas = {
+  meals: mealInput,
+  workouts: workoutInput,
+  weights: weightInput,
+  supplements: supplementsInput,
+  steps: stepsInput,
+  measurements: measurementsInput,
+  photos: photoInput,
+};
+const editFields = z
+  .object({
+    date: dateSchema.optional(),
+    ts: stamp.ts,
+    name: mealInput.shape.name.optional(),
+    calories: mealInput.shape.calories.optional(),
+    protein: mealInput.shape.protein.optional(),
+    carbs: mealInput.shape.carbs.optional(),
+    fat: mealInput.shape.fat.optional(),
+    quality: mealInput.shape.quality.optional(),
+    note: z.string().max(4000).optional(),
+    source: z.enum(["estimate", "off", "usda"]).optional(),
+    label: workoutInput.shape.label.optional(),
+    kind: workoutInput.shape.kind.optional(),
+    intensity: workoutInput.shape.intensity.optional(),
+    exercises: z.array(exerciseSchema).max(50).optional(),
+    durationMin: nonnegative.max(1440).nullable().optional(),
+    distanceMi: nonnegative.max(1000).nullable().optional(),
+    distanceMiMax: nonnegative.max(1000).nullable().optional(),
+    lbs: weightInput.shape.lbs.optional(),
+    items: supplementsInput.shape.items.optional(),
+    count: stepsInput.shape.count.optional(),
+    arm: measurementsInput.shape.arm.optional(),
+    shoulders: measurementsInput.shape.shoulders.optional(),
+    chest: measurementsInput.shape.chest.optional(),
+    waist: measurementsInput.shape.waist.optional(),
+    r2Key: photoInput.shape.r2Key.optional(),
+  })
+  .strict()
+  .refine(
+    (p) => Object.keys(p).length > 0,
+    "Supply at least one field to update",
+  );
+export const updateInput = z.object({
+  id: z.string().min(1),
+  fields: editFields.describe(
+    "Only changed fields, with absolute replacement values; omitted fields are preserved. null clears optional duration/distance only.",
+  ),
+  requestId: stamp.requestId,
 });
 export const planPatch = z.object({
   program: z

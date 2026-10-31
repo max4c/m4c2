@@ -43,13 +43,24 @@ try {
     ),
   );
   const list = await client.listTools();
-  assert.equal(list.tools.length, 17);
+  assert.equal(list.tools.length, 18);
+  const readTools = ["query_entries", "get_summary", "get_plan", "get_next_session", "get_exercise_history", "get_remaining", "get_sleep", "lookup_food"];
+  const writeAnnotations = list.tools.find(t => t.name === "log_meal").annotations;
+  for (const tool of list.tools) {
+    assert.equal(tool.annotations.destructiveHint, tool.name === "delete_entry");
+    if (readTools.includes(tool.name)) assert.equal(tool.annotations.readOnlyHint, true);
+    if (tool.name.startsWith("log_") || tool.name === "update_entry") assert.deepEqual(tool.annotations, writeAnnotations);
+  }
+  const workoutSchema = list.tools.find(t => t.name === "log_workout").inputSchema;
+  assert(workoutSchema.properties.durationMin && workoutSchema.properties.distanceMi);
+  console.log("PASS live update_entry discovery, consistent annotations, and numeric cardio input schema");
   for (const [name, args] of [
     ["get_plan", {}],
     ["get_sleep", {}],
     ["get_next_session", {}],
     ["get_remaining", {}],
     ["get_summary", { period: "week", asOf: "2026-10-25" }],
+    ["get_summary", { period: "day", asOf: "2026-10-30" }],
     ["get_exercise_history", { name: "Incline DB curl" }],
   ]) {
     const result = await client.callTool({ name, arguments: args });

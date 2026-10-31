@@ -120,7 +120,7 @@ Lift totals count distinct logged dates. Same-date lifting rows are merged by no
 
 Rotation advances at most once per date and normalized Push/Pull/Upper label. Persistent advancement markers survive row deletion; deletion never rewinds rotation. Existing same-date valid rows also prevent a duplicate advancement.
 
-`delete_entry(table, id)` deletes one logged row. Query first to confirm `_id`, or use a log result's `id`. Only the seven logging tables are allowed, IDs must belong to the selected table, and the service token is required. Repeating deletion returns `deleted: false`. Deleting a photo entry removes its database row, not the R2 object. Refresh connector tools to discover `delete_entry` (16 tools total).
+`delete_entry(table, id)` deletes one logged row. Query first to confirm `_id`, or use a log result's `id`. Only the seven logging tables are allowed, IDs must belong to the selected table, and the service token is required. Repeating deletion returns `deleted: false`. Deleting a photo entry removes its database row, not the R2 object. Refresh connector tools after changes (currently 18 tools including `update_entry`).
 
 ## October 30 routine and rest timer
 
@@ -131,3 +131,20 @@ The intended week is Mon Push, Tue Pull, Wed HIIT, Thu Upper, Fri Legs, Sat socc
 Exercise prescriptions carry rep ranges, rest durations, categories, optional superset groups, added-load conventions and progression policies. Double progression uses each exercise's range. Unknown equipment increments produce a load-selection instruction instead of an invented numeric increase. Sets below a new range request a lighter load. Heavy 4–6-rep pull-ups have separate history from Pull-day pull-ups. Explicit aliases preserve renamed dip/raise/carry histories without rewriting logs. Jumps prioritize quality, bodyweight abs progress reps, and carries use metres. Legacy plans still parse with their prior defaults.
 
 Rest controls appear in Today and Routine. Only the second exercise of the arm superset offers the pair timer. One local timer persists across navigation/reload using a wall-clock deadline, with +30s and cancel. It catches up after browser suspension. A completion tone requires an active audio context and visible app; there is no promised iPhone lock-screen alarm or background notification. Timer controls do not log sets.
+
+
+## Entry corrections, totals, and food portions
+
+`update_entry(id, fields, requestId?)` infers one of the seven log tables from the row ID and patches only supplied fields. Meals remain whole entries: add toast by supplying the updated meal name and absolute total macros. Omitted fields are retained; supplied exercises/items arrays replace those arrays. `null` clears optional workout duration/distance. Protected state and fields from other tables are rejected. Workout edits preserve rotation/recovery; original and corrected date/label markers prevent later fragments from advancing twice. Edits do not recompute the live rotation.
+
+Every `log_*`, `update_entry`, and `delete_entry` response includes the current saved entry (null after deletion), local `date`, and `day` with nutrition totals, live calorie/protein targets, remaining amounts, and movement totals/coverage. Carbs/fat targets remain null because the plan does not define them. Movement goals are explicitly weekly. Date corrections also return `previousDay`. Retry receipts retain the operation result but recompute current totals and the current entry; a reused edit request ID cannot overwrite a newer correction. Minimal deletion receipts retain only row ID, table and date so deletion retries report the original day's totals.
+
+Workouts optionally store `durationMin`, `distanceMi`, and `distanceMiMax` (upper bound for a reported range). A 50-minute walk uses durationMin=50; a 3–4-mile hike uses distanceMi=3, distanceMiMax=4. Summary totals include known values and coverage; missing duration/distance is null, not zero. Do not repeat an entire session's duration on every live-log fragment. Lifting sessions still count distinct dates.
+
+For a current log, omit date and ts. The server stamps the time and derives the local date in plan.timezone, default America/Los_Angeles. Change timezone through update_plan when needed; changing it never shifts historical dates. Steps now get a timestamp too; old steps rows remain valid.
+
+`lookup_food` accepts either portionGrams or count + unit (including fractional counts). Open Food Facts serving and package metadata resolves supported household units; no piece weight or liquid density is guessed. Serving label, grams/ml per serving, and calories per piece appear when supported. Different preparation variants produce warnings, including a twofold calorie-per-piece discrepancy. Ambiguous labels/multipacks stay unresolved and need grams or a label. USDA generic search still needs grams for nutrition scaling.
+
+All reads advertise readOnlyHint=true. All logs and update_entry share the same non-destructive annotations; only delete_entry advertises destructiveHint=true, per the user's requested connector policy. Client approval settings still control prompts.
+
+Verification: `npm run check:fitness`, `node scripts/fitness/check-entry-local.mjs`, and a production build. The local script exercises the actual HTTP MCP server/Convex database, validates discovery and rejected edits, performs/cleans up synthetic logs, and reads a real OFF product. Production checks only read health records. Schema additions are compatible with existing records and need no backfill. Web rollback can keep the new backend; a backend rollback must retain optional columns and deletion receipts so newly logged records remain valid.

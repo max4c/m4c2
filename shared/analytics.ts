@@ -12,6 +12,7 @@ import {
 import { canonicalWorkouts } from "./training";
 import { exerciseAims } from "./progression";
 export type HistoryWorkout = Workout & { deload?: boolean };
+import { activityTotals, dayTotals } from "./day-totals";
 import { liftSessions } from "./lift-sessions";
 export function nextSession(
   plan: Plan,
@@ -209,6 +210,7 @@ export function summarize(
       pass: protein >= plan.targets.protein,
     },
   };
+  const activity = activityTotals(workouts);
   return {
     ...(period === "week" ? { THE_THREE_NUMBERS: threeNumbers } : {}),
     period,
@@ -226,6 +228,8 @@ export function summarize(
     lifts,
     movementDays: movement,
     weeklyTargets: plan.targets,
+    ...(period === "day" ? { day: dayTotals(data, plan, today) } : {}),
+    movement: activity,
     hardSets,
     hardSetsMethod:
       "Primary muscle only, hard-intensity lift sets only. Timed hangs and carries are unmapped. Targets are weekly; month totals are not weekly pass/fail.",
@@ -257,12 +261,18 @@ export function summarize(
         0,
       ),
       cardioSessions: cardio.length,
+      cardioMinutes: activity.cardioMinutes,
+      cardioDistanceMi: activity.cardioDistanceMi,
+      cardioDistanceMiMax: activity.cardioDistanceMiMax,
       easyCardio: cardio.filter((w) => w.intensity === "easy").length,
       hardCardio: cardio.filter((w) => w.intensity === "hard").length,
       cardioActivities: cardio.map((w) => ({
         date: w.date,
         label: w.label,
         intensity: w.intensity,
+        durationMin: w.durationMin ?? null,
+        distanceMi: w.distanceMi ?? null,
+        distanceMiMax: w.distanceMiMax ?? w.distanceMi ?? null,
       })),
     },
     nutrition: {

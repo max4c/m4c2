@@ -30,7 +30,11 @@ import {
   planPatch,
   queryInput,
   deleteInput,
+  updateInput,
+  entrySchemas,
+  loggedTables,
 } from "../shared/inputs";
+import { dayTotals } from "../shared/day-totals";
 import { z } from "zod";
 const auth = { token: v.string() };
 async function readPlan(ctx: QueryCtx) {
@@ -42,6 +46,56 @@ async function readState(ctx: QueryCtx) {
   const s = await ctx.db.query("state").unique();
   if (!s) throw new Error("State not initialized; run the seed mutation.");
   return s;
+}
+async function loggedEntry(ctx: QueryCtx, id: string) {
+  for (const table of loggedTables) {
+    const rowId = ctx.db.normalizeId(table, id);
+    if (rowId) return { table, id: rowId, row: await ctx.db.get(rowId) };
+  }
+  throw new Error("ID must belong to a logged entry");
+}
+async function readDay(
+  ctx: QueryCtx,
+  date: string,
+  plan: Awaited<ReturnType<typeof readPlan>>,
+) {
+  const [meals, workouts] = await Promise.all([
+    ctx.db
+      .query("meals")
+      .withIndex("by_date", (q) => q.eq("date", date))
+      .collect(),
+    ctx.db
+      .query("workouts")
+      .withIndex("by_date", (q) => q.eq("date", date))
+      .collect(),
+  ]);
+  return dayTotals({ meals, workouts }, plan, date);
+}
+async function writeResult<
+  T extends { id: string; date?: string | null; previousDate?: string },
+>(ctx: QueryCtx, result: T) {
+  const plan = await readPlan(ctx);
+  const found = await loggedEntry(ctx, result.id);
+  const deleted = !found.row
+    ? await ctx.db
+        .query("entryDeletions")
+        .withIndex("by_entry", (q) => q.eq("entryId", result.id))
+        .unique()
+    : null;
+  const date =
+    found.row?.date ??
+    deleted?.date ??
+    result.date ??
+    todayAt(Date.now(), plan.timezone);
+  return {
+    ...result,
+    date,
+    entry: found.row,
+    day: await readDay(ctx, date, plan),
+    ...(result.previousDate && result.previousDate !== date
+      ? { previousDay: await readDay(ctx, result.previousDate, plan) }
+      : {}),
+  };
 }
 async function history(ctx: QueryCtx, start: string, end: string) {
   const [meals, workouts, weights, steps, supplements, measurements, photos] =
@@ -188,8 +242,8 @@ async function saveLog(
       ...stamp(p, plan.timezone),
     });
   } else if (op === "log_steps") {
-    const { requestId: _, ...p } = stepsInput.parse(raw);
-    stamp(p, plan.timezone);
+    const { requestId: _, ...fields } = stepsInput.parse(raw);
+    const p = { ...fields, ...stamp(fields, plan.timezone) };
     const existing = await ctx.db
       .query("steps")
       .withIndex("by_date", (q) => q.eq("date", p.date))
@@ -274,7 +328,8 @@ async function saveLog(
       });
     }
   }
-  const result = { id, rotationAdvanced: advanced };
+  const saved = (await loggedEntry(ctx, id)).row!;
+  const result = { id, rotationAdvanced: advanced, date: saved.date };
   if (requestId)
     await ctx.db.insert("requests", { requestId, fingerprint, result });
   return result;
@@ -294,7 +349,8 @@ export const log = mutation({
   },
   handler: async (ctx, { token, operation, input }) => {
     requireToken(token);
-    return saveLog(ctx, operation, input);
+    const result = await saveLog(ctx, operation, input);
+    return writeResult(ctx, result);
   },
 });
 export const get_next_session = query({
@@ -422,6 +478,94 @@ export const query_entries = query({
     };
   },
 });
+export const update_entry = mutation({
+  args: { ...auth, input: v.any() },
+  handler: async (ctx, { token, input }) => {
+    requireToken(token);
+    const { id, fields, requestId } = updateInput.parse(input);
+    const fingerprint = JSON.stringify({ op: "update_entry", id, fields });
+    if (requestId) {
+      const previous = await ctx.db
+        .query("requests")
+        .withIndex("by_request", (q) => q.eq("requestId", requestId))
+        .unique();
+      if (previous) {
+        if (previous.fingerprint !== fingerprint)
+          throw new Error("requestId already used with different content");
+        return writeResult(ctx, previous.result);
+      }
+    }
+    const found = await loggedEntry(ctx, id);
+    if (!found.row) throw new Error("Logged entry not found");
+    const schema = entrySchemas[found.table];
+    const keys = Object.keys(fields);
+    for (const key of keys)
+      if (key === "requestId" || !(key in schema.shape))
+        throw new Error(`Field ${key} is not valid for ${found.table}`);
+    const candidate: Record<string, unknown> = { ...found.row, ...fields };
+    for (const key of ["durationMin", "distanceMi", "distanceMiMax"])
+      if (candidate[key] === null) delete candidate[key];
+    const parsed = schema.parse(candidate);
+    const plan = await readPlan(ctx);
+    stamp(parsed, plan.timezone); // Validate explicitly edited dates/times; omitted fields stay unchanged.
+    const date = parsed.date!;
+    if (found.table === "steps") {
+      const sameDate = await ctx.db
+        .query("steps")
+        .withIndex("by_date", (q) => q.eq("date", date))
+        .unique();
+      if (sameDate && sameDate._id !== found.id)
+        throw new Error(
+          "Steps already exist for that date; edit that row instead",
+        );
+    }
+    // Validate the merged row, but only patch keys that were actually supplied.
+    // Defaults from a schema must never erase omitted values.
+    const patch = Object.fromEntries(
+      keys.map((key) => [key, Reflect.get(parsed, key)]),
+    );
+    if (found.table === "workouts") {
+      const before = await ctx.db.get(ctx.db.normalizeId("workouts", id)!);
+      const after = workoutInput.parse(candidate);
+      for (const w of [before!, { ...after, date, ts: after.ts! }]) {
+        if (validRotation(w, rotationOrder(plan))) {
+          const label = rotationLabel(w.label);
+          if (label.success) {
+            const marker = await ctx.db
+              .query("rotationAdvances")
+              .withIndex("by_date_label", (q) =>
+                q.eq("date", w.date).eq("label", label.data),
+              )
+              .unique();
+            if (!marker)
+              await ctx.db.insert("rotationAdvances", {
+                date: w.date,
+                label: label.data,
+              });
+          }
+        }
+      }
+      // Preserve the latest-date guard, without advancing or rewinding rotation/recovery.
+      const state = await readState(ctx);
+      const latest = [
+        state.lastLift,
+        before?.kind === "lift" ? before : null,
+        after.kind === "lift" ? { date, ts: after.ts! } : null,
+      ]
+        .filter((w) => w != null)
+        .sort((a, b) => b.date.localeCompare(a.date) || b.ts - a.ts)[0];
+      if (latest)
+        await ctx.db.patch(state._id, {
+          lastLift: { date: latest.date, ts: latest.ts },
+        });
+    }
+    await ctx.db.patch(found.id, patch);
+    const result = { id, updated: true, date, previousDate: found.row.date };
+    if (requestId)
+      await ctx.db.insert("requests", { requestId, fingerprint, result });
+    return writeResult(ctx, result);
+  },
+});
 export const delete_entry = mutation({
   args: { ...auth, input: v.any() },
   handler: async (ctx, { token, input }) => {
@@ -430,7 +574,17 @@ export const delete_entry = mutation({
     const rowId = ctx.db.normalizeId(table, id);
     if (!rowId) throw new Error("ID does not belong to the requested table");
     const row = await ctx.db.get(rowId);
-    if (!row) return { id, deleted: false };
+    if (!row) {
+      const receipt = await ctx.db
+        .query("entryDeletions")
+        .withIndex("by_entry", (q) => q.eq("entryId", id))
+        .unique();
+      return writeResult(ctx, {
+        id,
+        deleted: false,
+        date: receipt?.date ?? null,
+      });
+    }
     // Retain the advancement marker even when deleting a pre-marker workout.
     if (table === "workouts") {
       const workoutId = ctx.db.normalizeId("workouts", id)!;
@@ -469,7 +623,12 @@ export const delete_entry = mutation({
       }
     }
     await ctx.db.delete(rowId);
-    return { id, deleted: true };
+    await ctx.db.insert("entryDeletions", {
+      entryId: id,
+      table,
+      date: row.date,
+    });
+    return writeResult(ctx, { id, deleted: true, date: row.date });
   },
 });
 export const add_photo = mutation({

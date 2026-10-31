@@ -13,7 +13,7 @@ async function call(name, args) {
 try {
   await client.connect(new StreamableHTTPClientTransport(new URL(`http://app.localhost:3000/mcp/${env.MCP_PATH_TOKEN}`)));
   const tools = await client.listTools();
-  assert.equal(tools.tools.length, 16);
+  assert.equal(tools.tools.length, 18);
   assert.equal(tools.tools.find(t => t.name === "delete_entry").annotations.destructiveHint, true);
   const entry = await call("log_weight", { date: "2026-10-28", lbs: 170 });
   try {

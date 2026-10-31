@@ -96,14 +96,17 @@ export const planSchema = z
     rules: rulesSchema.optional(),
     rationale: z.string().min(1).max(10000),
     targets: targetsSchema,
-    timezone: z.string().refine((t) => {
-      try {
-        new Intl.DateTimeFormat("en", { timeZone: t });
-        return true;
-      } catch {
-        return false;
-      }
-    }, "Invalid IANA timezone"),
+    timezone: z
+      .string()
+      .refine((t) => {
+        try {
+          new Intl.DateTimeFormat("en", { timeZone: t });
+          return true;
+        } catch {
+          return false;
+        }
+      }, "Invalid IANA timezone")
+      .default("America/Los_Angeles"),
     bedtimeHour: z.number().int().min(0).max(23),
   })
   .refine(
@@ -122,6 +125,9 @@ export type Workout = {
   label: string;
   intensity: "easy" | "hard";
   exercises: Exercise[];
+  durationMin?: number;
+  distanceMi?: number;
+  distanceMiMax?: number;
 };
 const e = (
   name: string,

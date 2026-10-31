@@ -89,6 +89,11 @@ export const planFields = {
   bedtimeHour: v.number(),
 };
 export default defineSchema({
+  entryDeletions: defineTable({
+    entryId: v.string(),
+    table: v.string(),
+    date: v.string(),
+  }).index("by_entry", ["entryId"]),
   rotationAdvances: defineTable({ date: v.string(), label: v.string() }).index(
     "by_date_label",
     ["date", "label"],
@@ -118,6 +123,9 @@ export default defineSchema({
     intensity: v.union(v.literal("easy"), v.literal("hard")),
     exercises: v.array(exercise),
     deload: v.optional(v.boolean()),
+    durationMin: v.optional(v.number()),
+    distanceMi: v.optional(v.number()),
+    distanceMiMax: v.optional(v.number()),
   })
     .index("by_date", ["date"])
     .index("by_ts", ["ts"])
@@ -129,9 +137,11 @@ export default defineSchema({
     "by_date",
     ["date"],
   ),
-  steps: defineTable({ date: v.string(), count: v.number() }).index("by_date", [
-    "date",
-  ]),
+  steps: defineTable({
+    date: v.string(),
+    ts: v.optional(v.number()),
+    count: v.number(),
+  }).index("by_date", ["date"]),
   measurements: defineTable({
     ...stamp,
     arm: v.number(),
