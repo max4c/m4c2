@@ -33,8 +33,12 @@ import {
   updateInput,
   entrySchemas,
   loggedTables,
+  foodDayInput,
+  maintenanceInput,
 } from "../shared/inputs";
 import { dayTotals } from "../shared/day-totals";
+import { estimateMaintenance } from "../shared/maintenance";
+import { exerciseNameMatches } from "../shared/exercise-matching";
 import { z } from "zod";
 const auth = { token: v.string() };
 async function readPlan(ctx: QueryCtx) {
@@ -54,6 +58,29 @@ async function loggedEntry(ctx: QueryCtx, id: string) {
   }
   throw new Error("ID must belong to a logged entry");
 }
+async function foodDayStatus(ctx: QueryCtx, date: string) {
+  const row = await ctx.db
+    .query("foodDays")
+    .withIndex("by_date", (q) => q.eq("date", date))
+    .unique();
+  return {
+    complete: row?.complete ?? false,
+    updatedAt: row?.updatedAt ?? null,
+    needsReconfirmation: row?.invalidatedAt !== undefined,
+  };
+}
+async function invalidateFoodDay(ctx: MutationCtx, date: string) {
+  const row = await ctx.db
+    .query("foodDays")
+    .withIndex("by_date", (q) => q.eq("date", date))
+    .unique();
+  if (row?.complete)
+    await ctx.db.patch(row._id, {
+      complete: false,
+      updatedAt: Date.now(),
+      invalidatedAt: Date.now(),
+    });
+}
 async function readDay(
   ctx: QueryCtx,
   date: string,
@@ -69,7 +96,10 @@ async function readDay(
       .withIndex("by_date", (q) => q.eq("date", date))
       .collect(),
   ]);
-  return dayTotals({ meals, workouts }, plan, date);
+  return {
+    ...dayTotals({ meals, workouts }, plan, date),
+    foodLog: await foodDayStatus(ctx, date),
+  };
 }
 async function writeResult<
   T extends { id: string; date?: string | null; previousDate?: string },
@@ -92,6 +122,17 @@ async function writeResult<
     date,
     entry: found.row,
     day: await readDay(ctx, date, plan),
+    ...(found.table === "workouts" && found.row
+      ? {
+          exerciseNameMatches: exerciseNameMatches(
+            workoutInput.parse(found.row).exercises.map((e) => e.name),
+            plan,
+            (await ctx.db.query("workouts").collect()).filter(
+              (w) => w._id !== result.id,
+            ),
+          ),
+        }
+      : {}),
     ...(result.previousDate && result.previousDate !== date
       ? { previousDay: await readDay(ctx, result.previousDate, plan) }
       : {}),
@@ -329,6 +370,7 @@ async function saveLog(
     }
   }
   const saved = (await loggedEntry(ctx, id)).row!;
+  if (op === "log_meal") await invalidateFoodDay(ctx, saved.date);
   const result = { id, rotationAdvanced: advanced, date: saved.date };
   if (requestId)
     await ctx.db.insert("requests", { requestId, fingerprint, result });
@@ -372,6 +414,89 @@ export const get_next_session = query({
       today,
       state.recoveryRemaining,
     );
+  },
+});
+export const mark_food_day_complete = mutation({
+  args: { ...auth, input: v.any() },
+  handler: async (ctx, { token, input }) => {
+    requireToken(token);
+    const parsed = foodDayInput.parse(input),
+      plan = await readPlan(ctx);
+    const { requestId, ...fields } = parsed;
+    const fingerprint = JSON.stringify({
+      op: "mark_food_day_complete",
+      fields,
+    });
+    if (requestId) {
+      const previous = await ctx.db
+        .query("requests")
+        .withIndex("by_request", (q) => q.eq("requestId", requestId))
+        .unique();
+      if (previous) {
+        if (previous.fingerprint !== fingerprint)
+          throw new Error("requestId already used with different content");
+        return {
+          date: previous.result.date,
+          day: await readDay(ctx, previous.result.date, plan),
+        };
+      }
+    }
+    const { date } = stamp(fields, plan.timezone);
+    const day = await readDay(ctx, date, plan);
+    if (fields.complete && day.mealEntries === 0 && !fields.confirmZeroIntake)
+      throw new Error(
+        "An empty log is not a zero-intake day. Confirm zero intake explicitly or log the missing food first.",
+      );
+    const old = await ctx.db
+      .query("foodDays")
+      .withIndex("by_date", (q) => q.eq("date", date))
+      .unique();
+    const value = { date, complete: fields.complete, updatedAt: Date.now() };
+    if (old)
+      await ctx.db.patch(old._id, { ...value, invalidatedAt: undefined });
+    else await ctx.db.insert("foodDays", value);
+    if (requestId)
+      await ctx.db.insert("requests", {
+        requestId,
+        fingerprint,
+        result: { date },
+      });
+    return { date, day: await readDay(ctx, date, plan) };
+  },
+});
+export const estimate_maintenance = query({
+  args: { ...auth, input: v.any() },
+  handler: async (ctx, { token, input }) => {
+    requireToken(token);
+    const p = maintenanceInput.parse(input),
+      plan = await readPlan(ctx);
+    const yesterday = addDays(todayAt(Date.now(), plan.timezone), -1);
+    const end = p.asOf ?? yesterday;
+    if (end > yesterday)
+      throw new Error(
+        "Maintenance uses finished calendar days only; asOf must be yesterday or earlier in plan.timezone",
+      );
+    const start = addDays(end, 1 - p.days);
+    const [meals, weights, foodDays] = await Promise.all([
+      ctx.db
+        .query("meals")
+        .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
+        .collect(),
+      ctx.db
+        .query("weights")
+        .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
+        .collect(),
+      ctx.db
+        .query("foodDays")
+        .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
+        .collect(),
+    ]);
+    return {
+      ...estimateMaintenance({ meals, weights, foodDays }, end, p.days),
+      timezone: plan.timezone,
+      currentCalorieTarget: plan.targets.calories,
+      targetChanged: false,
+    };
   },
 });
 export const get_remaining = query({
@@ -420,12 +545,17 @@ export const get_remaining = query({
             : Math.max(0, calories - plan.targets.calories),
       },
       targets: plan.targets,
+      foodLog: await foodDayStatus(ctx, today),
+      nextAction:
+        plan.targets.calories === null
+          ? { tool: "estimate_maintenance", arguments: {} }
+          : null,
       workoutHappened: d.workouts.length > 0,
       hoursUntilBedtime,
       lighterMealSuggested: hoursUntilBedtime <= 2,
       note:
         plan.targets.calories === null
-          ? "Calorie target is unset. Ask the user for a daily target; do not invent a remaining calorie budget."
+          ? "Calorie target is unset. Call estimate_maintenance for a provisional estimate or its data-readiness checklist; do not ask the user to supply an unknown target. Keep remaining calories null and never adopt an estimate as a target without the user choosing it."
           : "Choose food to close the protein gap within remaining calories; lighter meals close to bedtime.",
     };
   },
@@ -447,12 +577,18 @@ export const get_summary = query({
       today > todayAt(Date.now(), p.timezone)
     )
       throw new Error("Invalid summary date");
-    return summarize(
+    const summary = summarize(
       await history(ctx, addDays(periodStart(today, period), -28), today),
       p,
       today,
       period,
     );
+    return period === "day"
+      ? {
+          ...summary,
+          day: { ...summary.day!, foodLog: await foodDayStatus(ctx, today) },
+        }
+      : summary;
   },
 });
 export const query_entries = query({
@@ -560,6 +696,10 @@ export const update_entry = mutation({
         });
     }
     await ctx.db.patch(found.id, patch);
+    if (found.table === "meals") {
+      await invalidateFoodDay(ctx, found.row.date);
+      if (date !== found.row.date) await invalidateFoodDay(ctx, date);
+    }
     const result = { id, updated: true, date, previousDate: found.row.date };
     if (requestId)
       await ctx.db.insert("requests", { requestId, fingerprint, result });
@@ -623,6 +763,7 @@ export const delete_entry = mutation({
       }
     }
     await ctx.db.delete(rowId);
+    if (table === "meals") await invalidateFoodDay(ctx, row.date);
     await ctx.db.insert("entryDeletions", {
       entryId: id,
       table,

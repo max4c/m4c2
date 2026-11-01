@@ -206,3 +206,23 @@ export const queryInput = z
     cursor: z.string().nullable().optional(),
   })
   .refine((x) => x.start <= x.end, "start must precede end");
+
+export const foodDayInput = z.object({
+  date: dateSchema.optional(),
+  complete: z.boolean().default(true),
+  confirmZeroIntake: z
+    .boolean()
+    .default(false)
+    .describe(
+      "Required to mark an empty day complete; only true if the user explicitly confirms zero intake.",
+    ),
+  requestId: stamp.requestId,
+});
+export const maintenanceInput = z.object({
+  asOf: dateSchema
+    .optional()
+    .describe(
+      "Last finished calendar day to consider; defaults to yesterday in plan.timezone. Today is excluded even if marked complete.",
+    ),
+  days: z.number().int().min(14).max(56).default(28),
+});

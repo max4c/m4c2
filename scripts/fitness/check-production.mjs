@@ -43,19 +43,21 @@ try {
     ),
   );
   const list = await client.listTools();
-  assert.equal(list.tools.length, 18);
-  const readTools = ["query_entries", "get_summary", "get_plan", "get_next_session", "get_exercise_history", "get_remaining", "get_sleep", "lookup_food"];
+  assert.equal(list.tools.length, 20);
+  const readTools = ["query_entries", "get_summary", "get_plan", "get_next_session", "get_exercise_history", "get_remaining", "get_sleep", "lookup_food", "estimate_maintenance"];
   const writeAnnotations = list.tools.find(t => t.name === "log_meal").annotations;
   for (const tool of list.tools) {
     assert.equal(tool.annotations.destructiveHint, tool.name === "delete_entry");
     if (readTools.includes(tool.name)) assert.equal(tool.annotations.readOnlyHint, true);
     if (tool.name.startsWith("log_") || tool.name === "update_entry") assert.deepEqual(tool.annotations, writeAnnotations);
   }
+  assert(list.tools.some(t => t.name === "mark_food_day_complete"));
   const workoutSchema = list.tools.find(t => t.name === "log_workout").inputSchema;
   assert(workoutSchema.properties.durationMin && workoutSchema.properties.distanceMi);
   console.log("PASS live update_entry discovery, consistent annotations, and numeric cardio input schema");
   for (const [name, args] of [
     ["get_plan", {}],
+    ["estimate_maintenance", {}],
     ["get_sleep", {}],
     ["get_next_session", {}],
     ["get_remaining", {}],
@@ -66,6 +68,12 @@ try {
     const result = await client.callTool({ name, arguments: args });
     assert(!result.isError, `${name} failed`);
     assert(result.content[0].text);
+    if (name === "estimate_maintenance") {
+      const estimate = JSON.parse(result.content[0].text);
+      assert.equal(estimate.targetChanged, false);
+      assert(estimate.status === "insufficient_data" || estimate.status === "provisional" || estimate.status === "unreliable_trend");
+      console.log(`Maintenance status: ${estimate.status}; complete days ${estimate.coverage.completeDays}, selected weigh-in days ${estimate.coverage.weighInDays}`);
+    }
     console.log(`PASS ${name}`);
   }
   await client.close();

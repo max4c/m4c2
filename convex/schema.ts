@@ -89,6 +89,12 @@ export const planFields = {
   bedtimeHour: v.number(),
 };
 export default defineSchema({
+  foodDays: defineTable({
+    date: v.string(),
+    complete: v.boolean(),
+    updatedAt: v.number(),
+    invalidatedAt: v.optional(v.number()),
+  }).index("by_date", ["date"]),
   entryDeletions: defineTable({
     entryId: v.string(),
     table: v.string(),

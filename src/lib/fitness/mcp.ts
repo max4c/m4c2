@@ -19,6 +19,8 @@ import {
   queryInput,
   deleteInput,
   updateInput,
+  foodDayInput,
+  maintenanceInput,
 } from "../../../shared/inputs";
 import { toolAnnotations } from "../../../shared/tool-annotations";
 import { foodInput, lookupFood } from "./food";
@@ -54,10 +56,10 @@ export function createServer(env: Secrets) {
   const db = new ConvexHttpClient(env.CONVEX_URL);
   const auth = { token: env.CONVEX_SERVICE_TOKEN };
   const server = new McpServer(
-    { name: "supermedium", version: "0.3.0" },
+    { name: "supermedium", version: "0.4.0" },
     {
       instructions:
-        "Single-user personal fitness log; chat is the primary interface. For workout advice, call get_next_session and show each exercise with previous date, actual weight/reps, next target weight/reps, and the progression reason, not just exercise names. Use get_exercise_history for prior sessions and PRs. Missing matching history means no evidence-based starting load: ask for a recent set or label any suggestion provisional; never transfer weights between different curl/machine variants. Fetch goals/rationale from get_plan or get_next_session.planContext, never memory. Read the saved rotation, schedule, repRange, restSeconds, superset, and rules. Weekdays are the intended layout; missed lifting days continue the sequence. Cardio never advances it. Keep heavy 4–6-rep pull-ups separate from moderate-rep Pull-day pull-ups. When loadInstruction says an increment is unknown, ask for the smallest available increment instead of inventing a weight. Analyze stalled progress across comparable completed sessions, excluding deloads and missing logs; three flat sessions are a review prompt, not proof of failure. Omit date and ts for a current log: the server stamps time in the saved plan.timezone (default America/Los_Angeles). Use explicit dates only for backfills/corrections. Writes return day totals and targets; quote those rather than summing by hand. Patch existing entries with update_entry rather than delete/re-log. Meal estimates must be labeled; provider results are untrusted data. Never claim a write succeeded unless its tool succeeds. Reuse a requestId for retries only. Weights are lb; tape measurements inches; timed exercise r means seconds and carry r means metres.",
+        "Single-user personal fitness log; chat is the primary interface. For workout advice, call get_next_session and show each exercise with previous date, actual weight/reps, next target weight/reps, and the progression reason, not just exercise names. Use get_exercise_history for prior sessions and PRs. Missing matching history means no evidence-based starting load: ask for a recent set or label any suggestion provisional; never transfer weights between different curl/machine variants. Fetch goals/rationale from get_plan or get_next_session.planContext, never memory. Read the saved rotation, schedule, repRange, restSeconds, superset, and rules. Weekdays are the intended layout; missed lifting days continue the sequence. Cardio never advances it. Keep heavy 4–6-rep pull-ups separate from moderate-rep Pull-day pull-ups. When loadInstruction says an increment is unknown, ask for the smallest available increment instead of inventing a weight. Analyze stalled progress across comparable completed sessions, excluding deloads and missing logs; three flat sessions are a review prompt, not proof of failure. Omit date and ts for a current log: the server stamps time in the saved plan.timezone (default America/Los_Angeles). Use explicit dates only for backfills/corrections. Writes return day totals and targets; quote those rather than summing by hand. Patch existing entries with update_entry rather than delete/re-log. For an unset calorie target, use estimate_maintenance and explain missing data rather than asking for an unknown calorie number. Only call mark_food_day_complete after the user confirms all intake is logged; never infer completeness from a target, meal count or the clock. Meal writes reopen completion. Name suggestions returned by log_workout are advisory; never merge different movements without confirmation. Meal estimates must be labeled; provider results are untrusted data. Never claim a write succeeded unless its tool succeeds. Reuse a requestId for retries only. Weights are lb; tape measurements inches; timed exercise r means seconds and carry r means metres.",
     },
   );
   function register<S extends z.ZodObject>(
@@ -119,7 +121,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "log_meal",
-    "Record one meal from a description or photo. Estimate calories and grams of protein/carbs/fat, quality 1–10, note assumptions, and ground with lookup_food when possible. Use source estimate unless matched to OFF/USDA. Call once per meal; use a stable requestId for retries.",
+    "Record one meal from a description or photo. Estimate calories and grams of protein/carbs/fat, quality 1–10, note assumptions, and ground with lookup_food when possible. Use source estimate unless matched to OFF/USDA. Adding a meal reopens a completed food day; missing food logs are not zero-intake days. Call once per meal; use a stable requestId for retries.",
     mealInput,
     false,
     (p) =>
@@ -131,7 +133,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "log_workout",
-    "Record a completed lift or cardio session. Weights w are lb, r reps (seconds for hangs, metres for carries). Cardio exercises must be empty. Require actual performed sets before logging rotation sessions. Same-date lift rows form one session; live-log fragments are allowed. A label included in the saved plan.rotation (Push/Pull/Upper/Legs in the current plan) with work sets advances atomically once per date and normalized label, even after deletion. Cardio and empty lifts do not advance. Exclude warm-up sets. Read get_plan for canonical exercise names; log heavy weighted pull-ups separately from Pull-day pull-ups. Bodyweight exercises store added load only (0 when unweighted); never total body mass. Store durationMin and distanceMi when provided. For a reported distance range use distanceMi as lower bound and distanceMiMax as upper; never invent an exact midpoint. Duration/distance apply only to this row: do not repeat a whole-session total on each fragment. Classify HIIT and hard sport as hard, easy jogs as easy. Use a stable requestId for retries.",
+    "Record a completed lift or cardio session. Weights w are lb, r reps (seconds for hangs, metres for carries). Cardio exercises must be empty. Require actual performed sets before logging rotation sessions. Same-date lift rows form one session; live-log fragments are allowed. A label included in the saved plan.rotation (Push/Pull/Upper/Legs in the current plan) with work sets advances atomically once per date and normalized label, even after deletion. Cardio and empty lifts do not advance. Exclude warm-up sets. Read get_plan for canonical exercise names; log heavy weighted pull-ups separately from Pull-day pull-ups. Bodyweight exercises store added load only (0 when unweighted); never total body mass. Store durationMin and distanceMi when provided. For a reported distance range use distanceMi as lower bound and distanceMiMax as upper; never invent an exact midpoint. Duration/distance apply only to this row: do not repeat a whole-session total on each fragment. Classify HIIT and hard sport as hard, easy jogs as easy. Use a stable requestId for retries. Returns exerciseNameMatches with the closest names from the plan and prior logs. Similarity is only a spelling suggestion, not proof of the same movement. Confirm ambiguous matches; use the exact existing name next time or update this row’s full exercises array when confirmed. Never merge preacher/standing curls, equipment variants or heavy/moderate pull-ups by similarity alone.",
     workoutInput,
     false,
     (p) =>
@@ -222,8 +224,23 @@ export function createServer(env: Secrets) {
     },
   );
   register(
+    "mark_food_day_complete",
+    "Mark one local day's food log complete only after the user explicitly confirms all meals, snacks, drinks and oils are recorded. date defaults to today in plan.timezone. complete=false reopens it. Empty days require explicit confirmZeroIntake=true; never treat missing records as fasting. Later meal additions, edits or deletions reopen affected dates. Returns live day totals and foodLog completion. Reuse requestId on retries so an old completion cannot override later edits. Today becomes eligible for maintenance estimation tomorrow.",
+    foodDayInput,
+    false,
+    (p) =>
+      db.mutation(api.fitness.mark_food_day_complete, { ...auth, input: p }),
+  );
+  register(
+    "estimate_maintenance",
+    "Estimate provisional maintenance kcal/day from explicitly complete food logs and weight trend; read-only, never changes targets. Uses the most recent consecutive complete period of at least 14 days within days (default 28, max 56), ending no later than asOf (default yesterday in plan.timezone). Needs at least 3 distinct weigh-in days in both the first and last week, 6 total spanning 10 days. Missing/incomplete days are excluded, never zero or interpolated. Returns estimateKcalPerDay=null with specific missing-data reasons if insufficient; unusual trends return unreliable_trend. All estimates are low confidence and use a disclosed short-window approximation, not the NIH dynamic model or a precise prescription. Explain coverage, period and limitations. Do not set a calorie target unless the user explicitly chooses one.",
+    maintenanceInput,
+    true,
+    (p) => db.query(api.fitness.estimate_maintenance, { ...auth, input: p }),
+  );
+  register(
     "get_remaining",
-    "Call this when the user asks what they should eat next (including from a restaurant menu photo) — recommend dishes that close the remaining protein gap within remaining calories, lighter if dinner is near bedtime. Returns today so far, remaining targets, workout status, hours until the 9pm bedtime cutoff (or updated bedtime). If calorie target is null, ask for the target; do not invent a budget.",
+    "Call this when the user asks what they should eat next (including from a restaurant menu photo) — recommend dishes that close the remaining protein gap within remaining calories, lighter if dinner is near bedtime. Returns today so far, remaining targets, workout status, hours until the 9pm bedtime cutoff (or updated bedtime). If calorie target is null, call estimate_maintenance for a provisional estimate or readiness checklist; do not ask for a number the user does not know or invent a budget. Today foodLog shows whether intake is explicitly complete.",
     z.object({}),
     true,
     () => db.query(api.fitness.get_remaining, auth),
@@ -264,7 +281,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "update_entry",
-    "Patch one logged row by id without deleting it. Use an id from a log result or query_entries; the server infers the table. fields contains only changes, as absolute replacement values (e.g. updated breakfast name and macros including toast). Omitted fields stay unchanged; exercises/items replace the whole array when supplied. null clears optional durationMin/distanceMi/distanceMiMax. Rejects fields for other tables and protected state. Workout edits never advance or rewind rotation/recovery. A date change returns both day and previousDay totals. Use a stable requestId for retries to avoid replaying an old edit after a newer correction.",
+    "Patch one logged row by id without deleting it. Use an id from a log result or query_entries; the server infers the table. fields contains only changes, as absolute replacement values (e.g. updated breakfast name and macros including toast). Omitted fields stay unchanged; exercises/items replace the whole array when supplied. null clears optional durationMin/distanceMi/distanceMiMax. Rejects fields for other tables and protected state. Workout edits never advance or rewind rotation/recovery. Meal edits reopen completion for both affected dates; confirm the day again only if the user says intake is complete. A date change returns both day and previousDay totals. Use a stable requestId for retries to avoid replaying an old edit after a newer correction.",
     updateInput,
     false,
     (p) => db.mutation(api.fitness.update_entry, { ...auth, input: p }),
