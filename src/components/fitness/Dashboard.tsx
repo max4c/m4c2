@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
 import FloatingNav, { type DashboardView } from "./FloatingNav";
-import { RestTimerProvider } from "./RestTimer";
+import { RestTimerProvider, clearRestNotifications } from "./RestTimer";
 import Today from "./Today";
 import Goals from "./Goals";
 import Routine from "./Routine";
@@ -513,6 +513,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
         <button
           className="forget-device"
           onClick={async () => {
+            await clearRestNotifications().catch(() => {});
             const response = await fetch("/fitness/api/logout", {
               method: "POST",
             });

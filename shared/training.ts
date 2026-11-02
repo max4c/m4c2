@@ -46,3 +46,32 @@ export function restLabel(p: PlanExercise) {
     : durationLabel(restSeconds(p));
   return p.superset ? `${duration} after pair` : duration;
 }
+
+export function loadConvention(
+  p: Pick<PlanExercise, "mode" | "loadConvention">,
+) {
+  return (
+    p.loadConvention ??
+    (p.mode === "bodyweight" ? "addedToBodyweight" : "total")
+  );
+}
+export function loadLabel(
+  weight: number | null,
+  convention: ReturnType<typeof loadConvention>,
+  max?: number,
+) {
+  if (weight === null) return "choose load";
+  const value = max && max > weight ? `${weight}–${max}` : `${weight}`;
+  if (convention === "addedToBodyweight")
+    return weight === 0 ? "bodyweight" : `+${value} lb`;
+  return `${value} lb${convention === "platesOnly" ? " of plates" : convention === "perDumbbell" ? " per dumbbell" : " total"}`;
+}
+export function sameStationSuperset(a: PlanExercise, b?: PlanExercise) {
+  return !!(
+    b &&
+    a.superset &&
+    a.superset === b.superset &&
+    a.station &&
+    a.station === b.station
+  );
+}

@@ -9,7 +9,7 @@ import {
   type Rotation,
   rotationOrder,
 } from "./model";
-import { canonicalWorkouts } from "./training";
+import { canonicalWorkouts, loadConvention } from "./training";
 import { exerciseAims } from "./progression";
 export type HistoryWorkout = Workout & { deload?: boolean };
 import { activityTotals, dayTotals } from "./day-totals";
@@ -94,12 +94,29 @@ export function nextSession(
     const baseline = find(baselineLifts)[0] ?? null;
     return {
       ...p,
+      loadConvention: loadConvention(p),
       last: actual,
       progressionBaseline: baseline,
       ...exerciseAims(p, baseline, reduced),
     };
   });
+  const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][
+    new Date(today + "T12:00:00Z").getUTCDay()
+  ];
+  const scheduled = plan.schedule?.find((d) => d.day === weekday);
+  const scheduleMismatch =
+    scheduled && scheduled.session !== next
+      ? {
+          weekday,
+          scheduled: scheduled.label,
+          rotation: next,
+          message: `${weekday}'s layout says ${scheduled.label}; the next lifting rotation is ${next}. Continue the rotation.`,
+          offer:
+            "Would you like to re-anchor the weekday layout? Only update_plan after the user agrees.",
+        }
+      : null;
   return {
+    scheduleMismatch,
     next,
     exercises,
     flags,

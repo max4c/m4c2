@@ -1,9 +1,26 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 const stamp = { date: v.string(), ts: v.number() };
+const loadConvention = v.union(
+  v.literal("total"),
+  v.literal("platesOnly"),
+  v.literal("perDumbbell"),
+  v.literal("addedToBodyweight"),
+);
 const exercise = v.object({
   name: v.string(),
-  sets: v.array(v.object({ w: v.number(), r: v.number() })),
+  sets: v.array(
+    v.object({
+      w: v.number(),
+      r: v.number(),
+      rir: v.optional(v.number()),
+      effort: v.optional(v.union(v.literal("easy"), v.literal("atLimit"))),
+      note: v.optional(v.string()),
+      loggedAt: v.optional(v.number()),
+    }),
+  ),
+  replaces: v.optional(v.string()),
+  loadConvention: v.optional(loadConvention),
 });
 const rotation = v.union(
   v.literal("push"),
@@ -35,6 +52,23 @@ const pe = v.object({
     ),
   ),
   weightIncrement: v.optional(v.number()),
+  easyWeightIncrementMax: v.optional(v.number()),
+  loadConvention: v.optional(loadConvention),
+  station: v.optional(v.string()),
+  backup: v.optional(
+    v.object({
+      name: v.string(),
+      station: v.string(),
+      mode: v.union(
+        v.literal("weighted"),
+        v.literal("bodyweight"),
+        v.literal("timed"),
+        v.literal("carry"),
+      ),
+      loadConvention,
+      note: v.optional(v.string()),
+    }),
+  ),
   distanceMetres: v.optional(v.number()),
   perSide: v.optional(v.boolean()),
   superset: v.optional(v.string()),
@@ -89,6 +123,37 @@ export const planFields = {
   bedtimeHour: v.number(),
 };
 export default defineSchema({
+  voiceSessions: defineTable({
+    date: v.string(),
+    label: rotation,
+    workoutId: v.optional(v.id("workouts")),
+    exercises: v.array(
+      v.object({
+        prescription: pe,
+        aims: v.array(
+          v.object({
+            w: v.union(v.number(), v.null()),
+            r: v.union(v.number(), v.null()),
+            wMax: v.optional(v.number()),
+          }),
+        ),
+        replaces: v.optional(v.string()),
+        loadInstruction: v.union(v.string(), v.null()),
+      }),
+    ),
+    notes: v.array(v.object({ name: v.string(), note: v.string() })),
+    startedAt: v.number(),
+    lastSetAt: v.optional(v.number()),
+    lastExercise: v.optional(v.string()),
+    lastSetKey: v.optional(v.string()),
+  }).index("by_date", ["date"]),
+  exerciseNotes: defineTable({
+    name: v.string(),
+    note: v.string(),
+    createdDate: v.string(),
+    createdAt: v.number(),
+    usedDate: v.optional(v.string()),
+  }).index("by_name", ["name"]),
   foodDays: defineTable({
     date: v.string(),
     complete: v.boolean(),
@@ -167,6 +232,16 @@ export default defineSchema({
     recoveryDays: v.optional(v.array(rotation)),
   }),
   plan: defineTable(planFields),
+  restDevices: defineTable({
+    deviceId: v.string(),
+    endpoint: v.string(),
+    p256dh: v.string(),
+    auth: v.string(),
+    endsAt: v.optional(v.number()),
+    version: v.optional(v.string()),
+    scheduledId: v.optional(v.id("_scheduled_functions")),
+    updatedAt: v.number(),
+  }).index("by_device", ["deviceId"]),
   requests: defineTable({
     requestId: v.string(),
     fingerprint: v.string(),

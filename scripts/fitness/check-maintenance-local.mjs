@@ -40,7 +40,7 @@ try {
     ),
   );
   const { tools } = await client.listTools();
-  assert.equal(tools.length, 20);
+  assert.equal(tools.length, 25);
   assert.equal(
     tools.find((t) => t.name === "estimate_maintenance").annotations
       .readOnlyHint,

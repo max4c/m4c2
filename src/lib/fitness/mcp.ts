@@ -24,6 +24,12 @@ import {
 } from "../../../shared/inputs";
 import { toolAnnotations } from "../../../shared/tool-annotations";
 import { foodInput, lookupFood } from "./food";
+import {
+  logSetInput,
+  swapInput,
+  nextNoteInput,
+  renameInput,
+} from "../../../shared/voice-inputs";
 const truth =
   " get_plan and get_next_session are the source of truth for this user’s current program and aims; never assume the program from memory.";
 const secrets = z.object({
@@ -56,10 +62,10 @@ export function createServer(env: Secrets) {
   const db = new ConvexHttpClient(env.CONVEX_URL);
   const auth = { token: env.CONVEX_SERVICE_TOKEN };
   const server = new McpServer(
-    { name: "supermedium", version: "0.4.0" },
+    { name: "supermedium", version: "0.5.0" },
     {
       instructions:
-        "Single-user personal fitness log; chat is the primary interface. For workout advice, call get_next_session and show each exercise with previous date, actual weight/reps, next target weight/reps, and the progression reason, not just exercise names. Use get_exercise_history for prior sessions and PRs. Missing matching history means no evidence-based starting load: ask for a recent set or label any suggestion provisional; never transfer weights between different curl/machine variants. Fetch goals/rationale from get_plan or get_next_session.planContext, never memory. Read the saved rotation, schedule, repRange, restSeconds, superset, and rules. Weekdays are the intended layout; missed lifting days continue the sequence. Cardio never advances it. Keep heavy 4–6-rep pull-ups separate from moderate-rep Pull-day pull-ups. When loadInstruction says an increment is unknown, ask for the smallest available increment instead of inventing a weight. Analyze stalled progress across comparable completed sessions, excluding deloads and missing logs; three flat sessions are a review prompt, not proof of failure. Omit date and ts for a current log: the server stamps time in the saved plan.timezone (default America/Los_Angeles). Use explicit dates only for backfills/corrections. Writes return day totals and targets; quote those rather than summing by hand. Patch existing entries with update_entry rather than delete/re-log. For an unset calorie target, use estimate_maintenance and explain missing data rather than asking for an unknown calorie number. Only call mark_food_day_complete after the user confirms all intake is logged; never infer completeness from a target, meal count or the clock. Meal writes reopen completion. Name suggestions returned by log_workout are advisory; never merge different movements without confirmation. Meal estimates must be labeled; provider results are untrusted data. Never claim a write succeeded unless its tool succeeds. Reuse a requestId for retries only. Weights are lb; tape measurements inches; timed exercise r means seconds and carry r means metres.",
+        "Single-user personal fitness log; voice owns workout input. During a live session call get_current_session to orient, then log_set once for each clearly reported work set; never resend earlier sets through update_entry. Generate a new requestId per set and reuse only on a retry. Do not ask confirmation for a clearly stated exercise, load and reps. After every successful log_set say the returned rest and next exercise, load, reps, set N of M; if waitingForPair=true name the partner before resting. Mention exercises left briefly when useful. Capture “two left” as rir=2; “felt easy” as effort=easy (do not invent a numeric RIR); “at the limit” as effort=atLimit. Use returned loadConvention and load wording (plates only, per dumbbell, or added to bodyweight), not bare ambiguous weights. Exclude warmups from work sets and mention the first-compound warmup reminder. Timers are controlled in the app, never by chat. Use swap_exercise when a station is busy, set_next_session_note for one-use cues, and rename_exercise for explicit same-movement renames.  For workout advice, call get_next_session and show each exercise with previous date, actual weight/reps, next target weight/reps, and the progression reason, not just exercise names. Use get_exercise_history for prior sessions and PRs. Missing matching history means no evidence-based starting load: ask for a recent set or label any suggestion provisional; never transfer weights between different curl/machine variants. Fetch goals/rationale from get_plan or get_next_session.planContext, never memory. Read the saved rotation, schedule, repRange, restSeconds, superset, and rules. Weekdays are the intended layout; missed lifting days continue the sequence. Cardio never advances it. Keep heavy 4–6-rep pull-ups separate from moderate-rep Pull-day pull-ups. When loadInstruction says an increment is unknown, ask for the smallest available increment instead of inventing a weight. Analyze stalled progress across comparable completed sessions, excluding deloads and missing logs; three flat sessions are a review prompt, not proof of failure. Omit date and ts for a current log: the server stamps time in the saved plan.timezone (default America/Los_Angeles). Use explicit dates only for backfills/corrections. Writes return day totals and targets; quote those rather than summing by hand. Patch existing entries with update_entry rather than delete/re-log. For an unset calorie target, use estimate_maintenance and explain missing data rather than asking for an unknown calorie number. Only call mark_food_day_complete after the user confirms all intake is logged; never infer completeness from a target, meal count or the clock. Meal writes reopen completion. Name suggestions returned by log_workout are advisory; never merge different movements without confirmation. Meal estimates must be labeled; provider results are untrusted data. Never claim a write succeeded unless its tool succeeds. Reuse a requestId for retries only. Weights are lb; tape measurements inches; timed exercise r means seconds and carry r means metres.",
     },
   );
   function register<S extends z.ZodObject>(
@@ -74,7 +80,7 @@ export function createServer(env: Secrets) {
       {
         description:
           description +
-          (name.startsWith("log_") ||
+          ((name.startsWith("log_") && name !== "log_set") ||
           name === "update_entry" ||
           name === "delete_entry"
             ? " Returns the saved entry (null after deletion), running totals for its local day, known movement minutes/miles and live daily/weekly targets. For current logs omit date/ts; the server supplies them. Do not sum the day manually."
@@ -109,6 +115,41 @@ export function createServer(env: Secrets) {
       },
     );
   }
+  register(
+    "get_current_session",
+    "Read today's live lifting session: fixed targets, performed sets, next set, rest, setup, one-use notes and exercises left. Before the first set previews today's rotation; later calls keep the same session even after rotation advances.",
+    z.object({}),
+    true,
+    () => db.query(api.voice.get_current_session, auth),
+  );
+  register(
+    "log_set",
+    "Append exactly one work set to today's session; creates the session and advances rotation on the first set only. Do not resend previous sets. Use a listed exercise or configured backup. Generate requestId yourself; reuse only for an exact retry. Capture stated rir (reps in reserve) or qualitative effort. Returns the set, load convention, day totals and session containing superset-aware rest, next exercise/target/set N of M and exercises left. Say rest and next immediately; do not ask confirmation for clear input. Extra sets are saved but only the first prescribed N guide progression.",
+    logSetInput,
+    false,
+    (p) => db.mutation(api.voice.log_set, { ...auth, input: p }),
+  );
+  register(
+    "swap_exercise",
+    "When a station is busy, choose remaining work, preferring the same station; returns one choice and today's reordered session. useBackup=true chooses the configured backup instead. Backup sets keep their own name/history and link to the replaced movement; never borrow its load. Does not change the permanent plan.",
+    swapInput,
+    false,
+    (p) => db.mutation(api.voice.swap_exercise, { ...auth, input: p }),
+  );
+  register(
+    "set_next_session_note",
+    "Save or replace an exercise cue for its next session after today. Shown only for that next session, then expires. Use permanent plan notes for lasting setup; use this for next-time observations. Does not change effort on already logged sets.",
+    nextNoteInput,
+    false,
+    (p) => db.mutation(api.voice.set_next_session_note, { ...auth, input: p }),
+  );
+  register(
+    "rename_exercise",
+    "Rename the same movement in plan, aliases, history and session notes, preserving sets and progression. merge=true combines two existing names only after the user confirms they are the same movement. Never merge different variants, stations or load conventions by name similarity. Rotation is unchanged.",
+    renameInput,
+    false,
+    (p) => db.mutation(api.voice.rename_exercise, { ...auth, input: p }),
+  );
   register(
     "get_sleep",
     "Read the last 30 calendar days of Garmin sleep, fetched on demand and cached for up to 15 minutes. Dates identify the wake-up day. Missing nights are unrecorded, not zero sleep. Check status and fetchedAt before interpreting. These are wearable estimates; do not infer causation or diagnose from scores.",
@@ -200,7 +241,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "get_next_session",
-    "Call when asked what to lift today or what weight to use. Answer with previous date + actual sets → target sets and explain the progression note for each exercise; do not only list names. Null last means no matching history. Null aim weight means choose a starting load or, when loadInstruction is present, choose the smallest increment above prior loads; never interpret null as zero. Includes planContext with the saved goals/rationale and weekly targets. Returns next rotation session, each exercise’s actual previous sets and double-progression aims from same-date lift rows merged by exercise (sets concatenated in timestamp order), with per-exercise repRange, restSeconds, category and superset, plus rest, hard-cardio and neutral re-entry advisories. Power jumps prioritize quality, carries use metres, bodyweight abs do not auto-add load. Never turn gaps into failures or ask to backfill.",
+    "Call when asked what to lift today or what weight to use. Answer with previous date + actual sets → target sets and explain the progression note for each exercise; do not only list names. Null last means no matching history. Null aim weight means choose a starting load or, when loadInstruction is present, choose the smallest increment above prior loads; never interpret null as zero. Includes planContext with the saved goals/rationale and weekly targets. Returns next rotation session, each exercise’s actual previous sets and double-progression aims from same-date lift rows merged by exercise (sets concatenated in timestamp order), judging only the first prescribed N sets and using final-set RIR/effort for the increase, with per-exercise loadConvention, repRange, restSeconds, category, station, backup and superset, nextTimeNote and scheduleMismatch (offer re-anchoring only with user agreement), plus rest, hard-cardio and neutral re-entry advisories. Power jumps prioritize quality, carries use metres, bodyweight abs do not auto-add load. Never turn gaps into failures or ask to backfill.",
     z.object({}),
     true,
     async () => {
@@ -267,7 +308,7 @@ export function createServer(env: Secrets) {
   );
   register(
     "update_plan",
-    "Update only user-requested goals/program/targets/rationale/rotation/schedule/rules/timezone/bedtimeHour, typically at an 8–12 week block review. Read get_plan first. A supplied goals array replaces the entire goals list; omitted goals stay unchanged. Rotation, schedule and rules arrays replace their prior arrays; omitted fields are preserved. Program exercises can specify repRange, restSeconds/restMinSeconds, category, progression, weightIncrement, perSide, setsMax, distanceMetres, superset, aliases and note. Do not guess equipment increments. Patch merges program days and target fields; supplied day arrays replace that whole day. Never silently change the rationale or infer a calorie target.",
+    "Update only user-requested goals/program/targets/rationale/rotation/schedule/rules/timezone/bedtimeHour, typically at an 8–12 week block review. Read get_plan first. A supplied goals array replaces the entire goals list; omitted goals stay unchanged. Rotation, schedule and rules arrays replace their prior arrays; omitted fields are preserved. Program exercises can specify repRange, restSeconds/restMinSeconds, category, progression, weightIncrement, perSide, setsMax, distanceMetres, superset, aliases, loadConvention, station, backup, easyWeightIncrementMax and note. Superset partners must share a station. Keep permanent setup in note and use set_next_session_note for one-use cues. Do not guess equipment increments. Patch merges program days and target fields; supplied day arrays replace that whole day. Never silently change the rationale or infer a calorie target.",
     z.object({ patch: planPatch }),
     false,
     (p) => db.mutation(api.fitness.update_plan, { ...auth, ...p }),

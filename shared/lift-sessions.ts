@@ -21,8 +21,7 @@ export function liftSessions(workouts: Workout[]): Workout[] {
         (e) => normalize(e.name) === normalize(exercise.name),
       );
       if (existing) existing.sets.push(...exercise.sets);
-      else
-        day.exercises.push({ name: exercise.name, sets: [...exercise.sets] });
+      else day.exercises.push({ ...exercise, sets: [...exercise.sets] });
     }
   }
   return [...days.values()].sort((a, b) => b.date.localeCompare(a.date));

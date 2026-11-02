@@ -14,6 +14,7 @@ const assets = new Set([
   "/supermedium-icons/icon-512.png",
   "/supermedium-icons/apple-touch-icon.png",
   "/fitness.webmanifest",
+  "/fitness-sw.js",
   "/favicon.ico",
   "/icon-192.png",
   "/apple-touch-icon.png",

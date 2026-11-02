@@ -9,13 +9,25 @@ export const dateSchema = z
     "Use a real YYYY-MM-DD date",
   );
 export const nonnegative = z.number().finite().min(0);
+export const loadConventionSchema = z.enum([
+  "total",
+  "platesOnly",
+  "perDumbbell",
+  "addedToBodyweight",
+]);
 export const setSchema = z.object({
   w: nonnegative.max(2000),
   r: z.number().int().min(1).max(1000),
+  rir: z.number().min(0).max(10).optional(),
+  effort: z.enum(["easy", "atLimit"]).optional(),
+  note: z.string().max(1000).optional(),
+  loggedAt: z.number().nonnegative().optional(),
 });
 export const exerciseSchema = z.object({
   name: z.string().trim().min(1).max(120),
-  sets: z.array(setSchema).max(30),
+  sets: z.array(setSchema).max(100),
+  replaces: z.string().max(120).optional(),
+  loadConvention: loadConventionSchema.optional(),
 });
 export const rotationSchema = z.enum(["push", "pull", "upper", "legs"]);
 export type Rotation = z.infer<typeof rotationSchema>;
@@ -37,6 +49,18 @@ export const planExerciseSchema = z
     category: z.enum(["isolation", "compound", "power", "carry"]).optional(),
     progression: z.enum(["double", "reps", "quality", "distance"]).optional(),
     weightIncrement: z.number().positive().max(100).optional(),
+    easyWeightIncrementMax: z.number().positive().max(100).optional(),
+    loadConvention: loadConventionSchema.optional(),
+    station: z.string().trim().min(1).max(100).optional(),
+    backup: z
+      .object({
+        name: z.string().min(1).max(120),
+        station: z.string().min(1).max(100),
+        mode: z.enum(["weighted", "bodyweight", "timed", "carry"]),
+        loadConvention: loadConventionSchema,
+        note: z.string().max(500).optional(),
+      })
+      .optional(),
     distanceMetres: z.number().int().positive().max(1000).optional(),
     perSide: z.boolean().optional(),
     superset: z.string().min(1).max(100).optional(),
@@ -109,6 +133,21 @@ export const planSchema = z
       .default("America/Los_Angeles"),
     bedtimeHour: z.number().int().min(0).max(23),
   })
+  .refine(
+    (p) =>
+      Object.values(p.program).every((day) => {
+        const groups = new Map<string, typeof day>();
+        for (const e of day)
+          if (e.superset)
+            groups.set(e.superset, [...(groups.get(e.superset) ?? []), e]);
+        return [...groups.values()].every(
+          (g) =>
+            !g.some((e) => e.station) ||
+            (g.length === 2 && g.every((e) => e.station === g[0].station)),
+        );
+      }),
+    "Supersets must contain two exercises sharing one station",
+  )
   .refine(
     (p) =>
       p.targets.liftsMin <= p.targets.liftsMax &&

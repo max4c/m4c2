@@ -1,5 +1,5 @@
-import type { PlanExercise } from "./model";
-type Previous = { date: string; sets: { w: number; r: number }[] } | null;
+import type { PlanExercise, Exercise } from "./model";
+type Previous = { date: string; sets: Exercise["sets"] } | null;
 const round = (w: number) => Math.round(w * 10) / 10;
 
 export function exerciseAims(
@@ -8,22 +8,29 @@ export function exerciseAims(
   reduced: boolean,
 ) {
   const range = p.repRange ?? { min: 8, max: 12 };
+  const prescribed = baseline?.sets.slice(0, p.sets) ?? [];
+  const lastEffort = prescribed.at(-1);
+  const easy =
+    lastEffort?.rir !== undefined
+      ? lastEffort.rir >= 3
+      : lastEffort?.effort === "easy";
   const hit =
     !!baseline &&
     baseline.sets.length >= p.sets &&
-    baseline.sets.every((s) => s.r >= range.max);
+    prescribed.every((s) => s.r >= range.max);
   const modern = !!p.repRange;
   const double =
     p.progression === "double" || (!p.progression && p.mode === "weighted");
   const increase = double && hit && !reduced;
   const needsIncrement = increase && modern && p.weightIncrement === undefined;
   const needsLighterLoad =
-    modern &&
-    double &&
-    !reduced &&
-    !!baseline?.sets.some((s) => s.r < range.min);
+    modern && double && !reduced && !!prescribed.some((s) => s.r < range.min);
+  const maxIncrement =
+    increase && easy && p.weightIncrement !== undefined
+      ? (p.easyWeightIncrementMax ?? p.weightIncrement * 2)
+      : undefined;
   const aims = Array.from({ length: p.sets }, (_, i) => {
-    const s = baseline?.sets[i] ?? baseline?.sets.at(-1);
+    const s = prescribed[i] ?? prescribed.at(-1);
     if (p.progression === "quality") return { w: 0, r: range.min };
     if (p.mode === "carry")
       return {
@@ -55,6 +62,9 @@ export function exerciseAims(
     if (modern && double && !reduced && s.r < range.min)
       return { w: null, r: range.min };
     return {
+      ...(maxIncrement !== undefined
+        ? { wMax: round(s.w + Math.max(p.weightIncrement!, maxIncrement)) }
+        : {}),
       w: needsIncrement
         ? null
         : round(
@@ -65,7 +75,9 @@ export function exerciseAims(
         ? range.min
         : reduced
           ? Math.max(1, Math.min(range.max, Math.round(s.r * 0.9)))
-          : Math.min(range.max, s.r + 1),
+          : p.category === "compound" && modern
+            ? range.max
+            : Math.min(range.max, s.r + 1),
     };
   });
   const loadInstruction = needsLighterLoad
@@ -90,5 +102,21 @@ export function exerciseAims(
                   ? "Recovery session: lighter load and reps; do not increase weight."
                   : (loadInstruction ??
                     `${range.min}–${range.max} reps; increase load only after all prescribed sets reach ${range.max}, then restart at ${range.min}.`);
-  return { aims, note, loadInstruction };
+  return {
+    aims,
+    note:
+      note +
+      (increase &&
+      p.loadConvention === "platesOnly" &&
+      p.weightIncrement !== undefined
+        ? ` Add ${p.weightIncrement / 2} lb per side (${p.weightIncrement} lb of plates total).`
+        : "") +
+      (increase && easy
+        ? " Final prescribed set was easy: use the offered larger increment range if available."
+        : "") +
+      (baseline && baseline.sets.length > p.sets
+        ? ` ${baseline.sets.length - p.sets} extra set(s) retained in history and excluded from progression.`
+        : ""),
+    loadInstruction,
+  };
 }

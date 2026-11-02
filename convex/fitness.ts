@@ -8,6 +8,7 @@ import {
 import { requireToken } from "./auth";
 import {
   seedPlan,
+  normalize,
   planSchema,
   todayAt,
   addDays,
@@ -81,7 +82,7 @@ async function invalidateFoodDay(ctx: MutationCtx, date: string) {
       invalidatedAt: Date.now(),
     });
 }
-async function readDay(
+export async function readDay(
   ctx: QueryCtx,
   date: string,
   plan: Awaited<ReturnType<typeof readPlan>>,
@@ -205,6 +206,22 @@ export const update_plan = mutation({
       program: { ...old.program, ...p.program },
       targets: { ...old.targets, ...p.targets },
     });
+    for (const day of Object.values(p.program ?? {})) {
+      const groups = new Map<string, typeof day>();
+      for (const e of day ?? [])
+        if (e.superset)
+          groups.set(e.superset, [...(groups.get(e.superset) ?? []), e]);
+      for (const pair of groups.values())
+        if (
+          !pair ||
+          pair.length !== 2 ||
+          !pair[0].station ||
+          pair.some((e) => e.station !== pair[0].station)
+        )
+          throw new Error(
+            "Supersets must contain two exercises sharing a station",
+          );
+    }
     await ctx.db.replace(old._id, merged);
     const state = await readState(ctx);
     if (!rotationOrder(merged).includes(state.rotation.next))
@@ -242,7 +259,7 @@ function stamp(input: { date?: string; ts?: number }, timezone: string) {
     throw new Error("Future dates are not supported");
   return { date, ts };
 }
-async function saveLog(
+export async function saveLog(
   ctx: MutationCtx,
   op: keyof typeof schemas,
   raw: unknown,
@@ -407,13 +424,25 @@ export const get_next_session = query({
       .withIndex("by_date_ts")
       .order("desc")
       .collect();
-    return nextSession(
+    const session = nextSession(
       plan,
       state.rotation.next,
       workouts,
       today,
       state.recoveryRemaining,
     );
+    const notes = (await ctx.db.query("exerciseNotes").collect()).filter(
+      (n) => !n.usedDate && n.createdDate < today,
+    );
+    return {
+      ...session,
+      exercises: session.exercises.map((e) => ({
+        ...e,
+        nextTimeNote:
+          notes.find((n) => normalize(n.name) === normalize(e.name))?.note ??
+          null,
+      })),
+    };
   },
 });
 export const mark_food_day_complete = mutation({

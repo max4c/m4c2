@@ -38,7 +38,7 @@ try {
     ),
   );
   const { tools } = await client.listTools();
-  assert.equal(tools.length, 20);
+  assert.equal(tools.length, 25);
   const reads = [
     "query_entries",
     "get_summary",
@@ -61,7 +61,7 @@ try {
       assert.deepEqual(t.annotations, expectedWrite);
   }
   console.log(
-    "PASS actual MCP discovery: 20 tools, matching log/edit annotations, read-only hints, only delete marked destructive",
+    "PASS actual MCP discovery: 25 tools, matching log/edit annotations, read-only hints, only delete marked destructive",
   );
   const plan = await call("get_plan", {});
   const baseline = await call("get_summary", { period: "day", asOf: date });

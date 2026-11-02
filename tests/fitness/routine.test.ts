@@ -18,7 +18,16 @@ import { remainingSeconds, restoreTimer } from "../../shared/rest-timer";
 const modules = import.meta.glob("../../convex/**/*.ts");
 const token = "routine-service".padEnd(64, "x");
 const readToken = "routine-read".padEnd(64, "y");
-const plan: Plan = { ...seedPlan, ...octoberRoutine };
+const plan: Plan = {
+  ...seedPlan,
+  ...octoberRoutine,
+  program: {
+    ...octoberRoutine.program!,
+    upper: octoberRoutine.program!.upper!.map((e) =>
+      e.superset ? { ...e, station: "shared test station" } : e,
+    ),
+  },
+};
 const date = "2026-10-28";
 const workout = (
   name: string,
@@ -46,9 +55,12 @@ it("persists the full routine, preserves goals/targets and advances Upper → Le
     patch: { goals: ["Stronger abs"], targets: { calories: 2400 } },
   });
   const before = await t.query(api.fitness.get_plan, { token });
-  await t.mutation(api.fitness.update_plan, { token, patch: octoberRoutine });
+  await t.mutation(api.fitness.update_plan, {
+    token,
+    patch: { ...octoberRoutine, program: plan.program },
+  });
   const saved = await t.query(api.fitness.get_plan, { token });
-  expect(saved.program).toEqual(octoberRoutine.program);
+  expect(saved.program).toEqual(plan.program);
   expect(saved.schedule).toEqual(octoberRoutine.schedule);
   expect(saved.rules).toEqual(octoberRoutine.rules);
   expect(saved.targets).toEqual(before.targets);
@@ -199,7 +211,10 @@ it("adjusts an old load instead of prescribing reps below a new range", () => {
 it("reconciles pending recovery when a rotation day is removed", async () => {
   const t = convexTest(schema, modules);
   await t.mutation(api.fitness.seed, { token });
-  await t.mutation(api.fitness.update_plan, { token, patch: octoberRoutine });
+  await t.mutation(api.fitness.update_plan, {
+    token,
+    patch: { ...octoberRoutine, program: plan.program },
+  });
   await t.run(async (ctx) => {
     const state = (await ctx.db.query("state").unique())!;
     await ctx.db.patch(state._id, {

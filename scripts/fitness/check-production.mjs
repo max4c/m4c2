@@ -15,24 +15,43 @@ try {
   assert.equal((await fetch(base + "/blog")).status, 404);
   assert.equal((await fetch(base + "/fitness/api/data")).status, 401);
   assert.equal((await fetch(base + "/fitness/api/sleep")).status, 401);
-  const password = readFileSync(".vercel/supermedium-password.txt", "utf8").trim();
-  const login = (value, origin = base) => fetch(base + "/fitness/api/login", {method:"POST",headers:{Origin:origin,"Content-Type":"application/json"},body:JSON.stringify({password:value})});
-  assert.equal((await login("wrong", "https://example.com")).status,403);
-  assert.equal((await login("wrong")).status,401);
+  const password = readFileSync(
+    ".vercel/supermedium-password.txt",
+    "utf8",
+  ).trim();
+  const login = (value, origin = base) =>
+    fetch(base + "/fitness/api/login", {
+      method: "POST",
+      headers: { Origin: origin, "Content-Type": "application/json" },
+      body: JSON.stringify({ password: value }),
+    });
+  assert.equal((await login("wrong", "https://example.com")).status, 403);
+  assert.equal((await login("wrong")).status, 401);
   const session = await login(password);
-  assert.equal(session.status,200);
+  assert.equal(session.status, 200);
   const cookie = session.headers.get("set-cookie");
-  assert(cookie.includes("HttpOnly") && cookie.includes("Secure") && /SameSite=strict/i.test(cookie));
-  const data = await fetch(base + "/fitness/api/data",{headers:{Cookie:cookie.split(";")[0]}});
-  assert.equal(data.status,200);
+  assert(
+    cookie.includes("HttpOnly") &&
+      cookie.includes("Secure") &&
+      /SameSite=strict/i.test(cookie),
+  );
+  const data = await fetch(base + "/fitness/api/data", {
+    headers: { Cookie: cookie.split(";")[0] },
+  });
+  assert.equal(data.status, 200);
   const body = await data.text();
   assert(!body.includes(config.DASHBOARD_TOKEN));
-  const dashboard=JSON.parse(body);
-  assert(dashboard.weeklyHistory.length>=1);
-  assert.equal(typeof dashboard.weeklyHistory[0].training.cardioSessions,"number");
+  const dashboard = JSON.parse(body);
+  assert(dashboard.weeklyHistory.length >= 1);
+  assert.equal(
+    typeof dashboard.weeklyHistory[0].training.cardioSessions,
+    "number",
+  );
   assert("normalPrevious28Days" in dashboard.weeklyHistory[0].stepsDetail);
   assert("photos" in dashboard.weeklyHistory[0].checkIns);
-  console.log("PASS password login, cookie flags, private data, wrong password and cross-origin rejection");
+  console.log(
+    "PASS password login, cookie flags, private data, wrong password and cross-origin rejection",
+  );
   const client = new Client({
     name: "fitness-production-check",
     version: "1.0",
@@ -43,23 +62,52 @@ try {
     ),
   );
   const list = await client.listTools();
-  assert.equal(list.tools.length, 20);
-  const readTools = ["query_entries", "get_summary", "get_plan", "get_next_session", "get_exercise_history", "get_remaining", "get_sleep", "lookup_food", "estimate_maintenance"];
-  const writeAnnotations = list.tools.find(t => t.name === "log_meal").annotations;
+  assert.equal(list.tools.length, 25);
+  assert(list.tools.some((t) => t.name === "log_set"));
+  assert(list.tools.some((t) => t.name === "swap_exercise"));
+  assert.equal((await fetch(base + "/fitness/api/session-stream")).status, 401);
+  assert.equal((await fetch(base + "/fitness/api/rest")).status, 401);
+  const readTools = [
+    "get_current_session",
+    "query_entries",
+    "get_summary",
+    "get_plan",
+    "get_next_session",
+    "get_exercise_history",
+    "get_remaining",
+    "get_sleep",
+    "lookup_food",
+    "estimate_maintenance",
+  ];
+  const writeAnnotations = list.tools.find(
+    (t) => t.name === "log_meal",
+  ).annotations;
   for (const tool of list.tools) {
-    assert.equal(tool.annotations.destructiveHint, tool.name === "delete_entry");
-    if (readTools.includes(tool.name)) assert.equal(tool.annotations.readOnlyHint, true);
-    if (tool.name.startsWith("log_") || tool.name === "update_entry") assert.deepEqual(tool.annotations, writeAnnotations);
+    assert.equal(
+      tool.annotations.destructiveHint,
+      tool.name === "delete_entry",
+    );
+    if (readTools.includes(tool.name))
+      assert.equal(tool.annotations.readOnlyHint, true);
+    if (tool.name.startsWith("log_") || tool.name === "update_entry")
+      assert.deepEqual(tool.annotations, writeAnnotations);
   }
-  assert(list.tools.some(t => t.name === "mark_food_day_complete"));
-  const workoutSchema = list.tools.find(t => t.name === "log_workout").inputSchema;
-  assert(workoutSchema.properties.durationMin && workoutSchema.properties.distanceMi);
-  console.log("PASS live update_entry discovery, consistent annotations, and numeric cardio input schema");
+  assert(list.tools.some((t) => t.name === "mark_food_day_complete"));
+  const workoutSchema = list.tools.find(
+    (t) => t.name === "log_workout",
+  ).inputSchema;
+  assert(
+    workoutSchema.properties.durationMin && workoutSchema.properties.distanceMi,
+  );
+  console.log(
+    "PASS live update_entry discovery, consistent annotations, and numeric cardio input schema",
+  );
   for (const [name, args] of [
     ["get_plan", {}],
     ["estimate_maintenance", {}],
     ["get_sleep", {}],
     ["get_next_session", {}],
+    ["get_current_session", {}],
     ["get_remaining", {}],
     ["get_summary", { period: "week", asOf: "2026-10-25" }],
     ["get_summary", { period: "day", asOf: "2026-10-30" }],
@@ -71,8 +119,14 @@ try {
     if (name === "estimate_maintenance") {
       const estimate = JSON.parse(result.content[0].text);
       assert.equal(estimate.targetChanged, false);
-      assert(estimate.status === "insufficient_data" || estimate.status === "provisional" || estimate.status === "unreliable_trend");
-      console.log(`Maintenance status: ${estimate.status}; complete days ${estimate.coverage.completeDays}, selected weigh-in days ${estimate.coverage.weighInDays}`);
+      assert(
+        estimate.status === "insufficient_data" ||
+          estimate.status === "provisional" ||
+          estimate.status === "unreliable_trend",
+      );
+      console.log(
+        `Maintenance status: ${estimate.status}; complete days ${estimate.coverage.completeDays}, selected weigh-in days ${estimate.coverage.weighInDays}`,
+      );
     }
     console.log(`PASS ${name}`);
   }

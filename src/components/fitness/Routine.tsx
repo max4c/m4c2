@@ -1,5 +1,5 @@
 import { rotationOrder, type Plan, type Rotation } from "../../../shared/model";
-import { prescription } from "../../../shared/training";
+import { prescription, sameStationSuperset } from "../../../shared/training";
 import { RestButton } from "./RestTimer";
 const sessions = ["push", "pull", "upper", "legs"] as const;
 export default function Routine({
@@ -55,8 +55,7 @@ export default function Routine({
               <ol className="routine-exercises">
                 {plan.program[session].map((exercise, i, list) => {
                   const pair =
-                    exercise.superset &&
-                    list[i + 1]?.superset === exercise.superset
+                    list[i + 1] && sameStationSuperset(exercise, list[i + 1])
                       ? list[i + 1].name
                       : undefined;
                   return (

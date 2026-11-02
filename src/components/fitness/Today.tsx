@@ -1,40 +1,18 @@
 "use client";
 import type { FunctionReturnType } from "convex/server";
-import { RestButton } from "./RestTimer";
-import { prescription } from "../../../shared/training";
-import { rotationOrder } from "../../../shared/model";
+import LiveSession from "./LiveSession";
 import Sleep from "./Sleep";
 import type { SleepData } from "../../../shared/sleep";
 import { api } from "../../../convex/_generated/api";
 type Data = FunctionReturnType<typeof api.fitness.dashboard> & {
   sleep?: SleepData;
 };
-function setsLabel(
-  sets: { w: number | null; r: number | null }[],
-  mode: string,
-) {
-  const unit = mode === "timed" ? "sec" : mode === "carry" ? "m" : "reps";
-  const load = (w: number | null) =>
-    w === null
-      ? "choose load"
-      : mode === "bodyweight" && w === 0
-        ? "bodyweight"
-        : `${w} lb`;
-  const first = sets[0];
-  if (!first) return "No sets";
-  if (sets.every((s) => s.w === first.w && s.r === first.r))
-    return `${sets.length} sets${first.r === null ? "" : ` × ${first.r} ${unit}`} · ${load(first.w)}`;
-  if (sets.every((s) => s.w === first.w))
-    return `${load(first.w)} × ${sets.map((s) => s.r ?? "—").join(", ")} ${unit}`;
-  return sets.map((s) => `${load(s.w)} × ${s.r ?? "—"} ${unit}`).join(" · ");
-}
 export default function Today({ data }: { data: Data }) {
   const meals = data.meals.filter((m) => m.date === data.today);
   const workouts = data.workoutHistory.filter((w) => w.date === data.today);
   const protein = Math.round(meals.reduce((n, m) => n + m.protein, 0));
   const calories = Math.round(meals.reduce((n, m) => n + m.calories, 0));
   const steps = data.steps.filter((s) => s.date === data.today);
-  const next = data.nextSession;
   return (
     <div>
       <div className="section-title view-title">
@@ -48,67 +26,7 @@ export default function Today({ data }: { data: Data }) {
           })}
         </span>
       </div>
-      <section className="panel">
-        <div className="panel-top">
-          <h2>
-            Next · <span className="session-label">{next.next}</span>
-          </h2>
-          <a className="routine-link" href="#routine">
-            Routine →
-          </a>
-        </div>
-        {next.exercises.map((e, i, list) => {
-          const pairedWith =
-            e.superset && list[i + 1]?.superset === e.superset
-              ? list[i + 1].name
-              : undefined;
-          return (
-            <div className="today-exercise" key={e.name}>
-              <div className="exercise-heading">
-                <strong>{e.name}</strong>
-                <small>{prescription(e)}</small>
-              </div>
-              <div className="set-comparison">
-                <span>Target</span>
-                <strong>{setsLabel(e.aims, e.mode ?? "weighted")}</strong>
-              </div>
-              {e.last && (
-                <div className="set-comparison previous">
-                  <span>Last {e.last.date.slice(5)}</span>
-                  <span>{setsLabel(e.last.sets, e.mode ?? "weighted")}</span>
-                </div>
-              )}
-              {e.loadInstruction && <small>{e.loadInstruction}</small>}
-              <RestButton exercise={e} pairedWith={pairedWith} />
-            </div>
-          );
-        })}
-        <details className="metric-note">
-          <summary>Goals & program</summary>
-          <ul>
-            {data.plan.goals?.map((goal, i) => (
-              <li key={`${i}:${goal}`}>{goal}</li>
-            ))}
-          </ul>
-          <a href="#goals">View goals</a>
-          <p>
-            <span className="session-label">
-              {rotationOrder(data.plan).join(" → ")}
-            </span>{" "}
-            · {data.plan.targets.liftsMin}–{data.plan.targets.liftsMax} lifts
-            per week. Continue the sequence when a planned day moves. Cardio
-            does not advance it.
-          </p>
-        </details>
-        {next.flags.length > 0 && (
-          <details className="metric-note">
-            <summary>Session notes</summary>
-            {next.flags.map((flag) => (
-              <p key={flag}>{flag}</p>
-            ))}
-          </details>
-        )}
-      </section>
+      <LiveSession />
       <section className="today-numbers" aria-label="Today's totals">
         <div>
           <span>Calories</span>
