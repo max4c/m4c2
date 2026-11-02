@@ -4,6 +4,7 @@ import FloatingNav, { type DashboardView } from "./FloatingNav";
 import { RestTimerProvider, clearRestNotifications } from "./RestTimer";
 import Today from "./Today";
 import TimerPage from "./TimerPage";
+import PageHeader from "./PageHeader";
 import Goals from "./Goals";
 import Routine from "./Routine";
 import Sleep from "./Sleep";
@@ -180,17 +181,13 @@ function DashboardContent({ data }: { data: DashboardData }) {
       )}
       {view === "history" && (
         <>
-          <div className="section-title view-title">
-            <h1>History</h1>
-          </div>
+          <PageHeader title="History" />
           <TrainingHistory data={data} />
         </>
       )}
       {view === "trends" && (
         <>
-          <div className="section-title view-title">
-            <h1>Trends</h1>
-          </div>
+          <PageHeader title="Trends" />
           <section id="overview" aria-label="This week">
             <div className="section-title">
               <h2>This week</h2>
@@ -245,7 +242,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
               ))}
             </div>
             <details className="metric-note">
-              <summary>About these numbers</summary>
+              <summary>Details</summary>
               <p>
                 Week-to-date averages include unlogged days.{" "}
                 {week.coverage.mealDays} of {week.elapsedDays} days have meal
@@ -253,7 +250,10 @@ function DashboardContent({ data }: { data: DashboardData }) {
               </p>
             </details>
           </section>
-          <WeeklyOverview data={data} />
+          <details className="disclosure weekly-disclosure">
+            <summary>Weekly detail</summary>
+            <WeeklyOverview data={data} />
+          </details>
           <section id="charts">
             <div className="section-title">
               <h2>Over time</h2>
@@ -274,7 +274,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
                 <div className="panel-top">
                   <h3>Protein</h3>
                   <span>
-                    GRAMS / DAY{" "}
+                    g / day{" "}
                     <b className="legend">— {plan.targets.protein}g target</b>
                   </span>
                 </div>
@@ -286,16 +286,13 @@ function DashboardContent({ data }: { data: DashboardData }) {
                     target={plan.targets.protein}
                   />
                 ) : (
-                  <Empty>
-                    No meals yet.
-                    <small>Log a meal in your connected chat.</small>
-                  </Empty>
+                  <Empty>No meals logged.</Empty>
                 )}
               </article>
               <article className="panel">
                 <div className="panel-top">
                   <h3>Body weight</h3>
-                  <span>POUNDS</span>
+                  <span>lb</span>
                 </div>
                 {weights.length ? (
                   <Trend
@@ -313,7 +310,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
             <article className="panel">
               <div className="panel-top">
                 <h3>Weekly activity</h3>
-                <span>LAST 8 WEEKS</span>
+                <span>8 weeks</span>
               </div>
               <div className="rhythm-key">
                 <span>
@@ -351,14 +348,14 @@ function DashboardContent({ data }: { data: DashboardData }) {
                 ))}
               </div>
               <details className="metric-note">
-                <summary>About these numbers</summary>
+                <summary>Details</summary>
                 <p>Movement = a workout or positive self-reported steps.</p>
               </details>
             </article>
             <article className="panel">
               <div className="panel-top">
                 <h3>Sets by muscle</h3>
-                <span>HARD SETS / THIS WEEK</span>
+                <span>This week</span>
               </div>
               <div className="muscles">
                 {Object.entries(week.hardSets)
@@ -388,7 +385,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
                   ))}
               </div>
               <details className="metric-note">
-                <summary>About these numbers</summary>
+                <summary>Details</summary>
                 <p>
                   Shaded band: {plan.targets.setsMin}–{plan.targets.setsMax}{" "}
                   sets for arms & shoulders. Primary muscle only.{" "}
@@ -401,7 +398,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
             <article className="panel">
               <div className="panel-top">
                 <h3>Measurements</h3>
-                <span>INCHES / MONTHLY</span>
+                <span>in</span>
               </div>
               {data.measurements.length ? (
                 <>
@@ -431,12 +428,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
                   </div>
                 </>
               ) : (
-                <Empty>
-                  No measurements yet.
-                  <small>
-                    Your monthly tape measurements will appear here.
-                  </small>
-                </Empty>
+                <Empty>No measurements logged.</Empty>
               )}
             </article>
             <article className="panel">
@@ -463,10 +455,8 @@ function DashboardContent({ data }: { data: DashboardData }) {
         </>
       )}
       {view === "history" && (
-        <section id="meals" className="panel meals">
-          <div className="panel-top">
-            <h3>Recent meals</h3>
-          </div>
+        <details id="meals" className="panel meals disclosure">
+          <summary>Recent meals</summary>
           {recent.length ? (
             <div className="table-wrap">
               <table>
@@ -505,11 +495,9 @@ function DashboardContent({ data }: { data: DashboardData }) {
               </table>
             </div>
           ) : (
-            <Empty>
-              Nothing logged yet. Tell your connected chat what you ate.
-            </Empty>
+            <Empty>No meals logged.</Empty>
           )}
-        </section>
+        </details>
       )}
 
       <footer>
@@ -533,7 +521,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
 function Gate({ title, detail }: { title: string; detail: string }) {
   return (
     <div className="gate">
-      <h1>{title}</h1>
+      <PageHeader title={title} />
       {detail && <p>{detail}</p>}
     </div>
   );
@@ -593,7 +581,7 @@ export default function FitnessApp() {
   if (locked)
     return (
       <main className="gate">
-        <h1>Sign in</h1>
+        <PageHeader title="Sign in" />
         <form
           onSubmit={async (event) => {
             event.preventDefault();

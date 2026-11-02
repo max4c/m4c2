@@ -174,3 +174,9 @@ For optional background notifications, configure `VAPID_PUBLIC_KEY` in Vercel an
 `npm run check:fitness` covers the Nov 2 target replay, append/retry behavior, supersets, swaps, notes and renames. `node scripts/fitness/check-voice-local.mjs` uses the real local MCP and SSE endpoints and leaves clearly marked synthetic session data for UI checks. It requires the local test password `voice-test-only`; it refuses a non-local backend. `node scripts/fitness/check-production.mjs` performs read-only live checks.
 
 The one-time `upgrade-voice.mjs --production` enriches the existing plan, preserves the Nov 2 sets, records only reported qualitative effort, and moves dated setup cues into one-use notes. It saves the original plan and row to ignored `.vercel/voice-before-production.json` before changing them. Restore that plan through `update_plan` and that row's original exercises through `update_entry` if rollback is needed; rotation is not changed by the migration. Do not rerun it as a routine deployment step, because one-use notes would be refreshed.
+
+## Mobile scanability (November 2)
+
+Page headers keep the theme control in the same flex row as the heading or back link. The timer has no visible page title. Primary controls and disclosures use 48–56px touch targets; narrow calendars retain 44px-wide day buttons at 320px.
+
+Today shows the next exercise/target once. Upcoming exercises and completed exercises are closed disclosures, while the active exercise retains its setup, logged sets, and one-use cue. Completing the session replaces the list with one expandable **Workout complete** row. Counts still come from the same live session data; no records are deleted or renamed. A finished rest can be restarted directly from Today. The daily log, weekly detail, and recent meals are collapsed; Routine opens the next session with the other sessions and weekly schedule available on tap. Sleep remains below the main daily content.

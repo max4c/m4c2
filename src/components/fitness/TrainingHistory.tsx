@@ -46,9 +46,6 @@ export default function TrainingHistory({ data }: { data: Data }) {
   const workouts = data.workoutHistory.filter((w) => w.date === day);
   return (
     <section id="training" className="training-history">
-      <div className="section-title">
-        <h2>Training</h2>
-      </div>
       <div className="two-col">
         <article className="panel">
           <div className="calendar-heading">
@@ -75,7 +72,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
             </button>
           </div>
           <details className="metric-note">
-            <summary>About these numbers</summary>
+            <summary>Details</summary>
             <p>Calories logged each day · ● workout logged</p>
           </details>
           <div className="calendar-grid">
@@ -155,7 +152,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
             <div className="empty">No workouts logged for this day.</div>
           )}
           <details className="metric-note">
-            <summary>About these numbers</summary>
+            <summary>Details</summary>
             <p>
               Tap an exercise for its full history. Loads in lb; timed entries
               use seconds, carries use metres.
@@ -177,17 +174,12 @@ export default function TrainingHistory({ data }: { data: Data }) {
             <option key={n}>{n}</option>
           ))}
         </select>
-        {!names.length && (
-          <p className="empty">
-            Log your first workout in Claude or ChatGPT. Every exercise and set
-            will appear here.
-          </p>
-        )}
+        {!names.length && <p className="empty">No exercises logged.</p>}
         {history && (
           <>
             <div className="record-grid">
               <div>
-                <small>HEAVIEST LOGGED SET</small>
+                <small>Heaviest set</small>
                 <strong>
                   {history.heaviest
                     ? `${history.heaviest.w} lb × ${history.heaviest.r} ${history.mode === "timed" ? "sec" : history.mode === "carry" ? "m" : "reps"}`
@@ -196,7 +188,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
                 <span>{history.heaviest?.date}</span>
               </div>
               <div>
-                <small>BEST SESSION VOLUME</small>
+                <small>Best session volume</small>
                 <strong>
                   {history.bestSession
                     ? `${history.bestSession.volume.toLocaleString()} lb × reps`
@@ -205,7 +197,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
                 <span>{history.bestSession?.date}</span>
               </div>
               <div>
-                <small>LIFETIME VOLUME</small>
+                <small>Total volume</small>
                 <strong>
                   {history.totalVolume === null
                     ? "Not applicable"
@@ -217,14 +209,14 @@ export default function TrainingHistory({ data }: { data: Data }) {
               </div>
             </div>
             <details className="metric-note">
-              <summary>About these numbers</summary>
+              <summary>Details</summary>
               <p>
                 Recorded load × reps; no per-hand doubling. These are logged
                 records, not estimated one-rep maxes.
               </p>
             </details>
             <details>
-              <summary>Best performance at each weight</summary>
+              <summary>Best at each weight</summary>
               {history.bestRepsByWeight.map((s) => (
                 <p key={s.w}>
                   {s.w} lb × {s.r}{" "}
@@ -237,7 +229,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
                 </p>
               ))}
             </details>
-            <h4>All logged sessions</h4>
+            <h4>Sessions</h4>
             {history.sessions.map((s, i) => (
               <div className="exercise-session" key={i}>
                 <strong>

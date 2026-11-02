@@ -850,12 +850,10 @@ html.dark {
   background: #464646;
 }
 .theme-toggle {
-  position: absolute;
-  top: 30px;
-  right: max(20px, calc((100vw - 704px) / 2));
-  width: 44px;
-  height: 44px;
-  padding: 11px;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  padding: 13px;
   display: grid;
   place-items: center;
   border: 0;
@@ -878,23 +876,23 @@ html.dark {
 .dark .theme-sun {
   display: block;
 }
-@media (max-width: 700px) {
-  .theme-toggle {
-    top: 24px;
-  }
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 48px;
+  margin-bottom: 24px;
 }
-
-#overview > .section-title {
-  min-height: 44px;
-  padding-right: 52px;
+.page-header > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
 }
-.theme-toggle {
-  top: 24px;
-}
-
-.view-title {
-  padding: 24px 52px 0 0;
-  min-height: 68px;
+.page-header span {
+  font-size: 13px;
+  color: var(--muted);
 }
 .today-numbers {
   display: grid;
@@ -1001,12 +999,19 @@ html.dark {
   text-underline-offset: 4px;
 }
 .routine-sessions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 36px;
+  display: block;
 }
 .routine-session {
-  margin-bottom: 24px;
+  margin-bottom: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--line);
+}
+.routine-session > summary {
+  min-height: 64px;
+  margin: 0;
+}
+.routine-session summary h2 {
+  font-size: 18px;
 }
 .routine-next {
   color: var(--ink);
@@ -1074,7 +1079,8 @@ html.dark {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 44px;
+  min-height: 48px;
+  min-width: 48px;
   padding: 6px 0;
   background: transparent;
   border: 0;
@@ -1243,24 +1249,9 @@ html.dark {
   border-left: 2px solid var(--ink);
   padding-left: 12px;
 }
-.session-exercises .is-complete .session-exercise-title strong {
-  color: var(--muted);
-}
-.session-complete {
-  font-size: 14px;
-  padding: 10px 0;
-}
 
 .session-rest-start {
   text-decoration: none;
-}
-.timer-open {
-  display: block;
-  margin-top: 12px;
-  width: fit-content;
-  font-size: 12px;
-  color: var(--muted);
-  text-underline-offset: 3px;
 }
 .timer-page {
   min-height: 100svh;
@@ -1274,8 +1265,8 @@ html.dark {
 .timer-header {
   display: flex;
   align-items: center;
-  min-height: 52px;
-  padding-right: 50px;
+  justify-content: space-between;
+  min-height: 48px;
 }
 .timer-header a {
   display: inline-flex;
@@ -1288,12 +1279,6 @@ html.dark {
 .timer-header svg {
   width: 18px;
   height: 18px;
-}
-.timer-header h1 {
-  margin-left: auto;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
 }
 .timer-face {
   flex: 1;
@@ -1374,7 +1359,7 @@ html.dark {
   margin: 16px 0 0;
 }
 .timer-page .rest-alerts summary {
-  min-height: 32px;
+  min-height: 48px;
 }
 .timer-connection {
   color: var(--muted);
@@ -1396,5 +1381,148 @@ html.dark {
   }
   .timer-actions {
     margin-bottom: 16px;
+  }
+}
+
+/* Controls are sized for a finger, including collapsed details. */
+summary {
+  cursor: pointer;
+  min-height: 48px;
+  padding: 12px 0;
+}
+.metric-note {
+  font-size: 13px;
+}
+.metric-note summary {
+  display: flex;
+  min-height: 48px;
+  width: 100%;
+}
+.session-details {
+  margin-top: 4px;
+  font-size: 14px;
+}
+.session-details summary,
+.rest-alerts summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.session-details summary::before,
+.rest-alerts summary::before {
+  content: "+";
+}
+.session-details[open] summary::before,
+.rest-alerts[open] summary::before {
+  content: "−";
+}
+.session-next .session-cue {
+  margin: 16px 0 0;
+  font-size: 14px;
+}
+.session-next {
+  padding-bottom: 12px;
+}
+.session-exercise-title strong {
+  font-size: 16px;
+}
+.session-target {
+  font-size: 14px;
+}
+.session-rest-start {
+  min-height: 52px;
+}
+.session-group {
+  border-top: 1px solid var(--line);
+}
+.live-session {
+  margin-bottom: 16px;
+}
+.today-numbers {
+  margin-bottom: 24px;
+}
+.panel.disclosure {
+  padding: 0;
+}
+.metric-note a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+}
+.session-group > summary,
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  font-size: 15px;
+  list-style: none;
+}
+.session-group > summary > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.session-group > summary svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.session-group[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.disclosure > summary::after,
+.routine-session > summary::after {
+  content: "+";
+  color: var(--muted);
+}
+.disclosure[open] > summary::after,
+.routine-session[open] > summary::after {
+  content: "−";
+}
+.session-group > summary::-webkit-details-marker,
+.disclosure > summary::-webkit-details-marker,
+.routine-session > summary::-webkit-details-marker,
+.session-details > summary::-webkit-details-marker,
+.rest-alerts > summary::-webkit-details-marker {
+  display: none;
+}
+.weekly-disclosure {
+  margin-bottom: 32px;
+  border-block: 1px solid var(--line);
+}
+.routine-schedule {
+  margin-bottom: 12px;
+}
+.routine-session > summary h2 {
+  flex: 1;
+}
+.routine-session > summary {
+  list-style: none;
+}
+.routine-intro > p {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+.rest-alerts button,
+.timer-header a,
+.routine-link,
+.segmented button {
+  min-height: 48px;
+}
+.segmented button {
+  padding-inline: 14px;
+}
+.rest-alerts {
+  font-size: 13px;
+}
+@media (max-width: 360px) {
+  .calendar-grid {
+    margin-inline: -14px;
+    gap: 0;
+  }
+  .calendar-grid small {
+    font-size: 10px;
   }
 }

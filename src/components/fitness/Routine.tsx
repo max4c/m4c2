@@ -1,3 +1,4 @@
+import PageHeader from "./PageHeader";
 import { rotationOrder, type Plan, type Rotation } from "../../../shared/model";
 import { prescription, sameStationSuperset } from "../../../shared/training";
 import { RestButton } from "./RestTimer";
@@ -11,39 +12,38 @@ export default function Routine({
 }) {
   return (
     <div>
-      <div className="section-title view-title">
-        <h1>Routine</h1>
-      </div>
+      <PageHeader title="Routine" />
       <div className="routine-intro">
         <a href="#goals">← Goals</a>
-        <p>
-          {plan.targets.liftsMin}–{plan.targets.liftsMax} lifts per week ·
-          continue the sequence when days move.
-        </p>
+        <p>{rotationOrder(plan).join(" → ")}</p>
       </div>
       {plan.schedule && (
-        <div className="routine-week" aria-label="Weekly schedule">
-          {plan.schedule.map((day) => (
-            <div key={day.day}>
-              <span>{day.day}</span>
-              <div>
-                <strong>{day.label}</strong>
-                {day.detail && <small>{day.detail}</small>}
+        <details className="disclosure routine-schedule">
+          <summary>Weekly schedule</summary>
+          <div className="routine-week" aria-label="Weekly schedule">
+            {plan.schedule.map((day) => (
+              <div key={day.day}>
+                <span>{day.day}</span>
+                <div>
+                  <strong>{day.label}</strong>
+                  {day.detail && <small>{day.detail}</small>}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </details>
       )}
       <div className="routine-sessions">
         {sessions.map((session) => {
           const day = plan.schedule?.find((d) => d.session === session)?.day;
           return (
-            <section
+            <details
+              open={next === session}
               className="panel routine-session"
               key={session}
               aria-labelledby={`routine-${session}`}
             >
-              <div className="panel-top">
+              <summary className="panel-top">
                 <h2 id={`routine-${session}`} className="session-label">
                   {day ? `${day} · ` : ""}
                   {session === "legs" && !rotationOrder(plan).includes("legs")
@@ -51,7 +51,7 @@ export default function Routine({
                     : session}
                 </h2>
                 {next === session && <span className="routine-next">Next</span>}
-              </div>
+              </summary>
               <ol className="routine-exercises">
                 {plan.program[session].map((exercise, i, list) => {
                   const pair =
@@ -69,7 +69,7 @@ export default function Routine({
                   );
                 })}
               </ol>
-            </section>
+            </details>
           );
         })}
       </div>
@@ -83,13 +83,7 @@ export default function Routine({
             the lifting rotation.
           </p>
         )}
-        <p>
-          Chat and Today show previous sets and next targets. Rest timers use
-          the listed duration (90s for the 60–90s range). You can add time. The
-          countdown resumes correctly when you return; sound requires the app to
-          be open and audio available.
-        </p>
-        <a href="#today">View next workout →</a>
+        <a href="#today">Today →</a>
       </details>
     </div>
   );

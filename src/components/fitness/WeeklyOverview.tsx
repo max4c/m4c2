@@ -47,9 +47,6 @@ export default function WeeklyOverview({ data }: { data: Data }) {
   ];
   return (
     <section id="weekly" className="weekly-overview">
-      <div className="section-title">
-        <h2>Weekly</h2>
-      </div>
       <div className="week-picker">
         <button
           aria-label="Older week"
@@ -72,7 +69,7 @@ export default function WeeklyOverview({ data }: { data: Data }) {
         </button>
       </div>
       <details className="metric-note">
-        <summary>About these numbers</summary>
+        <summary>Details</summary>
         <p>
           Counts reflect your logs. Previous-week figures cover that full week;
           the current week is still accumulating.
@@ -83,12 +80,12 @@ export default function WeeklyOverview({ data }: { data: Data }) {
           <article className="panel weekly-metric" key={label}>
             <span>{label}</span>
             <strong>{value}</strong>
-            {prev !== null && <small>Previous full week: {prev}</small>}
+            {prev !== null && <small>Previous week: {prev}</small>}
           </article>
         ))}
       </div>
       <details className="metric-note">
-        <summary>About these numbers</summary>
+        <summary>Details</summary>
         <p>
           Exercises counts each exercise once per lift date; unique exercises
           counts distinct names across the week. Steps logged on{" "}
@@ -123,7 +120,7 @@ export default function WeeklyOverview({ data }: { data: Data }) {
             </dd>
           </dl>
           <details className="metric-note">
-            <summary>About these numbers</summary>
+            <summary>Details</summary>
             <p>
               Daily averages here use days with meal logs, which may still be
               incomplete. The weekly protein target above uses all elapsed days.
@@ -182,7 +179,7 @@ export default function WeeklyOverview({ data }: { data: Data }) {
           </dl>
           {week.checkIns.latestMeasurements && (
             <details className="metric-note">
-              <summary>About these numbers</summary>
+              <summary>Details</summary>
               <p>
                 Latest tape check ({week.checkIns.latestMeasurements.date}): arm{" "}
                 {week.checkIns.latestMeasurements.arm}″ · shoulders{" "}
@@ -204,7 +201,7 @@ export default function WeeklyOverview({ data }: { data: Data }) {
             ))}
           </dl>
           <details className="metric-note">
-            <summary>About these numbers</summary>
+            <summary>Details</summary>
             <p>
               Primary muscle only; hard lifting sessions. “Unmapped” includes
               timed hangs, carries, and unrecognized exercise names. Photos

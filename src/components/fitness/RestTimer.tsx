@@ -314,10 +314,10 @@ export function RestControls() {
   const { start, timer, remaining, ready } = useLiveSession();
   return (
     <div className="session-rest">
-      {timer ? (
+      {timer && remaining > 0 ? (
         <a className="session-rest-start" href="#timer">
           <ClockIcon aria-hidden="true" />
-          {remaining ? `Timer · ${formatTime(remaining)}` : "Rest complete"}
+          Timer · {formatTime(remaining)}
         </a>
       ) : (
         <button
@@ -330,11 +330,6 @@ export function RestControls() {
             ? `Start rest · ${formatTime(ready.seconds)}`
             : ready.label}
         </button>
-      )}
-      {!timer && (
-        <a className="timer-open" href="#timer">
-          Open timer
-        </a>
       )}
     </div>
   );

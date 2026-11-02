@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "@/components/fitness/fitness.css";
-import ThemeToggle from "@/components/fitness/ThemeToggle";
 const inter = Inter({ subsets: ["latin"] });
 // Same saved preference and 7am–7pm daylight rule as the personal site.
 const themeScript = `(() => {
@@ -51,10 +50,7 @@ export default function FitnessLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={inter.className}>
-        <ThemeToggle />
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

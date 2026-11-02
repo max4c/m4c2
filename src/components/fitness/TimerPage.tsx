@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { formatTime, RestAlerts, useLiveSession } from "./RestTimer";
+import ThemeToggle from "./ThemeToggle";
 
 export default function TimerPage() {
   const { timer, remaining, start, stop, ready, session, connected } =
@@ -63,7 +64,7 @@ export default function TimerPage() {
           <ArrowLeftIcon aria-hidden="true" />
           Session
         </a>
-        <h1>Timer</h1>
+        <ThemeToggle />
       </header>
       <div className="timer-face">
         <p className="timer-status" role="status">
@@ -84,9 +85,7 @@ export default function TimerPage() {
         >
           {seconds || timer ? formatTime(seconds) : "—:—"}
         </div>
-        <p className="timer-exercise">
-          {label === "Rest" ? null : label}
-        </p>
+        <p className="timer-exercise">{label === "Rest" ? null : label}</p>
       </div>
       <div className="timer-actions">
         {!active && (

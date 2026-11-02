@@ -37,7 +37,7 @@ export default function Sleep({
             <strong>
               {latest?.date === today
                 ? sleepDuration(latest.seconds)
-                : "No sleep synced for last night"}
+                : "Not synced"}
             </strong>
             {latest && latest.date !== today && (
               <span>
@@ -65,7 +65,7 @@ export default function Sleep({
             <>
               <p>
                 {avg === null
-                  ? "No sleep recorded in the last 7 days."
+                  ? "No sleep logged this week."
                   : `${sleepDuration(avg)} average · ${week.length} of the last 7 nights recorded`}
               </p>
               <div className="sleep-nights">

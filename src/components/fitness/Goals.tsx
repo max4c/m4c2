@@ -1,12 +1,11 @@
+import PageHeader from "./PageHeader";
 import { rotationOrder, type Plan } from "../../../shared/model";
 export default function Goals({ plan }: { plan: Plan }) {
   return (
     <div>
-      <div className="section-title view-title">
-        <h1>Goals</h1>
-      </div>
+      <PageHeader title="Goals" />
       <a className="routine-link" href="#routine">
-        View routine →
+        Routine →
       </a>
       <section className="panel goals-list" aria-label="Current goals">
         {plan.goals?.length ? (
@@ -25,20 +24,15 @@ export default function Goals({ plan }: { plan: Plan }) {
           <span className="session-label">
             {rotationOrder(plan).join(" → ")}
           </span>
-          . Continue the sequence when I next lift; planned weekdays can move.
+          . Pick up where I left off.
         </p>
         <p>
-          Cardio and HIIT fit around lifting and don’t advance the rotation.
-        </p>
-        <p>
-          {plan.targets.liftsMin}–{plan.targets.liftsMax} lifts per week.{" "}
-          {rotationOrder(plan).includes("legs")
-            ? "A full legs session is part of the rotation."
-            : "One short legs block per week."}
+          {plan.targets.liftsMin}–{plan.targets.liftsMax} lift days per week,
+          with cardio and HIIT around them.
         </p>
       </section>
-      <section className="panel">
-        <h2>Progress</h2>
+      <details className="panel disclosure">
+        <summary>How I measure progress</summary>
         <p>
           Compare weight and reps for the same exercise. Use arm measurements
           and progress photos to track size over time.
@@ -47,7 +41,7 @@ export default function Goals({ plan }: { plan: Plan }) {
           <summary>Program rationale</summary>
           <p>{plan.rationale}</p>
         </details>
-      </section>
+      </details>
     </div>
   );
 }
