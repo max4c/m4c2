@@ -3,6 +3,7 @@
 import FloatingNav, { type DashboardView } from "./FloatingNav";
 import { RestTimerProvider, clearRestNotifications } from "./RestTimer";
 import Today from "./Today";
+import TimerPage from "./TimerPage";
 import Goals from "./Goals";
 import Routine from "./Routine";
 import Sleep from "./Sleep";
@@ -130,7 +131,8 @@ function DashboardContent({ data }: { data: DashboardData }) {
         hash === "history" ||
           hash === "trends" ||
           hash === "goals" ||
-          hash === "routine"
+          hash === "routine" ||
+          hash === "timer"
           ? hash
           : "today",
       );
@@ -165,6 +167,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
     const end = addDays(date, 6) > today ? today : addDays(date, 6);
     return { date, ...summarize(data, plan, end, "week") };
   });
+  if (view === "timer") return <TimerPage />;
   return (
     <main className="fitness-dashboard">
       {process.env.NEXT_PUBLIC_FITNESS_TEST_DATA === "true" && (

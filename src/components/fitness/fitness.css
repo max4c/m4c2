@@ -934,12 +934,6 @@ html.dark {
 .session-label {
   text-transform: capitalize;
 }
-.floating-dock a span {
-  display: block;
-}
-.floating-dock a[aria-current] {
-  flex: 1;
-}
 .sleep-summary {
   display: flex;
   flex-direction: column;
@@ -1133,68 +1127,6 @@ html.dark {
   font-size: 12px;
   color: var(--muted);
 }
-.rest-timer {
-  position: fixed;
-  bottom: calc(88px + env(safe-area-inset-bottom));
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(470px, calc(100% - 24px));
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--dock);
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-  z-index: 45;
-  color: var(--ink);
-}
-.rest-timer-label {
-  flex: 1;
-  min-width: 0;
-}
-.fitness-dashboard:has(+ .rest-timer) {
-  padding-bottom: calc(210px + env(safe-area-inset-bottom));
-}
-.rest-timer-label span {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12px;
-}
-.rest-timer-label small {
-  color: var(--muted);
-  font-size: 11px;
-}
-.rest-timer > strong {
-  font-size: 24px;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-.rest-timer button {
-  background: transparent;
-  border: 0;
-  color: inherit;
-  cursor: pointer;
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0;
-  font-size: 12px;
-}
-.rest-timer button svg {
-  width: 18px;
-  height: 18px;
-  margin: auto;
-}
-.rest-start:focus-visible,
-.rest-timer button:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
 /* Voice owns entry. This is a quiet, read-only view of the current session. */
 .session-rest {
   padding: 4px 0 22px;
@@ -1317,4 +1249,152 @@ html.dark {
 .session-complete {
   font-size: 14px;
   padding: 10px 0;
+}
+
+.session-rest-start {
+  text-decoration: none;
+}
+.timer-open {
+  display: block;
+  margin-top: 12px;
+  width: fit-content;
+  font-size: 12px;
+  color: var(--muted);
+  text-underline-offset: 3px;
+}
+.timer-page {
+  min-height: 100svh;
+  min-height: 100dvh;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+.timer-header {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding-right: 50px;
+}
+.timer-header a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  text-decoration: none;
+  font-size: 14px;
+}
+.timer-header svg {
+  width: 18px;
+  height: 18px;
+}
+.timer-header h1 {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.timer-face {
+  flex: 1;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+}
+.timer-status {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.timer-countdown {
+  font-size: clamp(88px, 25vw, 148px);
+  letter-spacing: -0.065em;
+  line-height: 1.2;
+  font-weight: 450;
+  font-variant-numeric: tabular-nums;
+}
+.timer-exercise {
+  min-height: 22px;
+  margin: 12px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+}
+.timer-actions {
+  margin-bottom: 28px;
+}
+.timer-actions .rest-presets {
+  margin-bottom: 12px;
+}
+.timer-actions .rest-presets button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--soft);
+}
+.timer-primary {
+  width: 100%;
+  min-height: 56px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 16px;
+  font-weight: 500;
+}
+.timer-stop {
+  background: var(--soft);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.timer-next {
+  border-top: 1px solid var(--line);
+  padding: 22px 0 10px;
+}
+.timer-next > span,
+.timer-next > small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.timer-next > strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.timer-next > p {
+  margin: 6px 0;
+  font-size: 14px;
+}
+.timer-page .rest-alerts {
+  margin: 16px 0 0;
+}
+.timer-page .rest-alerts summary {
+  min-height: 32px;
+}
+.timer-connection {
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (min-width: 701px) {
+  .timer-page {
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+}
+@media (max-height: 600px) {
+  .timer-face {
+    min-height: 180px;
+    padding: 12px 0;
+  }
+  .timer-countdown {
+    font-size: 88px;
+  }
+  .timer-actions {
+    margin-bottom: 16px;
+  }
 }

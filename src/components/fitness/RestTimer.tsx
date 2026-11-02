@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { ClockIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ClockIcon } from "@heroicons/react/24/outline";
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../../convex/_generated/api";
 import type { PlanExercise } from "../../../shared/model";
@@ -21,9 +21,12 @@ type Session = FunctionReturnType<typeof api.voice.get_current_session>;
 const key = "supermedium-rest-timer-v1";
 const TimerContext = createContext({
   start: (_label: string, _seconds: number) => {},
+  stop: () => {},
+  timer: null as RestTimerState | null,
+  remaining: 0,
   session: null as Session | null,
   connected: false,
-  ready: { label: "Rest", seconds: 90 },
+  ready: { label: "Rest", seconds: 90, eventId: null as string | null },
   alerts: "" as string,
   enableAlerts: async () => {},
 });
@@ -81,7 +84,11 @@ export function RestTimerProvider({ children }: { children: ReactNode }) {
     [remaining, setRemaining] = useState(0);
   const [session, setSession] = useState<Session | null>(null),
     [connected, setConnected] = useState(false);
-  const [ready, setReady] = useState({ label: "Rest", seconds: 90 }),
+  const [ready, setReady] = useState({
+      label: "Rest",
+      seconds: 90,
+      eventId: null as string | null,
+    }),
     [alerts, setAlerts] = useState("");
   const sound = useRef<AudioContext | null>(null),
     alerted = useRef<number | null>(null),
@@ -98,7 +105,7 @@ export function RestTimerProvider({ children }: { children: ReactNode }) {
           version: crypto.randomUUID(),
         }
       : { action: "cancel", deviceId: deviceId() };
-    // Keep fast +15/cancel taps in order rather than racing server requests.
+    // Keep start/cancel actions in order rather than racing server requests.
     notificationQueue = notificationQueue
       .then(async () => {
         if (notificationsDisabled) return;
@@ -142,7 +149,11 @@ export function RestTimerProvider({ children }: { children: ReactNode }) {
         setConnected(true);
         if (s.rest?.eventId && lastEvent.current !== s.rest.eventId) {
           lastEvent.current = s.rest.eventId;
-          setReady({ label: s.rest.label, seconds: s.rest.seconds });
+          setReady({
+            label: s.rest.label,
+            seconds: s.rest.seconds,
+            eventId: s.rest.eventId,
+          });
         }
       } catch {
         setConnected(false);
@@ -226,6 +237,7 @@ export function RestTimerProvider({ children }: { children: ReactNode }) {
       void sound.current.resume().catch(() => {});
     } catch {}
     save({ label, endsAt: Date.now() + seconds * 1000 });
+    window.location.hash = "timer";
   }
   async function enableAlerts() {
     try {
@@ -282,78 +294,63 @@ export function RestTimerProvider({ children }: { children: ReactNode }) {
   }
   return (
     <TimerContext.Provider
-      value={{ start, session, connected, ready, alerts, enableAlerts }}
+      value={{
+        start,
+        stop: () => save(null),
+        timer,
+        remaining,
+        session,
+        connected,
+        ready,
+        alerts,
+        enableAlerts,
+      }}
     >
       {children}
-      {timer && (
-        <aside className="rest-timer" aria-label="Rest timer">
-          <div className="rest-timer-label">
-            <span>{timer.label}</span>
-            <small role="status">{remaining ? "Rest" : "Rest complete"}</small>
-          </div>
-          <strong role="timer" aria-label={`${remaining} seconds remaining`}>
-            {Math.floor(remaining / 60)}:
-            {String(remaining % 60).padStart(2, "0")}
-          </strong>
-          <button
-            onClick={() =>
-              save({
-                ...timer,
-                endsAt: Math.min(
-                  Math.max(timer.endsAt, Date.now()) + 15_000,
-                  Date.now() + 30 * 60_000,
-                ),
-              })
-            }
-            aria-label="Add 15 seconds"
-          >
-            +15s
-          </button>
-          <button onClick={() => save(null)} aria-label="Cancel rest timer">
-            <XMarkIcon aria-hidden="true" />
-          </button>
-        </aside>
-      )}
     </TimerContext.Provider>
   );
 }
 export function RestControls() {
-  const { start, ready, alerts, enableAlerts } = useLiveSession();
+  const { start, timer, remaining, ready } = useLiveSession();
   return (
     <div className="session-rest">
-      <div className="rest-presets" aria-label="Rest presets">
-        {[60, 90, 120, 180].map((s) => (
-          <button
-            key={s}
-            onClick={() => start("Rest", s)}
-            aria-label={`Start ${s} second rest`}
-          >
-            {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}
-          </button>
-        ))}
-      </div>
-      <button
-        className="session-rest-start"
-        disabled={!ready.seconds}
-        onClick={() => start(ready.label, ready.seconds)}
-      >
-        <ClockIcon aria-hidden="true" />
-        {ready.seconds
-          ? `Start rest · ${Math.floor(ready.seconds / 60)}:${String(ready.seconds % 60).padStart(2, "0")}`
-          : ready.label}
-      </button>
-      <details className="rest-alerts">
-        <summary>Alerts</summary>
-        <p>
-          Sound while open. Home Screen notifications when locked; sound and
-          vibration follow your iPhone settings and aren’t guaranteed.
-        </p>
-        <button onClick={() => void enableAlerts()}>
-          Enable notifications
+      {timer ? (
+        <a className="session-rest-start" href="#timer">
+          <ClockIcon aria-hidden="true" />
+          {remaining ? `Timer · ${formatTime(remaining)}` : "Rest complete"}
+        </a>
+      ) : (
+        <button
+          className="session-rest-start"
+          disabled={!ready.seconds}
+          onClick={() => start(ready.label, ready.seconds)}
+        >
+          <ClockIcon aria-hidden="true" />
+          {ready.seconds
+            ? `Start rest · ${formatTime(ready.seconds)}`
+            : ready.label}
         </button>
-        {alerts && <p role="status">{alerts}</p>}
-      </details>
+      )}
+      {!timer && (
+        <a className="timer-open" href="#timer">
+          Open timer
+        </a>
+      )}
     </div>
+  );
+}
+export function formatTime(seconds: number) {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
+export function RestAlerts() {
+  const { alerts, enableAlerts } = useLiveSession();
+  return (
+    <details className="rest-alerts">
+      <summary>Completion alert</summary>
+      <p>Get a notification when rest ends.</p>
+      <button onClick={() => void enableAlerts()}>Enable notifications</button>
+      {alerts && <p role="status">{alerts}</p>}
+    </details>
   );
 }
 export function RestButton({

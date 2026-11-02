@@ -1,11 +1,16 @@
 "use client";
 export type DashboardView =
-  "today" | "history" | "trends" | "goals" | "routine";
+  "today" | "history" | "trends" | "goals" | "routine" | "timer";
 const items = [
   {
     id: "today",
     label: "Today",
     path: "M3 10.5 12 3l9 7.5M5 9v11h5v-6h4v6h5V9",
+  },
+  {
+    id: "timer",
+    label: "Timer",
+    path: "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0M12 7v5l3 2",
   },
   {
     id: "history",
