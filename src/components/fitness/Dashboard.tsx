@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
 import FloatingNav, { type DashboardView } from "./FloatingNav";
 import { RestTimerProvider } from "./RestTimer";
 import Today from "./Today";
@@ -8,114 +7,17 @@ import TimerPage from "./TimerPage";
 import PageHeader from "./PageHeader";
 import Goals from "./Goals";
 import Routine from "./Routine";
-import Sleep from "./Sleep";
+import Trends from "./Trends";
 import type { SleepData } from "../../../shared/sleep";
-import WeeklyOverview from "./WeeklyOverview";
-import TrainingHistory from "./TrainingHistory";
+import TrainingHistory, { type HistorySelection } from "./TrainingHistory";
 import React, { useState, useEffect } from "react";
 
 import { api } from "../../../convex/_generated/api";
 import { type FunctionReturnType } from "convex/server";
-import {
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  ReferenceLine,
-  CartesianGrid,
-} from "recharts";
-import { addDays, periodStart } from "../../../shared/model";
-import { summarize } from "../../../shared/analytics";
 
 type DashboardData = FunctionReturnType<typeof api.fitness.dashboard> & {
   sleep?: SleepData;
 };
-function Empty({ children }: { children: React.ReactNode }) {
-  return <div className="empty">{children}</div>;
-}
-function Trend({
-  data,
-  series,
-  unit,
-  target,
-}: {
-  data: Record<string, unknown>[];
-  series: { key: string; color: string }[];
-  unit: string;
-  target?: number;
-}) {
-  return (
-    <div className="chart">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 14, right: 12, bottom: 0, left: -8 }}
-        >
-          <CartesianGrid vertical={false} stroke="var(--line)" />
-          <XAxis
-            dataKey="date"
-            tickFormatter={(s) => String(s).slice(5)}
-            minTickGap={40}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fontSize: 10, fill: "var(--muted)" }}
-          />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{ fontSize: 10, fill: "var(--muted)" }}
-            domain={unit === "lb" ? ["auto", "auto"] : [0, "auto"]}
-          />
-          <Tooltip
-            contentStyle={{
-              borderRadius: 6,
-              border: "1px solid var(--line)",
-              background: "var(--paper)",
-              color: "var(--ink)",
-            }}
-            labelFormatter={(l) => String(l)}
-            formatter={(v, name) => [`${v} ${unit}`, name]}
-          />
-          {target !== undefined && (
-            <ReferenceLine y={target} stroke="#9ca77e" strokeDasharray="4 4" />
-          )}
-          {series.map((s) => (
-            <Line
-              key={s.key}
-              dataKey={s.key}
-              name={s.key}
-              stroke={s.color}
-              strokeWidth={2.5}
-              dot={false}
-              connectNulls={false}
-              isAnimationActive={false}
-            />
-          ))}
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
-function Photo({ photo }: { photo: DashboardData["photos"][number] }) {
-  const [failed, setFailed] = useState(false);
-  return (
-    <figure>
-      {failed ? (
-        <div className="photo-placeholder">Upload pending</div>
-      ) : (
-        <img
-          loading="lazy"
-          alt={`Progress photo ${photo.date}`}
-          src={`/fitness/api/photo/${photo.r2Key}`}
-          onError={() => setFailed(true)}
-        />
-      )}
-      <figcaption>{photo.date}</figcaption>
-    </figure>
-  );
-}
 export function Dashboard({ data }: { data: DashboardData }) {
   return (
     <RestTimerProvider>
@@ -124,49 +26,42 @@ export function Dashboard({ data }: { data: DashboardData }) {
   );
 }
 function DashboardContent({ data }: { data: DashboardData }) {
-  const { plan, today, week } = data;
+  const { plan } = data;
   const [view, setView] = useState<DashboardView>("today");
+  const [trendDays, setTrendDays] = useState<7 | 30>(7);
+  const [historySelection, setHistorySelection] = useState<HistorySelection>({
+    month: data.today.slice(0, 7),
+    day: data.today,
+    exercise: "",
+  });
+  const [settingsReturn, setSettingsReturn] = useState<DashboardView>("today");
   useEffect(() => {
+    let previous: DashboardView = "today";
     const sync = () => {
       const hash = window.location.hash.slice(1);
-      setView(
-        hash === "history" ||
-          hash === "trends" ||
-          hash === "goals" ||
-          hash === "routine" ||
-          hash === "timer" ||
-          hash === "settings"
-          ? hash
-          : "today",
-      );
+      const next: DashboardView = [
+        "history",
+        "trends",
+        "goals",
+        "routine",
+        "timer",
+        "settings",
+      ].includes(hash)
+        ? (hash as DashboardView)
+        : "today";
+      if (
+        next === "settings" &&
+        !["settings", "goals", "routine"].includes(previous)
+      )
+        setSettingsReturn(previous);
+      previous = next;
+      setView(next);
       window.scrollTo(0, 0);
     };
     sync();
     window.addEventListener("hashchange", sync);
     return () => window.removeEventListener("hashchange", sync);
   }, []);
-  const [range, setRange] = useState(30);
-  const start = addDays(today, 1 - range);
-  const protein = Array.from({ length: range }, (_, i) => {
-    const date = addDays(start, i),
-      meals = data.meals.filter((m) => m.date === date);
-    return {
-      date,
-      protein: meals.length
-        ? Math.round(meals.reduce((s, m) => s + m.protein, 0))
-        : null,
-    };
-  });
-  const weights = data.weights
-    .filter((w) => w.date >= start)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.ts - b.ts)
-    .map((w) => ({ date: w.date, weight: w.lbs }));
-  const stats = week.THE_THREE_NUMBERS!;
-  const weekly = Array.from({ length: 8 }, (_, i) => {
-    const date = addDays(periodStart(today, "week"), (i - 7) * 7);
-    const end = addDays(date, 6) > today ? today : addDays(date, 6);
-    return { date, ...summarize(data, plan, end, "week") };
-  });
   if (view === "timer") return <TimerPage />;
   return (
     <main className="fitness-dashboard">
@@ -174,7 +69,9 @@ function DashboardContent({ data }: { data: DashboardData }) {
         <span className="live">Test data</span>
       )}
       {view === "today" && <Today data={data} />}
-      {view === "settings" && <Settings sleep={data.sleep} />}
+      {view === "settings" && (
+        <Settings sleep={data.sleep} backHref={`#${settingsReturn}`} />
+      )}
       {view === "goals" && <Goals plan={plan} />}
       {view === "routine" && (
         <Routine plan={plan} next={data.nextSession.next} />
@@ -182,277 +79,15 @@ function DashboardContent({ data }: { data: DashboardData }) {
       {view === "history" && (
         <>
           <PageHeader title="History" />
-          <TrainingHistory data={data} />
+          <TrainingHistory
+            data={data}
+            selection={historySelection}
+            onSelectionChange={setHistorySelection}
+          />
         </>
       )}
       {view === "trends" && (
-        <>
-          <PageHeader title="Trends" />
-          <section id="overview" aria-label="This week">
-            <div className="section-title">
-              <h2>This week</h2>
-              <span>
-                {periodStart(today, "week").slice(5)} – {today.slice(5)}
-              </span>
-            </div>
-            <div className="score-grid">
-              {[
-                {
-                  title: "Lifts",
-                  value: stats.lifts.value,
-                  unit: "sessions",
-                  target: `${plan.targets.liftsMin}–${plan.targets.liftsMax} per week`,
-                  pass: stats.lifts.pass,
-                  max: plan.targets.liftsMin,
-                },
-                {
-                  title: "Movement",
-                  value: stats.movementDays.value,
-                  unit: "/ 7 days",
-                  target: `${plan.targets.movementDays} days per week`,
-                  pass: stats.movementDays.pass,
-                  max: plan.targets.movementDays,
-                },
-                {
-                  title: "Daily protein",
-                  value: stats.proteinAvg.value,
-                  unit: "g avg",
-                  target: `${plan.targets.protein}g per day`,
-                  pass: stats.proteinAvg.pass,
-                  max: plan.targets.protein,
-                },
-              ].map((s, i) => (
-                <article className={`score score-${i}`} key={s.title}>
-                  <div className="score-label">{s.title}</div>
-                  <div className="big-number">
-                    {s.value}
-                    <span>{s.unit}</span>
-                  </div>
-                  <div className="track">
-                    <span
-                      style={{
-                        width: `${Math.min(100, (s.value / s.max) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                  <div className="score-bottom">
-                    <strong>{s.target}</strong>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <details className="metric-note">
-              <summary>Details</summary>
-              <p>
-                Week-to-date averages include unlogged days.{" "}
-                {week.coverage.mealDays} of {week.elapsedDays} days have meal
-                logs.
-              </p>
-            </details>
-          </section>
-          <details className="disclosure weekly-disclosure">
-            <summary>Weekly detail</summary>
-            <WeeklyOverview data={data} />
-          </details>
-          <section id="charts">
-            <div className="section-title">
-              <h2>Over time</h2>
-              <div className="segmented" aria-label="Chart period">
-                {[30, 90].map((n) => (
-                  <button
-                    key={n}
-                    aria-pressed={range === n}
-                    onClick={() => setRange(n)}
-                  >
-                    {n} days
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="two-col">
-              <article className="panel">
-                <div className="panel-top">
-                  <h3>Protein</h3>
-                  <span>
-                    g / day{" "}
-                    <b className="legend">— {plan.targets.protein}g target</b>
-                  </span>
-                </div>
-                {data.meals.length ? (
-                  <Trend
-                    data={protein}
-                    series={[{ key: "protein", color: "#628451" }]}
-                    unit="g"
-                    target={plan.targets.protein}
-                  />
-                ) : (
-                  <Empty>No meals logged.</Empty>
-                )}
-              </article>
-              <article className="panel">
-                <div className="panel-top">
-                  <h3>Body weight</h3>
-                  <span>lb</span>
-                </div>
-                {weights.length ? (
-                  <Trend
-                    data={weights}
-                    series={[{ key: "weight", color: "#b28255" }]}
-                    unit="lb"
-                  />
-                ) : (
-                  <Empty>No weigh-ins yet.</Empty>
-                )}
-              </article>
-            </div>
-          </section>
-          <section className="two-col">
-            <article className="panel">
-              <div className="panel-top">
-                <h3>Weekly activity</h3>
-                <span>8 weeks</span>
-              </div>
-              <div className="rhythm-key">
-                <span>
-                  <i /> Lifts · {plan.targets.liftsMin}–{plan.targets.liftsMax}
-                </span>
-                <span>
-                  <i /> Movement · {plan.targets.movementDays}/7
-                </span>
-              </div>
-              <div className="weeks">
-                {weekly.map((w) => (
-                  <div className="week" key={w.date}>
-                    <div className="bar-pair">
-                      <div
-                        className="week-bar lifts"
-                        style={{
-                          height: `${Math.max(2, (w.lifts / 10) * 100)}%`,
-                        }}
-                        title={`${w.lifts} lifts`}
-                      >
-                        {w.lifts > 0 && <span>{w.lifts}</span>}
-                      </div>
-                      <div
-                        className="week-bar movement"
-                        style={{
-                          height: `${Math.max(2, (w.movementDays / 10) * 100)}%`,
-                        }}
-                        title={`${w.movementDays} movement days`}
-                      >
-                        {w.movementDays > 0 && <span>{w.movementDays}</span>}
-                      </div>
-                    </div>
-                    <small>{w.date.slice(5)}</small>
-                  </div>
-                ))}
-              </div>
-              <details className="metric-note">
-                <summary>Details</summary>
-                <p>Movement = a workout or positive self-reported steps.</p>
-              </details>
-            </article>
-            <article className="panel">
-              <div className="panel-top">
-                <h3>Sets by muscle</h3>
-                <span>This week</span>
-              </div>
-              <div className="muscles">
-                {Object.entries(week.hardSets)
-                  .filter(([m]) => m !== "unmapped")
-                  .map(([m, n]) => (
-                    <div className="muscle" key={m}>
-                      <span>{m}</span>
-                      <div className="muscle-track">
-                        {["biceps", "triceps", "shoulders"].includes(m) && (
-                          <div
-                            className="target-band"
-                            style={{
-                              left: `${(plan.targets.setsMin / Math.max(20, plan.targets.setsMax, n)) * 100}%`,
-                              width: `${((plan.targets.setsMax - plan.targets.setsMin) / Math.max(20, plan.targets.setsMax, n)) * 100}%`,
-                            }}
-                          />
-                        )}
-                        <div
-                          className="muscle-fill"
-                          style={{
-                            width: `${Math.min(100, (n / Math.max(20, plan.targets.setsMax, n)) * 100)}%`,
-                          }}
-                        />
-                      </div>
-                      <strong>{n}</strong>
-                    </div>
-                  ))}
-              </div>
-              <details className="metric-note">
-                <summary>Details</summary>
-                <p>
-                  Shaded band: {plan.targets.setsMin}–{plan.targets.setsMax}{" "}
-                  sets for arms & shoulders. Primary muscle only.{" "}
-                  {week.hardSets.unmapped} unmapped sets.
-                </p>
-              </details>
-            </article>
-          </section>
-          <section className="two-col">
-            <article className="panel">
-              <div className="panel-top">
-                <h3>Measurements</h3>
-                <span>in</span>
-              </div>
-              {data.measurements.length ? (
-                <>
-                  <Trend
-                    data={data.measurements}
-                    series={[
-                      { key: "arm", color: "#527c50" },
-                      { key: "shoulders", color: "#b28255" },
-                      { key: "chest", color: "#748ba4" },
-                      { key: "waist", color: "#9d729a" },
-                    ]}
-                    unit="in"
-                  />
-                  <div className="measurement-key">
-                    {["arm", "shoulders", "chest", "waist"].map((m, i) => (
-                      <span
-                        key={m}
-                        style={{
-                          color: ["#527c50", "#b28255", "#748ba4", "#9d729a"][
-                            i
-                          ],
-                        }}
-                      >
-                        ● {m}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <Empty>No measurements logged.</Empty>
-              )}
-            </article>
-            <article className="panel">
-              <div className="panel-top">
-                <h3>Progress photos</h3>
-              </div>
-              {data.photos.length ? (
-                <div className="photos">
-                  {data.photos.map((p) => (
-                    <Photo key={p._id} photo={p} />
-                  ))}
-                </div>
-              ) : (
-                <Empty>No photos yet.</Empty>
-              )}
-            </article>
-          </section>
-          <Sleep
-            data={data.sleep}
-            today={today}
-            timezone={plan.timezone}
-            history
-          />
-        </>
+        <Trends data={data} days={trendDays} setDays={setTrendDays} />
       )}
       <FloatingNav active={view} />
     </main>

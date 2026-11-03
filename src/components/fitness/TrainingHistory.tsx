@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 import { exerciseHistory } from "../../../shared/exercise-history";
@@ -9,10 +8,22 @@ import { sleepDuration, type SleepData } from "../../../shared/sleep";
 type Data = FunctionReturnType<typeof api.fitness.dashboard> & {
   sleep?: SleepData;
 };
-export default function TrainingHistory({ data }: { data: Data }) {
-  const [month, setMonth] = useState(data.today.slice(0, 7));
-  const [day, setDay] = useState(data.today);
-  const [selected, setSelected] = useState("");
+export type HistorySelection = { month: string; day: string; exercise: string };
+export default function TrainingHistory({
+  data,
+  selection,
+  onSelectionChange,
+}: {
+  data: Data;
+  selection: HistorySelection;
+  onSelectionChange: (selection: HistorySelection) => void;
+}) {
+  const { month, day, exercise: selected } = selection;
+  const setMonth = (month: string) =>
+    onSelectionChange({ ...selection, month });
+  const setDay = (day: string) => onSelectionChange({ ...selection, day });
+  const setSelected = (exercise: string) =>
+    onSelectionChange({ ...selection, exercise });
   const names = [
     ...new Map(
       data.workoutHistory.flatMap((w) =>
@@ -75,13 +86,13 @@ export default function TrainingHistory({ data }: { data: Data }) {
                 timeZone: "UTC",
               })}
             </h3>
-            <button
-              aria-label="Next month"
-              disabled={month >= data.today.slice(0, 7)}
-              onClick={() => move(1)}
-            >
-              →
-            </button>
+            {month < data.today.slice(0, 7) ? (
+              <button aria-label="Next month" onClick={() => move(1)}>
+                →
+              </button>
+            ) : (
+              <span className="calendar-button-space" aria-hidden="true" />
+            )}
           </div>
           <div className="calendar-grid">
             {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
@@ -177,6 +188,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
               {w.exercises.map((e, i) => (
                 <button
                   className="exercise-row"
+                  aria-label={`View ${e.name} history`}
                   key={i}
                   onClick={() => {
                     setSelected(canonicalExerciseName(e.name, data.plan));
@@ -190,7 +202,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
                 >
                   <strong>{e.name}</strong>
                   <span>
-                    {e.sets.map((s) => `${s.w} × ${s.r}`).join(" · ")} →
+                    {e.sets.map((s) => `${s.w} × ${s.r}`).join(" · ")}
                   </span>
                 </button>
               ))}

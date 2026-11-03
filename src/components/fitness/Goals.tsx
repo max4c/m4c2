@@ -3,7 +3,11 @@ import { rotationOrder, type Plan } from "../../../shared/model";
 export default function Goals({ plan }: { plan: Plan }) {
   return (
     <div>
-      <PageHeader title="Goals" />
+      <PageHeader
+        title="Goals"
+        backHref="#settings"
+        backLabel="Back to Settings"
+      />
       <a className="routine-link" href="#routine">
         Routine →
       </a>

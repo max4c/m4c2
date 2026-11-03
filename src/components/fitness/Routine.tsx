@@ -12,9 +12,12 @@ export default function Routine({
 }) {
   return (
     <div>
-      <PageHeader title="Routine" />
+      <PageHeader
+        title="Routine"
+        backHref="#settings"
+        backLabel="Back to Settings"
+      />
       <div className="routine-intro">
-        <a href="#goals">← Goals</a>
         <p>{rotationOrder(plan).join(" → ")}</p>
       </div>
       {plan.schedule && (

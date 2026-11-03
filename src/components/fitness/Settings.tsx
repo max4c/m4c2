@@ -4,10 +4,20 @@ import PageHeader from "./PageHeader";
 import { clearRestNotifications, RestAlerts } from "./RestTimer";
 import type { SleepData } from "../../../shared/sleep";
 
-export default function Settings({ sleep }: { sleep?: SleepData }) {
+export default function Settings({
+  sleep,
+  backHref = "#today",
+}: {
+  sleep?: SleepData;
+  backHref?: string;
+}) {
   return (
     <div className="settings-page">
-      <PageHeader title="Settings" />
+      <PageHeader
+        title="Settings"
+        backHref={backHref}
+        backLabel="Back from Settings"
+      />
       <div className="settings-list">
         <a href="#goals">
           Goals <ChevronRightIcon aria-hidden="true" />

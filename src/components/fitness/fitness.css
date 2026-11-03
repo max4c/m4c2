@@ -886,9 +886,126 @@ html.dark {
 }
 .page-header > div {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 4px 12px;
+}
+.page-back {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  margin-left: -12px;
+  border-radius: 50%;
+}
+.page-back svg {
+  width: 21px;
+  height: 21px;
+}
+.calendar-button-space {
+  width: 44px;
+  flex-shrink: 0;
+}
+.trends-range {
+  margin-bottom: 24px;
+}
+.trends-range button {
+  flex: 1;
+  font-size: 14px;
+}
+.trends-comparison {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.trends-comparison th:first-child {
+  width: 40%;
+}
+.trends-comparison thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--paper);
+  padding: 12px 0 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: right;
+}
+.trends-comparison small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.trends-comparison tbody th,
+.trends-comparison tbody td {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.trends-comparison tbody th {
+  font-size: 14px;
+  font-weight: 400;
+  text-align: left;
+  padding-right: 12px;
+}
+.trends-comparison tbody td {
+  text-align: right;
+  color: var(--ink);
+  border-top: 0;
+}
+.trends-comparison strong {
+  font-size: clamp(15px, 4.5vw, 18px);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.trends-comparison td:last-child strong {
+  color: var(--muted);
+}
+.trends-comparison .trends-group th {
+  padding: 28px 0 8px;
+  border: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.trends-comparison .trends-details td {
+  padding: 0;
+  text-align: left;
+}
+.trends-details details + details {
+  border-top: 1px solid var(--line);
+}
+.trends-details .chart {
+  margin: 10px 0 16px;
+}
+.trends-details .measurement-entry {
+  padding: 12px 0;
+  font-size: 13px;
+}
+.trends-details .measurement-entry strong {
+  font-size: 13px;
+  color: var(--ink);
+}
+.trends-note {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 20px 0 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .page-header span {
   font-size: 13px;
