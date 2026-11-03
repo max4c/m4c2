@@ -340,8 +340,8 @@ export function formatTime(seconds: number) {
 export function RestAlerts() {
   const { alerts, enableAlerts } = useLiveSession();
   return (
-    <details className="rest-alerts">
-      <summary>Completion alert</summary>
+    <details className="rest-alerts disclosure">
+      <summary>Rest notifications</summary>
       <p>Get a notification when rest ends.</p>
       <button onClick={() => void enableAlerts()}>Enable notifications</button>
       {alerts && <p role="status">{alerts}</p>}

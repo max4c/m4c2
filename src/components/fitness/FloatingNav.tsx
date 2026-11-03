@@ -1,10 +1,11 @@
 "use client";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 export type DashboardView =
-  "today" | "history" | "trends" | "goals" | "routine" | "timer";
+  "today" | "history" | "trends" | "goals" | "routine" | "timer" | "settings";
 const items = [
   {
     id: "today",
-    label: "Today",
+    label: "Home",
     path: "M3 10.5 12 3l9 7.5M5 9v11h5v-6h4v6h5V9",
   },
   {
@@ -19,9 +20,9 @@ const items = [
   },
   { id: "trends", label: "Trends", path: "m3 17 6-6 4 3 8-10M15 4h6v6" },
   {
-    id: "goals",
-    label: "Goals",
-    path: "M12 3a9 9 0 1 0 9 9M12 7a5 5 0 1 0 5 5M12 12l9-9m-5 0h5v5",
+    id: "settings",
+    label: "Settings",
+    path: "",
   },
 ];
 export default function FloatingNav({ active }: { active: DashboardView }) {
@@ -33,22 +34,28 @@ export default function FloatingNav({ active }: { active: DashboardView }) {
           href={"#" + item.id}
           aria-label={item.label}
           aria-current={
-            active === item.id || (active === "routine" && item.id === "goals")
+            active === item.id ||
+            ((active === "routine" || active === "goals") &&
+              item.id === "settings")
               ? "page"
               : undefined
           }
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.65"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d={item.path} />
-          </svg>
+          {item.id === "settings" ? (
+            <Cog6ToothIcon aria-hidden="true" />
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.65"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d={item.path} />
+            </svg>
+          )}
           <span>{item.label}</span>
         </a>
       ))}

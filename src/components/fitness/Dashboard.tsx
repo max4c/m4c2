@@ -1,8 +1,9 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Private token URLs must bypass public image optimization. */
 import FloatingNav, { type DashboardView } from "./FloatingNav";
-import { RestTimerProvider, clearRestNotifications } from "./RestTimer";
+import { RestTimerProvider } from "./RestTimer";
 import Today from "./Today";
+import Settings from "./Settings";
 import TimerPage from "./TimerPage";
 import PageHeader from "./PageHeader";
 import Goals from "./Goals";
@@ -133,7 +134,8 @@ function DashboardContent({ data }: { data: DashboardData }) {
           hash === "trends" ||
           hash === "goals" ||
           hash === "routine" ||
-          hash === "timer"
+          hash === "timer" ||
+          hash === "settings"
           ? hash
           : "today",
       );
@@ -160,9 +162,6 @@ function DashboardContent({ data }: { data: DashboardData }) {
     .sort((a, b) => a.date.localeCompare(b.date) || a.ts - b.ts)
     .map((w) => ({ date: w.date, weight: w.lbs }));
   const stats = week.THE_THREE_NUMBERS!;
-  const recent = [...data.meals]
-    .sort((a, b) => b.date.localeCompare(a.date) || b.ts - a.ts)
-    .slice(0, 5);
   const weekly = Array.from({ length: 8 }, (_, i) => {
     const date = addDays(periodStart(today, "week"), (i - 7) * 7);
     const end = addDays(date, 6) > today ? today : addDays(date, 6);
@@ -175,6 +174,7 @@ function DashboardContent({ data }: { data: DashboardData }) {
         <span className="live">Test data</span>
       )}
       {view === "today" && <Today data={data} />}
+      {view === "settings" && <Settings sleep={data.sleep} />}
       {view === "goals" && <Goals plan={plan} />}
       {view === "routine" && (
         <Routine plan={plan} next={data.nextSession.next} />
@@ -454,66 +454,6 @@ function DashboardContent({ data }: { data: DashboardData }) {
           />
         </>
       )}
-      {view === "history" && (
-        <details id="meals" className="panel meals disclosure">
-          <summary>Recent meals</summary>
-          {recent.length ? (
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>MEAL</th>
-                    <th>WHEN</th>
-                    <th>CALORIES</th>
-                    <th>PROTEIN</th>
-                    <th>QUALITY</th>
-                    <th>SOURCE</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recent.map((m) => (
-                    <tr key={m._id}>
-                      <td>
-                        {m.name}
-                        <small>{m.note}</small>
-                      </td>
-                      <td data-label="Date">{m.date.slice(5)}</td>
-                      <td data-label="Calories">{Math.round(m.calories)}</td>
-                      <td data-label="Protein" className="protein-cell">
-                        {Math.round(m.protein)}g
-                      </td>
-                      <td data-label="Quality">
-                        {m.quality}
-                        <span className="muted"> / 10</span>
-                      </td>
-                      <td data-label="Source">
-                        <span className="source">{m.source}</span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <Empty>No meals logged.</Empty>
-          )}
-        </details>
-      )}
-
-      <footer>
-        <button
-          className="forget-device"
-          onClick={async () => {
-            await clearRestNotifications().catch(() => {});
-            const response = await fetch("/fitness/api/logout", {
-              method: "POST",
-            });
-            if (response.ok) location.replace(location.pathname);
-          }}
-        >
-          Sign out
-        </button>
-      </footer>
       <FloatingNav active={view} />
     </main>
   );

@@ -5,7 +5,10 @@ import { api } from "../../../convex/_generated/api";
 import { exerciseHistory } from "../../../shared/exercise-history";
 import { canonicalExerciseName } from "../../../shared/training";
 import { normalize } from "../../../shared/model";
-type Data = FunctionReturnType<typeof api.fitness.dashboard>;
+import { sleepDuration, type SleepData } from "../../../shared/sleep";
+type Data = FunctionReturnType<typeof api.fitness.dashboard> & {
+  sleep?: SleepData;
+};
 export default function TrainingHistory({ data }: { data: Data }) {
   const [month, setMonth] = useState(data.today.slice(0, 7));
   const [day, setDay] = useState(data.today);
@@ -39,11 +42,20 @@ export default function TrainingHistory({ data }: { data: Data }) {
   const earliest = [
     ...Object.keys(data.mealCalendar),
     ...data.workoutHistory.map((w) => w.date),
+    ...data.steps.map((s) => s.date),
+    ...data.weights.map((w) => w.date),
+    ...(data.sleep?.nights.map((n) => n.date) ?? []),
     data.today,
   ]
     .sort()[0]
     .slice(0, 7);
   const workouts = data.workoutHistory.filter((w) => w.date === day);
+  const meals = data.meals
+    .filter((m) => m.date === day)
+    .sort((a, b) => a.ts - b.ts);
+  const steps = data.steps.filter((s) => s.date === day);
+  const weights = data.weights.filter((w) => w.date === day);
+  const night = data.sleep?.nights.find((n) => n.date === day);
   return (
     <section id="training" className="training-history">
       <div className="two-col">
@@ -71,10 +83,6 @@ export default function TrainingHistory({ data }: { data: Data }) {
               →
             </button>
           </div>
-          <details className="metric-note">
-            <summary>Details</summary>
-            <p>Calories logged each day · ● workout logged</p>
-          </details>
           <div className="calendar-grid">
             {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
               <span key={"weekday" + i} className="weekday">
@@ -106,7 +114,7 @@ export default function TrainingHistory({ data }: { data: Data }) {
             })}
           </div>
         </article>
-        <article className="panel">
+        <article className="panel day-history" key={day}>
           <h3>
             {new Date(day + "T12:00:00Z").toLocaleDateString("en-US", {
               weekday: "long",
@@ -115,49 +123,103 @@ export default function TrainingHistory({ data }: { data: Data }) {
               timeZone: "UTC",
             })}
           </h3>
-          <p>
-            {data.mealCalendar[day]
-              ? `${Math.round(data.mealCalendar[day].calories).toLocaleString()} calories · ${data.mealCalendar[day].meals} meal${data.mealCalendar[day].meals === 1 ? "" : "s"} logged`
-              : "No meals logged."}
-          </p>
-          {workouts.length ? (
-            workouts.map((w) => (
-              <div className="session" key={w._id}>
-                <h4>
-                  {w.label} <small>{w.kind}</small>
-                </h4>
-                {w.exercises.map((e, i) => (
-                  <button
-                    className="exercise-row"
-                    key={i}
-                    onClick={() => {
-                      setSelected(canonicalExerciseName(e.name, data.plan));
-                      document
-                        .getElementById("exercise-records")
-                        ?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
-                    }}
-                  >
-                    <strong>{e.name}</strong>
-                    <span>
-                      {e.sets.map((s) => `${s.w} × ${s.r}`).join(" · ")} →
-                    </span>
-                  </button>
-                ))}
+          <div className="day-numbers">
+            <div>
+              <span>Calories</span>
+              <strong>
+                {data.mealCalendar[day]
+                  ? Math.round(data.mealCalendar[day].calories).toLocaleString()
+                  : "—"}
+              </strong>
+            </div>
+            <div>
+              <span>Protein</span>
+              <strong>
+                {meals.length
+                  ? `${Math.round(meals.reduce((sum, m) => sum + m.protein, 0))} g`
+                  : "—"}
+              </strong>
+            </div>
+            <div>
+              <span>Steps</span>
+              <strong>
+                {steps.length
+                  ? steps.reduce((sum, s) => sum + s.count, 0).toLocaleString()
+                  : "—"}
+              </strong>
+            </div>
+            <div>
+              <span>Sleep</span>
+              <strong>{night ? sleepDuration(night.seconds) : "—"}</strong>
+            </div>
+            {!!weights.length && (
+              <div>
+                <span>Weight</span>
+                <strong>{weights.at(-1)?.lbs} lb</strong>
               </div>
-            ))
-          ) : (
-            <div className="empty">No workouts logged for this day.</div>
+            )}
+          </div>
+          {workouts.map((w) => (
+            <details className="disclosure day-workout" key={w._id}>
+              <summary>{w.label}</summary>
+              {(w.durationMin != null || w.distanceMi != null) && (
+                <p>
+                  {[
+                    w.durationMin != null ? `${w.durationMin} min` : null,
+                    w.distanceMi != null
+                      ? `${w.distanceMi}${w.distanceMiMax != null ? `–${w.distanceMiMax}` : ""} mi`
+                      : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              )}
+              {w.exercises.map((e, i) => (
+                <button
+                  className="exercise-row"
+                  key={i}
+                  onClick={() => {
+                    setSelected(canonicalExerciseName(e.name, data.plan));
+                    document
+                      .getElementById("exercise-records")
+                      ?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
+                  }}
+                >
+                  <strong>{e.name}</strong>
+                  <span>
+                    {e.sets.map((s) => `${s.w} × ${s.r}`).join(" · ")} →
+                  </span>
+                </button>
+              ))}
+            </details>
+          ))}
+          {!!data.mealCalendar[day] && (
+            <details className="disclosure day-meals">
+              <summary>Meals · {data.mealCalendar[day].meals}</summary>
+              {meals.length ? (
+                meals.map((m) => (
+                  <div className="day-meal" key={m._id}>
+                    <strong>{m.name}</strong>
+                    <p>
+                      {Math.round(m.calories)} kcal · {Math.round(m.protein)} g
+                      protein
+                    </p>
+                    <small>
+                      {Math.round(m.carbs)} g carbs · {Math.round(m.fat)} g fat
+                    </small>
+                    {m.note && <p className="muted">{m.note}</p>}
+                  </div>
+                ))
+              ) : (
+                <p className="muted">
+                  Meal details are available for the last 90 days.
+                </p>
+              )}
+            </details>
           )}
-          <details className="metric-note">
-            <summary>Details</summary>
-            <p>
-              Tap an exercise for its full history. Loads in lb; timed entries
-              use seconds, carries use metres.
-            </p>
-          </details>
         </article>
       </div>
       <article id="exercise-records" className="panel exercise-detail">

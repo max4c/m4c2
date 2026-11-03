@@ -896,8 +896,8 @@ html.dark {
 }
 .today-numbers {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 24px;
   padding: 24px 0;
 }
 .today-numbers > div {
@@ -1254,11 +1254,19 @@ html.dark {
   text-decoration: none;
 }
 .timer-page {
-  min-height: 100svh;
-  min-height: 100dvh;
   max-width: 560px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+}
+.fitness-dashboard.timer-focused {
+  max-width: 560px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.timer-page.is-active {
+  min-height: 100svh;
+  min-height: 100dvh;
   padding-top: max(24px, env(safe-area-inset-top));
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
@@ -1272,6 +1280,8 @@ html.dark {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  justify-content: center;
+  min-width: 48px;
   min-height: 44px;
   text-decoration: none;
   font-size: 14px;
@@ -1355,18 +1365,12 @@ html.dark {
   margin: 6px 0;
   font-size: 14px;
 }
-.timer-page .rest-alerts {
-  margin: 16px 0 0;
-}
-.timer-page .rest-alerts summary {
-  min-height: 48px;
-}
 .timer-connection {
   color: var(--muted);
   font-size: 12px;
 }
 @media (min-width: 701px) {
-  .timer-page {
+  .timer-page.is-active {
     padding-top: 36px;
     padding-bottom: 36px;
   }
@@ -1437,6 +1441,13 @@ summary {
 }
 .live-session {
   margin-bottom: 16px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top: 0;
+}
+.live-session .session-next {
+  border-top: 0;
+  padding-top: 8px;
 }
 .today-numbers {
   margin-bottom: 24px;
@@ -1516,6 +1527,76 @@ summary {
 }
 .rest-alerts {
   font-size: 13px;
+}
+.settings-list > a,
+.settings-list > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 64px;
+  padding: 0;
+  text-decoration: none;
+  font-size: 15px;
+  border-bottom: 1px solid var(--line);
+}
+.settings-list > a svg {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+}
+.settings-list > details {
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+.settings-list > details > summary {
+  min-height: 64px;
+  font-size: 15px;
+  color: var(--ink);
+}
+.settings-list .rest-alerts > summary::before {
+  content: none;
+}
+.settings-list .forget-device {
+  color: var(--muted);
+}
+.settings-connection p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.day-numbers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 24px 0;
+}
+.day-numbers > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.day-numbers span,
+.day-meal small {
+  color: var(--muted);
+  font-size: 12px;
+}
+.day-numbers strong {
+  font-size: 20px;
+  font-weight: 500;
+}
+.day-workout,
+.day-meals {
+  border-top: 1px solid var(--line);
+}
+.day-meal {
+  padding: 16px 0;
+}
+.day-meal + .day-meal {
+  border-top: 1px solid var(--line);
+}
+.day-meal p {
+  margin: 6px 0;
+  font-size: 14px;
 }
 @media (max-width: 360px) {
   .calendar-grid {

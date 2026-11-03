@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { formatTime, RestAlerts, useLiveSession } from "./RestTimer";
+import { formatTime, useLiveSession } from "./RestTimer";
 import ThemeToggle from "./ThemeToggle";
+import FloatingNav from "./FloatingNav";
 
 export default function TimerPage() {
   const { timer, remaining, start, stop, ready, session, connected } =
@@ -58,100 +59,106 @@ export default function TimerPage() {
     };
   }, [active]);
   return (
-    <main className="timer-page" aria-label="Rest timer">
-      <header className="timer-header">
-        <a href="#today">
-          <ArrowLeftIcon aria-hidden="true" />
-          Session
-        </a>
-        <ThemeToggle />
-      </header>
-      <div className="timer-face">
-        <p className="timer-status" role="status">
-          {complete
-            ? "Rest complete"
-            : !seconds && !timer
-              ? "Finish the pair"
-              : "Rest"}
-        </p>
-        <div
-          className="timer-countdown"
-          role="timer"
-          aria-label={
-            timer
-              ? `${remaining} seconds remaining`
-              : `${seconds} second rest selected`
-          }
-        >
-          {seconds || timer ? formatTime(seconds) : "—:—"}
-        </div>
-        <p className="timer-exercise">{label === "Rest" ? null : label}</p>
-      </div>
-      <div className="timer-actions">
-        {!active && (
-          <div className="rest-presets" aria-label="Rest duration">
-            {[60, 90, 120, 180].map((s) => (
-              <button
-                key={s}
-                aria-label={`${s} second rest`}
-                aria-pressed={selected === s}
-                onClick={() => {
-                  if (timer) stop();
-                  setChoice({ seconds: s, eventId: ready.eventId });
-                }}
-              >
-                {formatTime(s)}
-              </button>
-            ))}
-          </div>
+    <main className={`fitness-dashboard${active ? " timer-focused" : ""}`}>
+      <section
+        className={`timer-page${active ? " is-active" : ""}`}
+        aria-label="Rest timer"
+      >
+        {active && (
+          <header className="timer-header">
+            <a href="#today" aria-label="Back to Home">
+              <ArrowLeftIcon aria-hidden="true" />
+            </a>
+            <ThemeToggle />
+          </header>
         )}
-        {active ? (
-          <button className="timer-primary timer-stop" onClick={stop}>
-            Stop
-          </button>
-        ) : complete ? (
-          <button
-            className="timer-primary"
-            onClick={() => {
-              stop();
-              window.location.hash = "today";
-            }}
-          >
-            Back to session
-          </button>
-        ) : (
-          <button
-            className="timer-primary"
-            disabled={!selected}
-            onClick={() =>
-              start(
-                choice?.eventId === ready.eventId ? "Rest" : ready.label,
-                selected,
-              )
+        <div className="timer-face">
+          <p className="timer-status" role="status">
+            {complete
+              ? "Rest complete"
+              : !seconds && !timer
+                ? "Finish the pair"
+                : "Rest"}
+          </p>
+          <div
+            className="timer-countdown"
+            role="timer"
+            aria-label={
+              timer
+                ? `${remaining} seconds remaining`
+                : `${seconds} second rest selected`
             }
           >
-            Start rest
-          </button>
-        )}
-      </div>
-      {next && (
-        <div className="timer-next">
-          <span>
-            Next · set {next.setNumber} of {next.prescribedSets}
-          </span>
-          <strong>{next.exercise}</strong>
-          <p>
-            {next.target.load} × {next.target.reps ?? "—"}
-          </p>
-          {next.warmup && <small>{next.warmup}</small>}
+            {seconds || timer ? formatTime(seconds) : "—:—"}
+          </div>
+          <p className="timer-exercise">{label === "Rest" ? null : label}</p>
         </div>
-      )}
-      {!connected && (
-        <p className="timer-connection">
-          {session ? "Session reconnecting" : "Connecting to session…"}
-        </p>
-      )}
-      <RestAlerts />
+        <div className="timer-actions">
+          {!active && (
+            <div className="rest-presets" aria-label="Rest duration">
+              {[60, 90, 120, 180].map((s) => (
+                <button
+                  key={s}
+                  aria-label={`${s} second rest`}
+                  aria-pressed={selected === s}
+                  onClick={() => {
+                    if (timer) stop();
+                    setChoice({ seconds: s, eventId: ready.eventId });
+                  }}
+                >
+                  {formatTime(s)}
+                </button>
+              ))}
+            </div>
+          )}
+          {active ? (
+            <button className="timer-primary timer-stop" onClick={stop}>
+              Stop
+            </button>
+          ) : complete ? (
+            <button
+              className="timer-primary"
+              onClick={() => {
+                stop();
+                window.location.hash = "today";
+              }}
+            >
+              Back to Home
+            </button>
+          ) : (
+            <button
+              className="timer-primary"
+              disabled={!selected}
+              onClick={() =>
+                start(
+                  choice?.eventId === ready.eventId ? "Rest" : ready.label,
+                  selected,
+                )
+              }
+            >
+              Start rest
+            </button>
+          )}
+        </div>
+        {active && next && (
+          <div className="timer-next">
+            <span>
+              Next · set {next.setNumber} of {next.prescribedSets}
+            </span>
+            <strong>{next.exercise}</strong>
+            <p>
+              {next.target.load} × {next.target.reps ?? "—"}
+            </p>
+            {next.warmup && <small>{next.warmup}</small>}
+          </div>
+        )}
+        {!connected && (
+          <p className="timer-connection">
+            {session ? "Session reconnecting" : "Connecting to session…"}
+          </p>
+        )}
+      </section>
+      {!active && <FloatingNav active="timer" />}
     </main>
   );
 }
