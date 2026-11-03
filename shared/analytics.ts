@@ -1,3 +1,4 @@
+import { intakeConfidence, type ConfidenceMeal } from "./food-model";
 import {
   addDays,
   daysBetween,
@@ -137,7 +138,7 @@ export type Data = {
     waist: number;
   }[];
   photos?: { date: string }[];
-  meals: {
+  meals: (ConfidenceMeal & {
     date: string;
     ts: number;
     name: string;
@@ -148,7 +149,7 @@ export type Data = {
     quality: number;
     note: string;
     source: string;
-  }[];
+  })[];
   workouts: HistoryWorkout[];
   weights: { date: string; ts: number; lbs: number }[];
   steps: { date: string; count: number }[];
@@ -293,6 +294,13 @@ export function summarize(
       })),
     },
     nutrition: {
+      confidence: intakeConfidence(meals),
+      confidenceByDay: [...new Set(meals.map((m) => m.date))]
+        .sort()
+        .map((date) => ({
+          date,
+          ...intakeConfidence(meals.filter((m) => m.date === date)),
+        })),
       mealCount: meals.length,
       caloriesTotal: meals.reduce((n, m) => n + m.calories, 0),
       caloriesPerLoggedDay: mealDays

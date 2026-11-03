@@ -1,4 +1,5 @@
 import type { Plan, Workout } from "./model";
+import { intakeConfidence, type ConfidenceMeal } from "./food-model";
 
 const round = (n: number) => Math.round(n * 100) / 100;
 export function activityTotals(workouts: Workout[]) {
@@ -49,13 +50,13 @@ export function activityTotals(workouts: Workout[]) {
 }
 export function dayTotals(
   data: {
-    meals: {
+    meals: (ConfidenceMeal & {
       date: string;
       calories: number;
       protein: number;
       carbs: number;
       fat: number;
-    }[];
+    })[];
     workouts: Workout[];
   },
   plan: Plan,
@@ -73,6 +74,7 @@ export function dayTotals(
     date,
     timezone: plan.timezone,
     totals,
+    confidence: intakeConfidence(meals),
     targets: {
       calories: plan.targets.calories,
       protein: plan.targets.protein,

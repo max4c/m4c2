@@ -93,6 +93,13 @@ export function estimateMaintenance(
       lastWeekWeighInDays: lastWeek.length,
       weightSpanDays: span,
     },
+    stillNeeded: {
+      consecutiveCompleteDays: Math.max(0, 14 - run.length),
+      firstWeekWeighInDays: Math.max(0, 3 - firstWeek.length),
+      lastWeekWeighInDays: Math.max(0, 3 - lastWeek.length),
+      distinctWeighInDays: Math.max(0, 6 - weights.length),
+      weightSpanDays: Math.max(0, 10 - span),
+    },
     requirements: {
       consecutiveCompleteDays: 14,
       firstWeekWeighInDays: 3,

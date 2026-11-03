@@ -1,5 +1,37 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+const foodSource = v.union(
+  v.literal("estimate"),
+  v.literal("off"),
+  v.literal("usda"),
+  v.literal("label"),
+  v.literal("restaurant"),
+  v.literal("photo"),
+  v.literal("library"),
+);
+const confidence = v.union(
+  v.literal("high"),
+  v.literal("medium"),
+  v.literal("low"),
+);
+const macros = v.object({
+  calories: v.number(),
+  protein: v.number(),
+  carbs: v.number(),
+  fat: v.number(),
+});
+const mealItem = v.object({
+  id: v.string(),
+  name: v.string(),
+  quantity: v.number(),
+  unit: v.string(),
+  macros,
+  source: foodSource,
+  foodId: v.optional(v.id("foods")),
+  confidence,
+  needsRecheck: v.optional(v.boolean()),
+  estimateConfirmed: v.optional(v.boolean()),
+});
 const stamp = { date: v.string(), ts: v.number() };
 const loadConvention = v.union(
   v.literal("total"),
@@ -123,6 +155,36 @@ export const planFields = {
   bedtimeHour: v.number(),
 };
 export default defineSchema({
+  foods: defineTable({
+    name: v.string(),
+    nameKey: v.string(),
+    brand: v.string(),
+    barcode: v.optional(v.string()),
+    servingSize: v.string(),
+    gramsPerServing: v.optional(v.number()),
+    millilitresPerServing: v.optional(v.number()),
+    unitsPerServing: v.optional(
+      v.object({ count: v.number(), unit: v.string() }),
+    ),
+    packageSize: v.optional(v.string()),
+    packageQuantity: v.optional(
+      v.object({
+        value: v.number(),
+        unit: v.union(v.literal("g"), v.literal("ml")),
+      }),
+    ),
+    servingIsReference: v.boolean(),
+    macrosPerServing: macros,
+    source: foodSource,
+    confidence,
+    aliases: v.array(v.string()),
+    needsRecheck: v.boolean(),
+    externalKey: v.optional(v.string()),
+    updatedAt: v.number(),
+  })
+    .index("by_barcode", ["barcode"])
+    .index("by_name", ["nameKey"])
+    .index("by_external", ["externalKey"]),
   voiceSessions: defineTable({
     date: v.string(),
     label: rotation,
@@ -185,7 +247,11 @@ export default defineSchema({
     fat: v.number(),
     quality: v.number(),
     note: v.string(),
-    source: v.union(v.literal("estimate"), v.literal("off"), v.literal("usda")),
+    source: foodSource,
+    confidence: v.optional(confidence),
+    needsRecheck: v.optional(v.boolean()),
+    estimateConfirmed: v.optional(v.boolean()),
+    items: v.optional(v.array(mealItem)),
   }).index("by_date", ["date"]),
   workouts: defineTable({
     ...stamp,

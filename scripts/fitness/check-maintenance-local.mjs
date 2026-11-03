@@ -40,7 +40,7 @@ try {
     ),
   );
   const { tools } = await client.listTools();
-  assert.equal(tools.length, 25);
+  assert.equal(tools.length, 26);
   assert.equal(
     tools.find((t) => t.name === "estimate_maintenance").annotations
       .readOnlyHint,
@@ -104,7 +104,7 @@ try {
   assert.equal(ready.targetChanged, false);
   assert.deepEqual((await call("get_plan")).targets, plan.targets);
   console.log(
-    "PASS 20-tool discovery, incomplete-data response, explicit completion, 14-day/6-weigh-in estimate, unchanged live targets",
+    "PASS 26-tool discovery, incomplete-data response, explicit completion, 14-day/6-weigh-in estimate, unchanged live targets",
   );
   const edited = await call("update_entry", {
     id: correctedMeal.id,

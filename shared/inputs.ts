@@ -1,5 +1,12 @@
 import { z } from "zod";
 import {
+  foodSource,
+  confidenceSchema,
+  mealItemSchema,
+  itemChangeSchema,
+  macroFields,
+} from "./food-model";
+import {
   dateSchema,
   exerciseSchema,
   nonnegative,
@@ -43,17 +50,29 @@ export const deleteInput = z.object({
   ]),
   id: z.string().min(1),
 });
-export const mealInput = z.object({
-  ...stamp,
-  name: z.string().trim().min(1).max(200),
-  calories: nonnegative.max(20000),
-  protein: nonnegative.max(1000),
-  carbs: nonnegative.max(2000),
-  fat: nonnegative.max(2000),
-  quality: z.number().int().min(1).max(10),
-  note: z.string().max(4000).default(""),
-  source: z.enum(["estimate", "off", "usda"]).default("estimate"),
-});
+export const mealInput = z
+  .object({
+    ...stamp,
+    name: z.string().trim().min(1).max(200),
+    calories: macroFields.calories.optional(),
+    protein: macroFields.protein.optional(),
+    carbs: macroFields.carbs.optional(),
+    fat: macroFields.fat.optional(),
+    quality: z.number().int().min(1).max(10),
+    note: z.string().max(4000).default(""),
+    source: foodSource.default("estimate"),
+    confidence: confidenceSchema.optional(),
+    needsRecheck: z.boolean().optional(),
+    estimateConfirmed: z.boolean().optional(),
+    items: z.array(mealItemSchema).max(100).optional(),
+  })
+  .refine(
+    (x) =>
+      x.items !== undefined ||
+      [x.calories, x.protein, x.carbs, x.fat].every((v) => v !== undefined),
+    "Supply items or all four meal macros",
+  );
+
 export const workoutInput = z
   .object({
     ...stamp,
@@ -133,7 +152,10 @@ const editFields = z
     fat: mealInput.shape.fat.optional(),
     quality: mealInput.shape.quality.optional(),
     note: z.string().max(4000).optional(),
-    source: z.enum(["estimate", "off", "usda"]).optional(),
+    source: foodSource.optional(),
+    confidence: confidenceSchema.optional(),
+    needsRecheck: z.boolean().optional(),
+    estimateConfirmed: z.boolean().optional(),
     label: workoutInput.shape.label.optional(),
     kind: workoutInput.shape.kind.optional(),
     intensity: workoutInput.shape.intensity.optional(),
@@ -142,7 +164,9 @@ const editFields = z
     distanceMi: nonnegative.max(1000).nullable().optional(),
     distanceMiMax: nonnegative.max(1000).nullable().optional(),
     lbs: weightInput.shape.lbs.optional(),
-    items: supplementsInput.shape.items.optional(),
+    items: z
+      .union([supplementsInput.shape.items, z.array(mealItemSchema).max(100)])
+      .optional(),
     count: stepsInput.shape.count.optional(),
     arm: measurementsInput.shape.arm.optional(),
     shoulders: measurementsInput.shape.shoulders.optional(),
@@ -150,18 +174,26 @@ const editFields = z
     waist: measurementsInput.shape.waist.optional(),
     r2Key: photoInput.shape.r2Key.optional(),
   })
-  .strict()
+  .strict();
+export const updateInput = z
+  .object({
+    id: z.string().min(1),
+    fields: editFields
+      .default({})
+      .describe(
+        "Only changed fields, with absolute replacement values; omitted fields are preserved. null clears optional duration/distance only.",
+      ),
+    itemChange: itemChangeSchema.optional(),
+    requestId: stamp.requestId,
+  })
   .refine(
-    (p) => Object.keys(p).length > 0,
-    "Supply at least one field to update",
+    (x) => Object.keys(x.fields).length > 0 || x.itemChange !== undefined,
+    "Supply fields or itemChange",
+  )
+  .refine(
+    (x) => !x.itemChange || x.fields.items === undefined,
+    "Use itemChange or fields.items, not both",
   );
-export const updateInput = z.object({
-  id: z.string().min(1),
-  fields: editFields.describe(
-    "Only changed fields, with absolute replacement values; omitted fields are preserved. null clears optional duration/distance only.",
-  ),
-  requestId: stamp.requestId,
-});
 export const planPatch = z.object({
   program: z
     .object({
@@ -198,7 +230,7 @@ export const queryInput = z
         label: z.string().optional(),
         kind: z.enum(["lift", "cardio"]).optional(),
         intensity: z.enum(["easy", "hard"]).optional(),
-        source: z.enum(["estimate", "off", "usda"]).optional(),
+        source: foodSource.optional(),
         name: z.string().optional(),
       })
       .default({}),

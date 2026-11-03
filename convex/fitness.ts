@@ -38,9 +38,11 @@ import {
   maintenanceInput,
 } from "../shared/inputs";
 import { dayTotals } from "../shared/day-totals";
-import { estimateMaintenance } from "../shared/maintenance";
+import { readMaintenance, calorieBudget } from "./maintenance";
 import { exerciseNameMatches } from "../shared/exercise-matching";
 import { z } from "zod";
+import { prepareMeal, existingItems } from "./meal_items";
+import { mealItemSchema } from "../shared/food-model";
 const auth = { token: v.string() };
 async function readPlan(ctx: QueryCtx) {
   const p = await ctx.db.query("plan").unique();
@@ -97,8 +99,30 @@ export async function readDay(
       .withIndex("by_date", (q) => q.eq("date", date))
       .collect(),
   ]);
+  const maintenance = await readMaintenance(ctx, plan, addDays(date, -1));
+  const day = dayTotals({ meals, workouts }, plan, date);
+  const budget = calorieBudget(plan.targets.calories, maintenance);
   return {
-    ...dayTotals({ meals, workouts }, plan, date),
+    ...day,
+    maintenance,
+    calorieBudget: budget,
+    remaining: {
+      ...day.remaining,
+      calories:
+        budget.calories === null
+          ? null
+          : Math.round(
+              Math.max(0, budget.calories - day.totals.calories) * 100,
+            ) / 100,
+    },
+    overTarget: {
+      calories:
+        budget.calories === null
+          ? null
+          : Math.round(
+              Math.max(0, day.totals.calories - budget.calories) * 100,
+            ) / 100,
+    },
     foodLog: await foodDayStatus(ctx, date),
   };
 }
@@ -283,7 +307,10 @@ export async function saveLog(
   let advanced = false;
   if (op === "log_meal") {
     const { requestId: _, ...p } = mealInput.parse(raw);
-    id = await ctx.db.insert("meals", { ...p, ...stamp(p, plan.timezone) });
+    id = await ctx.db.insert("meals", {
+      ...(await prepareMeal(ctx, p)),
+      ...stamp(p, plan.timezone),
+    });
   } else if (op === "log_weight") {
     const { requestId: _, ...p } = weightInput.parse(raw);
     id = await ctx.db.insert("weights", { ...p, ...stamp(p, plan.timezone) });
@@ -499,33 +526,7 @@ export const estimate_maintenance = query({
     requireToken(token);
     const p = maintenanceInput.parse(input),
       plan = await readPlan(ctx);
-    const yesterday = addDays(todayAt(Date.now(), plan.timezone), -1);
-    const end = p.asOf ?? yesterday;
-    if (end > yesterday)
-      throw new Error(
-        "Maintenance uses finished calendar days only; asOf must be yesterday or earlier in plan.timezone",
-      );
-    const start = addDays(end, 1 - p.days);
-    const [meals, weights, foodDays] = await Promise.all([
-      ctx.db
-        .query("meals")
-        .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
-        .collect(),
-      ctx.db
-        .query("weights")
-        .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
-        .collect(),
-      ctx.db
-        .query("foodDays")
-        .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
-        .collect(),
-    ]);
-    return {
-      ...estimateMaintenance({ meals, weights, foodDays }, end, p.days),
-      timezone: plan.timezone,
-      currentCalorieTarget: plan.targets.calories,
-      targetChanged: false,
-    };
+    return readMaintenance(ctx, plan, p.asOf, p.days);
   },
 });
 export const get_remaining = query({
@@ -536,6 +537,8 @@ export const get_remaining = query({
       now = Date.now(),
       today = todayAt(now, plan.timezone);
     const d = await history(ctx, today, today);
+    const day = await readDay(ctx, today, plan);
+    const budget = day.calorieBudget;
     const protein = d.meals.reduce((s, m) => s + m.protein, 0),
       calories = d.meals.reduce((s, m) => s + m.calories, 0);
     const parts = new Intl.DateTimeFormat("en-US", {
@@ -559,33 +562,29 @@ export const get_remaining = query({
         meals: d.meals.length,
         workouts: d.workouts.length,
       },
-      remaining: {
-        protein: Math.max(0, plan.targets.protein - protein),
-        calories:
-          plan.targets.calories === null
-            ? null
-            : Math.max(0, plan.targets.calories - calories),
-      },
+      remaining: day.remaining,
       overTarget: {
         protein: Math.max(0, protein - plan.targets.protein),
-        calories:
-          plan.targets.calories === null
-            ? null
-            : Math.max(0, calories - plan.targets.calories),
+        calories: day.overTarget.calories,
       },
+      maintenance: day.maintenance,
+      calorieBudget: budget,
+      confidence: day.confidence,
       targets: plan.targets,
       foodLog: await foodDayStatus(ctx, today),
       nextAction:
-        plan.targets.calories === null
+        budget.calories === null
           ? { tool: "estimate_maintenance", arguments: {} }
           : null,
       workoutHappened: d.workouts.length > 0,
       hoursUntilBedtime,
       lighterMealSuggested: hoursUntilBedtime <= 2,
       note:
-        plan.targets.calories === null
-          ? "Calorie target is unset. Call estimate_maintenance for a provisional estimate or its data-readiness checklist; do not ask the user to supply an unknown target. Keep remaining calories null and never adopt an estimate as a target without the user choosing it."
-          : "Choose food to close the protein gap within remaining calories; lighter meals close to bedtime.",
+        budget.basis === "unavailable"
+          ? "Calorie budget is unavailable; maintenance includes coverage and stillNeeded. Call estimate_maintenance for details. Do not invent a calorie target."
+          : budget.provisional
+            ? "Remaining calories use provisional maintenance, not a chosen target. The saved target is unchanged."
+            : "Choose food to close the protein gap within remaining calories; lighter meals close to bedtime.",
     };
   },
 });
@@ -612,12 +611,13 @@ export const get_summary = query({
       today,
       period,
     );
-    return period === "day"
-      ? {
-          ...summary,
-          day: { ...summary.day!, foodLog: await foodDayStatus(ctx, today) },
-        }
-      : summary;
+    const day = await readDay(ctx, today, p);
+    return {
+      ...summary,
+      maintenance: day.maintenance,
+      calorieBudget: day.calorieBudget,
+      ...(period === "day" ? { day } : { asOfDay: day }),
+    };
   },
 });
 export const query_entries = query({
@@ -647,8 +647,13 @@ export const update_entry = mutation({
   args: { ...auth, input: v.any() },
   handler: async (ctx, { token, input }) => {
     requireToken(token);
-    const { id, fields, requestId } = updateInput.parse(input);
-    const fingerprint = JSON.stringify({ op: "update_entry", id, fields });
+    const { id, fields, itemChange, requestId } = updateInput.parse(input);
+    const fingerprint = JSON.stringify({
+      op: "update_entry",
+      id,
+      fields,
+      ...(itemChange ? { itemChange } : {}),
+    });
     if (requestId) {
       const previous = await ctx.db
         .query("requests")
@@ -662,12 +667,72 @@ export const update_entry = mutation({
     }
     const found = await loggedEntry(ctx, id);
     if (!found.row) throw new Error("Logged entry not found");
+    if (itemChange && found.table !== "meals")
+      throw new Error("itemChange only applies to meals");
+    if (found.table === "meals") {
+      const old = await ctx.db.get(ctx.db.normalizeId("meals", id)!);
+      if (itemChange) {
+        const items = existingItems(old!);
+        if (itemChange.action === "add")
+          items.push(
+            mealItemSchema.parse({
+              ...itemChange.item,
+              id: itemChange.item.id ?? crypto.randomUUID(),
+            }),
+          );
+        else {
+          const index = items.findIndex((i) => i.id === itemChange.id);
+          if (index < 0)
+            throw new Error("Meal item not found; query the meal for item ids");
+          if (itemChange.action === "remove") items.splice(index, 1);
+          else {
+            const patch = itemChange.item;
+            items[index] = mealItemSchema.parse({
+              ...items[index],
+              ...patch,
+              id: itemChange.id,
+              ...((patch.macros || patch.foodId) && patch.source === undefined
+                ? { source: "estimate" }
+                : {}),
+              ...((patch.macros ||
+                patch.foodId ||
+                (patch.source && patch.source !== items[index].source)) &&
+              patch.confidence === undefined
+                ? { confidence: undefined }
+                : {}),
+            });
+          }
+        }
+        fields.items = items;
+      }
+      if (
+        !old!.items &&
+        !fields.items &&
+        ["calories", "protein", "carbs", "fat"].some((k) => k in fields) &&
+        fields.source === undefined
+      )
+        fields.source = "estimate";
+      if (
+        (old!.items || fields.items) &&
+        ["calories", "protein", "carbs", "fat"].some((k) => k in fields)
+      )
+        throw new Error(
+          "Itemized meal totals are computed. Edit items instead of meal macros",
+        );
+    }
     const schema = entrySchemas[found.table];
     const keys = Object.keys(fields);
     for (const key of keys)
       if (key === "requestId" || !(key in schema.shape))
         throw new Error(`Field ${key} is not valid for ${found.table}`);
     const candidate: Record<string, unknown> = { ...found.row, ...fields };
+    if (
+      found.table === "meals" &&
+      fields.source !== undefined &&
+      fields.source !== Reflect.get(found.row, "source") &&
+      fields.confidence === undefined
+    )
+      candidate.confidence = undefined;
     for (const key of ["durationMin", "distanceMi", "distanceMiMax"])
       if (candidate[key] === null) delete candidate[key];
     const parsed = schema.parse(candidate);
@@ -686,9 +751,25 @@ export const update_entry = mutation({
     }
     // Validate the merged row, but only patch keys that were actually supplied.
     // Defaults from a schema must never erase omitted values.
-    const patch = Object.fromEntries(
+    const patch: Record<string, unknown> = Object.fromEntries(
       keys.map((key) => [key, Reflect.get(parsed, key)]),
     );
+    if (found.table === "meals") {
+      const prepared = await prepareMeal(
+        ctx,
+        mealInput.parse(candidate),
+        (await ctx.db.get(ctx.db.normalizeId("meals", id)!)) ?? undefined,
+      );
+      for (const key of keys) patch[key] = Reflect.get(prepared, key);
+      Object.assign(patch, {
+        calories: prepared.calories,
+        protein: prepared.protein,
+        carbs: prepared.carbs,
+        fat: prepared.fat,
+        confidence: prepared.confidence,
+      });
+      if (prepared.items) patch.items = prepared.items;
+    }
     if (found.table === "workouts") {
       const before = await ctx.db.get(ctx.db.normalizeId("workouts", id)!);
       const after = workoutInput.parse(candidate);

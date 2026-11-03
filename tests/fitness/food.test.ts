@@ -59,18 +59,15 @@ it("scales USDA generic foods and preserves attribution", async () => {
     carbs: null,
   });
 });
-it("does not fabricate values without credentials or on provider errors", async () => {
-  await expect(
-    lookupFood({ query: "rice", packaged: false, portionGrams: 100 }),
-  ).rejects.toThrow("USDA_API_KEY");
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async () => new Response("", { status: 429 })),
-  );
-  await expect(
-    lookupFood({ barcode: "12345678", packaged: true, portionGrams: 100 }),
-  ).rejects.toThrow("429");
+it("returns provider_down without fabricating nutrition when providers are unavailable", async () => {
+  const fetcher = vi.fn(async () => new Response("", { status: 429 }));
+  vi.stubGlobal("fetch", fetcher);
+  expect(
+    await lookupFood({ query: "rice", packaged: false, portionGrams: 100 }),
+  ).toMatchObject({ status: "provider_down", matches: [], needsRecheck: true });
+  expect(fetcher).toHaveBeenCalledTimes(1); // USDA is unconfigured; OFF was still attempted.
 });
+
 it("resolves 5 pieces and fractions from explicit serving labels and exposes label data", async () => {
   vi.stubGlobal(
     "fetch",
@@ -425,4 +422,124 @@ it("does not collapse household count ranges or incomplete tokens into exact pie
       ).matches[0],
     ).toMatchObject({ calories: null, portion: { resolved: false } });
   }
+});
+it("retries a 5xx once, then falls back from OFF to USDA using the exact barcode", async () => {
+  const fetcher = vi.fn(async (url: string) =>
+    url.includes("openfoodfacts")
+      ? new Response("down", { status: 503 })
+      : Response.json({
+          foods: [
+            {
+              fdcId: 1,
+              description: "Wrong product",
+              gtinUpc: "99999999",
+              foodNutrients: [],
+            },
+            {
+              fdcId: 2,
+              description: "Snack",
+              gtinUpc: "00123456789012",
+              servingSize: 30,
+              servingSizeUnit: "g",
+              householdServingFullText: "1 bar",
+              foodNutrients: [
+                { nutrientId: 1008, value: 400, unitName: "KCAL" },
+                { nutrientId: 1003, value: 10, unitName: "G" },
+                { nutrientId: 1005, value: 40, unitName: "G" },
+                { nutrientId: 1004, value: 20, unitName: "G" },
+              ],
+            },
+          ],
+        }),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  const result = await lookupFood(
+    { barcode: "123456789012", count: 1, unit: "serving", packaged: true },
+    "test",
+  );
+  expect(fetcher).toHaveBeenCalledTimes(3);
+  expect(result).toMatchObject({
+    status: "ok",
+    source: "usda",
+    fallbackUsed: true,
+    matches: [{ name: "Snack", calories: 120, gramsPerServing: 30 }],
+  });
+  expect(result.matches).toHaveLength(1);
+});
+it("retries USDA 5xx once and falls back to OFF, and recovers on a second provider attempt", async () => {
+  const fetcher = vi.fn(async (url: string) =>
+    url.includes("usda")
+      ? new Response("", { status: 502 })
+      : Response.json({
+          products: [
+            { product_name: "Rice", nutriments: { "energy-kcal_100g": 130 } },
+          ],
+        }),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  expect(
+    await lookupFood(
+      { query: "rice", packaged: false, portionGrams: 200 },
+      "test",
+    ),
+  ).toMatchObject({
+    status: "ok",
+    source: "off",
+    matches: [{ calories: 260 }],
+  });
+  expect(fetcher).toHaveBeenCalledTimes(3);
+  const recovery = vi
+    .fn()
+    .mockResolvedValueOnce(new Response("", { status: 500 }))
+    .mockResolvedValueOnce(
+      Response.json({
+        product: {
+          product_name: "Rice",
+          nutriments: { "energy-kcal_100g": 130 },
+        },
+      }),
+    );
+  vi.stubGlobal("fetch", recovery);
+  expect(
+    await lookupFood(
+      { barcode: "12345678", packaged: true, portionGrams: 100 },
+      "test",
+    ),
+  ).toMatchObject({ status: "ok", fallbackUsed: false });
+  expect(recovery).toHaveBeenCalledTimes(2);
+});
+it("distinguishes not_found, timeouts and two failed providers", async () => {
+  const down = vi.fn(async () => new Response("", { status: 503 }));
+  vi.stubGlobal("fetch", down);
+  expect(
+    await lookupFood(
+      { query: "rice", packaged: false, portionGrams: 100 },
+      "test",
+    ),
+  ).toMatchObject({ status: "provider_down", matches: [] });
+  expect(down).toHaveBeenCalledTimes(4);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) =>
+      Response.json(url.includes("usda") ? { foods: [] } : { products: [] }),
+    ),
+  );
+  expect(
+    await lookupFood(
+      { query: "missing", packaged: false, portionGrams: 100 },
+      "test",
+    ),
+  ).toMatchObject({ status: "not_found", matches: [] });
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => {
+      throw new DOMException("timeout", "TimeoutError");
+    }),
+  );
+  expect(
+    await lookupFood(
+      { query: "rice", packaged: false, portionGrams: 100 },
+      "test",
+    ),
+  ).toMatchObject({ status: "provider_down", matches: [] });
 });

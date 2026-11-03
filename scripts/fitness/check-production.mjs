@@ -62,8 +62,19 @@ try {
     ),
   );
   const list = await client.listTools();
-  assert.equal(list.tools.length, 25);
+  assert.equal(list.tools.length, 26);
   assert(list.tools.some((t) => t.name === "log_set"));
+  for (const name of ["save_food", "lookup_food"])
+    assert.equal(
+      list.tools.find((t) => t.name === name).annotations.readOnlyHint,
+      false,
+    );
+  const mealSchema = list.tools.find((t) => t.name === "log_meal").inputSchema;
+  assert(mealSchema.properties.items && mealSchema.properties.confidence);
+  assert(
+    list.tools.find((t) => t.name === "update_entry").inputSchema.properties
+      .itemChange,
+  );
   assert(list.tools.some((t) => t.name === "swap_exercise"));
   assert.equal((await fetch(base + "/fitness/api/session-stream")).status, 401);
   assert.equal((await fetch(base + "/fitness/api/rest")).status, 401);
@@ -76,7 +87,6 @@ try {
     "get_exercise_history",
     "get_remaining",
     "get_sleep",
-    "lookup_food",
     "estimate_maintenance",
   ];
   const writeAnnotations = list.tools.find(
