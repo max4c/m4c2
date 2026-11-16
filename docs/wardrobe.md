@@ -2,13 +2,13 @@
 
 Mobile wardrobe at `app2.maxforsey.com`, served by the existing Next.js/Vercel project. Max and Zhanel have separate username/password accounts. All catalogue reads, edits and image requests derive the owner from a signed HttpOnly session. The browser cannot choose an owner. Fitness sessions and credentials cannot access the wardrobe.
 
-The catalogue supports combined category/color/material filters, text search, and sorting by newest, name, category, color or material. Item details show available front/side/back/detail views and an optional original frame. Metadata can be edited; images cannot. Material is optional. No public registration, video-upload flow, MCP connector or image regeneration is included.
+The catalogue supports combined category/color/material filters, text search, and sorting by newest, name, category, color or material. Item details show available front/side/back/detail views and an optional original frame. Metadata can be edited; images cannot. Material is optional. The Outfits tab shows the latest published week with try-on photos, links to garments, and the forecast for each day. The wardrobe MCP connector lets ChatGPT add garments to the signed-in user’s closet.
 
 ## Local development
 
 Use Node 24, then `npm ci`. Start `CONVEX_AGENT_MODE=anonymous npx convex dev` and leave it running. This configures a local backend and generates types. Run `node scripts/wardrobe/setup-local.mjs`, then `npm run dev`. Open `http://app2.localhost:3000`. The local usernames are `max` and `zhanel`; generated local passwords are saved in ignored `.vercel/wardrobe-local.json`.
 
-Run `npm run check:wardrobe`, `npm run check:fitness`, `npm run lint`, and `npm run build`. The browser check `node scripts/wardrobe/check-local.mjs` expects the synthetic sample catalogue from `node scripts/wardrobe/fixture.mjs`; run it in a disposable local database before importing personal garments. The current local catalogue contains 20 Max items and 16 Zhanel items, with no sample cards. Repeated login tests may reach the local 10-attempt/15-minute limit.
+Run `npm run check:wardrobe`, `npm run check:fitness`, `npm run lint`, and `npm run build`. The browser check `node scripts/wardrobe/check-local.mjs` expects the synthetic sample catalogue from `node scripts/wardrobe/fixture.mjs`; run it in a disposable local database before importing personal garments. Repeated login tests may reach the local 10-attempt/15-minute limit.
 
 ## Initial curated import
 
@@ -52,7 +52,7 @@ Set the following on the existing Vercel project, preserving Supermedium/public-
 
 Add the hostname to Vercel and configure its DNS record. Deploy the additive Convex schema/functions, then deploy Next.js. Verify both real accounts, persistent sessions, wrong-password rejection, cross-account item/image denial, metadata editing, app hostname separation, and existing Supermedium/public-site behavior. Never seed test items into production. The wardrobe has its own Home Screen manifest/icon and does not cache private data offline.
 
-Production credentials, environment values, additive Convex functions and schema, and the Outfits website have been deployed. `app2.maxforsey.com` has its own Vercel alias and a Namecheap A record pointing to `76.76.21.21`. The existing public and Supermedium domain aliases were preserved. Production contains the same 20 Max items and 16 Zhanel items as local development. Account credentials are stored privately in ignored `.vercel/wardrobe-production.json`; they are not checked into git.
+Production credentials, environment values, additive Convex functions and schema, and the Outfits website have been deployed. `app2.maxforsey.com` has its own Vercel alias and a Namecheap A record pointing to `76.76.21.21`. The existing public and Supermedium domain aliases were preserved. Account credentials are stored privately in ignored `.vercel/wardrobe-production.json`; they are not checked into git.
 
 ## Connect ChatGPT to a closet
 

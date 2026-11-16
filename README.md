@@ -13,3 +13,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Personal fitness app
 
 The private fitness dashboard and MCP connector are part of this same Next.js app. See [setup, phone use, and deployment](docs/fitness.md).
+
+## Closet (Outfits)
+
+The Closet app includes the wardrobe catalogue, weekly outfits, and ChatGPT connector. Start with the [Closet development guide](docs/wardrobe.md) or browse the [Closet interface](src/components/wardrobe).
