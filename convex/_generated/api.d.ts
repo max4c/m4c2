@@ -16,6 +16,8 @@ import type * as meal_items from "../meal_items.js";
 import type * as rest from "../rest.js";
 import type * as restPush from "../restPush.js";
 import type * as voice from "../voice.js";
+import type * as wardrobe from "../wardrobe.js";
+import type * as wardrobeValidators from "../wardrobeValidators.js";
 
 import type {
   ApiFromModules,
@@ -32,6 +34,8 @@ declare const fullApi: ApiFromModules<{
   rest: typeof rest;
   restPush: typeof restPush;
   voice: typeof voice;
+  wardrobe: typeof wardrobe;
+  wardrobeValidators: typeof wardrobeValidators;
 }>;
 
 /**

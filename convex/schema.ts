@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { wardrobeOwner, wardrobeImage, wardrobeWeek } from "./wardrobeValidators";
 const foodSource = v.union(
   v.literal("estimate"),
   v.literal("off"),
@@ -155,6 +156,43 @@ export const planFields = {
   bedtimeHour: v.number(),
 };
 export default defineSchema({
+  wardrobeConnections: defineTable({
+    owner: wardrobeOwner,
+    resource: v.string(),
+    challenge: v.string(),
+    offline: v.boolean(),
+    code: v.optional(v.string()),
+    access: v.optional(v.string()),
+    refresh: v.optional(v.string()),
+    accessExpires: v.optional(v.number()),
+    expires: v.number(),
+  })
+    .index("by_code", ["code"])
+    .index("by_access", ["access"])
+    .index("by_refresh", ["refresh"])
+    .index("by_expires", ["expires"]),
+  wardrobeWeeks: defineTable(wardrobeWeek).index("by_owner_week", ["owner", "weekOf"]),
+  wardrobeItems: defineTable({
+    owner: wardrobeOwner,
+    externalId: v.string(),
+    name: v.string(),
+    category: v.string(),
+    color: v.string(),
+    material: v.string(),
+    retirement: v.optional(v.object({ note: v.string() })),
+    images: v.array(wardrobeImage),
+    addedAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_owner", ["owner"])
+    .index("by_owner_external", ["owner", "externalId"]),
+  wardrobeLoginAttempts: defineTable({
+    client: v.string(),
+    windowStart: v.number(),
+    count: v.number(),
+  })
+    .index("by_client", ["client"])
+    .index("by_window", ["windowStart"]),
   foods: defineTable({
     name: v.string(),
     nameKey: v.string(),
